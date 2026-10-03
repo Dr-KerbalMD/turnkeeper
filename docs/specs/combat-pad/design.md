@@ -58,7 +58,7 @@ Ported from the pf2e system, with tests.
   limited-frequency inline damage. HP changes by bracket on the base level.
 - **`EncounterBudget`.** XP by level difference, clamped to -4…+4: 10, 15, 20, 30, 40, 60, 80, 120,
   160. For 4 PCs the tiers are 40, 60, 80, 120 and 160, and each extra or missing PC adds or removes
-  10, 20, 20, 30 or 40 for those tiers.
+  10, 15, 20, 30 or 40 for those tiers.
 - **`ConditionEffects`.** A table that mirrors the FlatModifier selectors, with statistic domains: `all`,
   str-based, dex-based, con-based, int/wis/cha-based, ac, attack, perception and saves. Granted
   conditions and overrides are applied. Only the worst status penalty and the worst circumstance
