@@ -14,10 +14,15 @@ let package = Package(
         .target(name: "CombatPadKit"),
         .target(name: "CombatPadUI", dependencies: ["CombatPadKit"]),
         .executableTarget(name: "CombatPad", dependencies: ["CombatPadUI"]),
-        .executableTarget(name: "BestiaryImport", dependencies: ["CombatPadKit"]),
+        .target(name: "FoundryImport", dependencies: ["CombatPadKit"]),
+        .executableTarget(name: "BestiaryImport", dependencies: ["FoundryImport"]),
         .testTarget(
             name: "CombatPadKitTests",
-            dependencies: ["CombatPadKit"],
+            dependencies: ["CombatPadKit"]
+        ),
+        .testTarget(
+            name: "FoundryImportTests",
+            dependencies: ["FoundryImport"],
             resources: [.copy("Fixtures")]
         )
     ]
