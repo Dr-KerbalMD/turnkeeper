@@ -1,0 +1,71 @@
+# Combat Pad: requirements
+
+Combat Pad is a private iPad and Mac app for running Pathfinder 2e and Starfinder 2e encounters at an
+in-person table. It replaces the paper Paizo Combat Pad. The left half of the screen is the initiative
+ladder, and the right half is the notes side, which shows the battle card of the active creature.
+
+## R1 Platforms and sharing
+- R1.1 The same app runs on iPad and Mac, with every feature available on both.
+- R1.2 Planning data moves between devices in both directions as `.combatpad` files, through AirDrop,
+  Files or Finder.
+- R1.3 "Sync with nearby device" merges the libraries of two devices over the local network.
+- R1.4 Merging never loses edits silently. When both sides changed the same record, the newer one wins
+  and the other is kept as a conflict copy.
+- R1.5 Nothing requires a paid Apple developer account. There is no iCloud or CloudKit.
+
+## R2 Bestiary
+- R2.1 The bundled bestiary contains every NPC and every complex hazard from the pf2e and sf2e packs in
+  `~/git/pf2e`. Simple hazards are excluded.
+- R2.2 `make bestiary` re-imports the bestiary. Running it twice on the same input produces identical
+  output.
+- R2.3 Creature art comes from the Foundry art modules' `compendiumArtMappings`, and from the user's
+  Paizo token and pawn PDFs for creatures the modules don't cover, mainly Starfinder.
+- R2.4 The import writes a report covering counts per pack, creatures without art, unmatched PDF art,
+  and enrichers it couldn't parse.
+- R2.5 The browser searches by name and trait, and filters by level, game, source, rarity, size and
+  kind.
+
+## R3 Planning
+- R3.1 A campaign has a game (Pathfinder or Starfinder), which sets the look and the default bestiary.
+- R3.2 Parties are built separately from encounters. A PC has only a name.
+- R3.3 A scenario holds ordered encounters and a variant scheme: challenge-point brackets for PFS,
+  Easier/Base/Harder for SFS, or a single variant.
+- R3.4 Each encounter has one variant per scheme label. Each variant has its own creatures, bench and
+  events. A variant can be copied from another one.
+- R3.5 A slot has a creature, count, template (elite, normal or weak), side, and whether it starts on
+  the bench.
+- R3.6 The encounter budget shows the XP total and threat for the party's level and size.
+- R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
+- R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or
+  end of a combatant's turn. An event can recur every round, happen only in round N, or every N rounds
+  starting at round M.
+
+## R4 Combat
+- R4.1 Starting combat asks for the party and the variant. The scenario's last-used variant is the
+  default.
+- R4.2 Combat begins with a Setup phase. Creatures roll initiative automatically, and PCs enter theirs
+  by keypad or by voice.
+- R4.3 In Setup only, pressing and holding a strip listens for a spoken initiative number. "Listen for
+  all" accepts names with numbers. After Begin combat, nothing listens and strips are dragged to
+  reorder.
+- R4.4 Tiles show the name, initiative, HP and conditions. Tiles are colored like magnets: red for
+  enemies, blue for PCs, green for NPCs, gray for hazards.
+- R4.5 Creature HP tracks damage, healing and temporary HP. PCs track no HP.
+- R4.6 The template can be changed during combat. It recalculates the stats without changing the damage
+  already taken.
+- R4.7 Conditions are applied from a palette, shown as chips, and change the battle card's numbers.
+  Changed numbers are tinted and show their breakdown on long-press or hover.
+- R4.8 Benched creatures can be brought into combat at any time.
+- R4.9 Durations and events count down and fire in rules order.
+- R4.10 Turn reminders are modal and must be dismissed: slowed, stunned, quickened and dying at the
+  start of a turn; persistent damage and frightened at the end of a turn; custom notes at either. Next
+  is blocked until every reminder has been dismissed.
+- R4.11 Every turn advance can be undone.
+- R4.12 The battle card follows the current turn. Tapping a tile pins that card.
+- R4.13 Art can be shown full screen. If an external display is connected, the art goes there.
+
+## R5 Battle cards
+- R5.1 Pathfinder cards follow the Pathfinder Bestiary Battle Cards look.
+- R5.2 Starfinder cards follow the Alien Archive Battle Cards look, but with 2e content.
+- R5.3 Complex hazards get a hazard card in the same style.
+- R5.4 No Paizo artwork or commercial fonts are copied into the app.
