@@ -2,6 +2,7 @@ included:
   - Sources
   - Tests
   - ios/App
+  - ios/UITests
   - scripts
   - Package.swift
 line_length:

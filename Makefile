@@ -1,4 +1,4 @@
-.PHONY: build test lint bestiary app run install ipad-simulator ipad-install clean
+.PHONY: build test lint bestiary cards app run install ipad-simulator ipad-install ipad-uitest clean
 
 build:
 	swift build
@@ -33,6 +33,14 @@ ipad-simulator:
 # A free developer team's signature lasts 7 days, so run this again each week.
 ipad-install:
 	scripts/install-ipad.sh
+
+# Runs the iPad UI tests in a simulator, against the demo fight.
+ipad-uitest:
+	scripts/run-ipad-uitests.sh
+
+# Renders battle cards to tmp/cards for comparing with the printed decks: make cards KEYS="key[:elite] ..."
+cards:
+	swift run CardSnapshots tmp/cards $(KEYS)
 
 clean:
 	rm -rf .build build ios/build
