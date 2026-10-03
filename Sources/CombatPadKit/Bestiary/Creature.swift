@@ -41,6 +41,16 @@ public struct Creature: Codable, Sendable, Identifiable, Hashable {
 
     public var id: String { key }
 
+    /// The modifier rolled for initiative, from the statistic the creature uses.
+    public var initiativeModifier: Int {
+        switch initiativeStatistic {
+        case "perception": return senses.perception
+        case "stealth": return hazard?.stealth ?? skills.first { $0.name == "Stealth" }?.modifier ?? senses.perception
+        default:
+            return skills.first { $0.name.lowercased() == initiativeStatistic }?.modifier ?? senses.perception
+        }
+    }
+
     /// An empty creature to fill in; every statistic starts at zero or empty.
     public init(key: String, name: String, game: Game) {
         self.key = key

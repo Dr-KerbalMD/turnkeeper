@@ -10,10 +10,13 @@ public struct BestiaryIndexEntry: Codable, Sendable, Identifiable, Hashable {
     public var traits: TraitLine
     public var source: Source
     public var art: ArtReference
+    /// The initiative modifier: Perception, or Stealth for most hazards.
+    public var initiativeModifier: Int
 
     public var id: String { key }
 
     public init(creature: Creature) {
+        initiativeModifier = creature.initiativeModifier
         key = creature.key
         name = creature.name
         game = creature.game
