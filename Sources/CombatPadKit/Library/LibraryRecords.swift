@@ -1,0 +1,97 @@
+import Foundation
+
+/// A record that can be shared between devices: it has a stable ID, the time it last changed, and a
+/// tombstone instead of being removed, so a deletion on one device reaches the other.
+public protocol LibraryRecord: Codable, Sendable, Identifiable where ID == UUID {
+    var id: UUID { get }
+    var modifiedAt: Date { get set }
+    var deletedAt: Date? { get set }
+    /// The `modifiedAt` of the version last shared with another device, so a merge can tell an update
+    /// made on one side from edits made on both.
+    var sharedVersion: Date? { get set }
+}
+
+public extension LibraryRecord {
+    var isDeleted: Bool { deletedAt != nil }
+}
+
+/// A campaign or organized play season. Its game sets the pad's look and the bestiary's default.
+public struct Campaign: LibraryRecord, Hashable {
+    public var id = UUID()
+    public var name: String
+    public var game: Game
+    public var modifiedAt = Date()
+    public var deletedAt: Date?
+    public var sharedVersion: Date?
+
+    public init(name: String, game: Game) {
+        self.name = name
+        self.game = game
+    }
+}
+
+/// The player characters. Players track their own HP, so a member is just a name.
+public struct Party: LibraryRecord, Hashable {
+    public var id = UUID()
+    public var campaignID: UUID
+    public var name: String
+    public var level: Int
+    public var members: [PartyMember]
+    public var modifiedAt = Date()
+    public var deletedAt: Date?
+    public var sharedVersion: Date?
+
+    public init(campaignID: UUID, name: String, level: Int, members: [PartyMember] = []) {
+        self.campaignID = campaignID
+        self.name = name
+        self.level = level
+        self.members = members
+    }
+}
+
+public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
+    public var id = UUID()
+    public var name: String
+
+    public init(name: String) {
+        self.name = name
+    }
+}
+
+/// A scenario or adventure chapter: ordered encounters, each planned at every difficulty in the scheme.
+public struct Scenario: LibraryRecord, Hashable {
+    public var id = UUID()
+    public var campaignID: UUID
+    public var name: String
+    public var notes = ""
+    public var levelRange = ""
+    /// Difficulty labels, such as "10–12 CP" and "16–18 CP", or "Easier", "Base" and "Harder".
+    public var variantLabels: [String]
+    /// The variant last run, offered first next time.
+    public var lastVariantLabel = ""
+    public var sortIndex = 0
+    public var modifiedAt = Date()
+    public var deletedAt: Date?
+    public var sharedVersion: Date?
+
+    public init(campaignID: UUID, name: String, variantLabels: [String] = VariantScheme.single.labels) {
+        self.campaignID = campaignID
+        self.name = name
+        self.variantLabels = variantLabels.isEmpty ? VariantScheme.single.labels : variantLabels
+    }
+}
+
+/// Preset difficulty schemes.
+public enum VariantScheme: String, CaseIterable, Sendable {
+    case pathfinderSociety
+    case starfinderSociety
+    case single
+
+    public var labels: [String] {
+        switch self {
+        case .pathfinderSociety: return ["10–11 CP", "12–13 CP", "14–15 CP", "16–18 CP"]
+        case .starfinderSociety: return ["Easier", "Base", "Harder"]
+        case .single: return ["Standard"]
+        }
+    }
+}

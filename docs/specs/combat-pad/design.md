@@ -70,22 +70,29 @@ Ported from the pf2e system, with tests.
 - **`SpokenNumberParser`.** Turns a transcript into an initiative number. Number words, digits and
   ties are supported, and the last number heard wins.
 
-## Library (SwiftData)
-- **Records.** Campaign, Party, PartyMember, Scenario, Encounter, EncounterVariant, EncounterSlot,
-  EncounterEvent, CombatSession and Combatant. Each carries `uuid`, `modifiedAt` and `deletedAt`.
-- **Sharing.** `LibraryPackage` is the Codable snapshot used both for `.combatpad` files and for
-  nearby sync.
-- **Merging.** `LibraryMerger` keeps the newest record per uuid, honors tombstones, and keeps conflict
-  copies.
-- **Nearby sync.** `NearbySync` uses Network.framework with Bonjour `_combatpad._tcp` and a 4-digit
-  pairing code.
+## Library
+- **Storage.** A Codable `Library` value holds campaigns, parties, scenarios, encounters and saved combat
+  sessions. It is saved as `library.json` in Application Support on each device. Value records make undo,
+  merging and testing simple, and avoid SwiftData's limits with enums that carry values.
+- **Records.** Every record has `id`, `modifiedAt`, `deletedAt` (a tombstone; records are never removed)
+  and `sharedVersion`, the `modifiedAt` of the version last shared with the other device.
+- **Variants.** An encounter keeps one `EncounterVariant` (slots and events) per scenario variant label.
+  `CombatSetup` turns a variant and a party into the opening `CombatState`.
+- **Merging.** `LibraryMerger` compares each record with the other device's copy. If one side is unchanged
+  since the shared version, the other side's change wins. If both changed, the newer one wins, and for
+  scenarios and encounters the other is kept as a "(conflict copy)". Deletions merge like any change.
+- **Sharing.** `LibraryPackage` is the `.combatpad` file (UTType
+  `io.github.scooper4711.combatpad.library`) and the nearby-sync payload. `NearbySync` uses
+  Network.framework with Bonjour `_combatpad._tcp` and a 4-digit pairing code.
 
 ## UI
 - **Themes.** `PadTheme` defines a Pathfinder look (parchment and red) and a Starfinder look (teal,
   neon cyan and a starfield). Magnet colors are shared by both.
 - **Board.** The left half holds the ladder, the delay and dying gutters, the bench and event tiles.
   The right half holds the battle card and notes.
-- **Battle cards.** `StatBlockPresenter` produces adjusted values with breakdowns.
+- **Battle cards.** `StatBlockPresenter` (in the Kit) produces adjusted values with breakdowns: the
+  template adds an untyped ±2, conditions add their typed penalties, and the first damage instance of a
+  Strike or ability takes the template's damage change.
   `PathfinderBattleCard`, `StarfinderBattleCard` and `HazardBattleCard` render them.
 - **Fonts.** Roboto Condensed and Roboto, plus the pf2e action glyph font, converted from the pf2e
   system's woff2 files.
