@@ -1,0 +1,95 @@
+import CombatPadKit
+import SwiftUI
+
+/// Small round condition magnets with their values. Tap to open the condition palette.
+struct ConditionChips: View {
+    let combatant: Combatant
+    let edit: () -> Void
+
+    var body: some View {
+        Button(action: edit) {
+            FlowLayout(spacing: 4) {
+                ForEach(combatant.conditions) { condition in
+                    Text(ConditionLabel.short(condition))
+                        .font(.caption2.bold())
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(ConditionLabel.color(condition).opacity(0.9), in: Capsule())
+                        .overlay { Capsule().strokeBorder(.white.opacity(0.5)) }
+                }
+                if combatant.conditions.isEmpty {
+                    Image(systemName: "plus.circle").font(.caption).opacity(0.6)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .help("Conditions")
+    }
+}
+
+enum ConditionLabel {
+    /// "Frightened 2", "Bleed 1d6", or a custom reminder's text.
+    static func short(_ condition: AppliedCondition) -> String {
+        if let damage = condition.persistentDamage { return "\(damage.type.capitalized) \(damage.formula)" }
+        if condition.slug == ConditionSlug.customReminder { return "⏰ " + condition.note }
+        let name = condition.slug.replacingOccurrences(of: "-", with: " ").capitalized
+        return condition.value.map { "\(name) \($0)" } ?? name
+    }
+
+    /// Penalties red, losing actions purple, good things green, the rest gray.
+    static func color(_ condition: AppliedCondition) -> Color {
+        switch condition.slug {
+        case "frightened", "sickened", "clumsy", "enfeebled", "drained", "stupefied", "off-guard", "fatigued":
+            return Color(hex: 0x8E1B1B)
+        case "slowed", "stunned", "paralyzed", "restrained", "grabbed", "immobilized", "prone":
+            return Color(hex: 0x5B2A86)
+        case "quickened", "hidden", "invisible", "concealed":
+            return Color(hex: 0x1F6E3A)
+        case "dying", "unconscious", "persistent-damage", "doomed", "wounded":
+            return .black
+        default:
+            return Color(hex: 0x4A4A4A)
+        }
+    }
+}
+
+/// Long-press or right-click actions on a strip.
+struct TileMenu: View {
+    let controller: BoardController
+    let combatant: Combatant
+    @Binding var sheet: BoardSheet?
+
+    var body: some View {
+        Button("Conditions…", systemImage: "staroflife") { sheet = .conditions(combatant.id) }
+        if combatant.tracksHitPoints {
+            Button("Damage or Heal…", systemImage: "heart") { sheet = .hitPoints(combatant.id) }
+        }
+        Button("Initiative…", systemImage: "number") { sheet = .initiative(combatant.id) }
+        if combatant.kind == .creature || combatant.kind == .hazard {
+            Picker("Template", selection: templateBinding) {
+                Text("Weak").tag(CreatureTemplate.weak)
+                Text("Normal").tag(CreatureTemplate.normal)
+                Text("Elite").tag(CreatureTemplate.elite)
+            }
+        }
+        Divider()
+        if controller.state.phase == .active {
+            Button("Delay", systemImage: "hourglass") { controller.change { $0.startDelay(combatant.id) } }
+            Button("Knocked Out (Dying)", systemImage: "heart.slash") {
+                controller.change { $0.knockOut(combatant.id) }
+            }
+        }
+        Button("Move to Bench", systemImage: "chair.lounge") {
+            controller.change { state in
+                state.order.removeAll { $0 == combatant.id }
+                state[combatant.id]?.place = .bench
+            }
+        }
+        Button("Remove", systemImage: "trash", role: .destructive) { controller.change { $0.remove(combatant.id) } }
+    }
+
+    private var templateBinding: Binding<CreatureTemplate> {
+        Binding(get: { combatant.template },
+                set: { template in controller.change { $0.setTemplate(template, for: combatant.id) } })
+    }
+}
