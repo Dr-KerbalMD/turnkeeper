@@ -1,0 +1,80 @@
+import CombatPadKit
+import SwiftUI
+
+/// The look of the pad and battle cards for a game: Pathfinder parchment, or Starfinder holo-panels.
+struct PadTheme: Equatable, Sendable {
+    var game: Game
+    var background: Color
+    var surface: Color
+    var ink: Color
+    var secondaryInk: Color
+    var accent: Color
+    var rule: Color
+    var titleFont: String
+    var bodyFont: String
+
+    static func forGame(_ game: Game) -> PadTheme {
+        game == .starfinder ? .starfinder : .pathfinder
+    }
+
+    static let pathfinder = PadTheme(
+        game: .pathfinder,
+        background: Color(hex: 0x2B1F17),
+        surface: Color(hex: 0xF1E5C8),
+        ink: Color(hex: 0x231A12),
+        secondaryInk: Color(hex: 0x5C4A38),
+        accent: Color(hex: 0x6B1A12),
+        rule: Color(hex: 0x6B1A12),
+        titleFont: FontName.condensedBold,
+        bodyFont: FontName.condensed
+    )
+
+    static let starfinder = PadTheme(
+        game: .starfinder,
+        background: Color(hex: 0x030B14),
+        surface: Color(hex: 0x0D3C47),
+        ink: Color(hex: 0xEAF7FB),
+        secondaryInk: Color(hex: 0x9FC7D2),
+        accent: Color(hex: 0x27C8F2),
+        rule: Color(hex: 0x27C8F2),
+        titleFont: FontName.condensedBold,
+        bodyFont: FontName.body
+    )
+
+    var isDark: Bool { game == .starfinder }
+}
+
+/// Colors of the paper pad's magnets.
+extension Magnet {
+    var color: Color {
+        switch self {
+        case .red: return Color(hex: 0xB3261E)
+        case .blue: return Color(hex: 0x1F5FAF)
+        case .green: return Color(hex: 0x2E7D32)
+        case .gray: return Color(hex: 0x6B6B6B)
+        }
+    }
+}
+
+extension Color {
+    init(hex: UInt32, opacity: Double = 1) {
+        self.init(
+            .sRGB,
+            red: Double((hex >> 16) & 0xFF) / 255,
+            green: Double((hex >> 8) & 0xFF) / 255,
+            blue: Double(hex & 0xFF) / 255,
+            opacity: opacity
+        )
+    }
+}
+
+private struct PadThemeKey: EnvironmentKey {
+    static let defaultValue = PadTheme.pathfinder
+}
+
+extension EnvironmentValues {
+    var padTheme: PadTheme {
+        get { self[PadThemeKey.self] }
+        set { self[PadThemeKey.self] = newValue }
+    }
+}
