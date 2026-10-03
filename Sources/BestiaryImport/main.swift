@@ -1,0 +1,3 @@
+import CombatPadKit
+
+print("BestiaryImport")
