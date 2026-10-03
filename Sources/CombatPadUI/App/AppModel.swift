@@ -39,6 +39,11 @@ final class AppModel {
     /// The app's model, with the saved library and the bundled bestiary.
     static func live() -> AppModel {
         let bestiary = BestiaryStore.locateGeneratedDirectory().flatMap { try? BestiaryStore(generatedDirectory: $0) }
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "--demo") {
+            let mode = arguments.indices.contains(index + 1) ? arguments[index + 1] : "planner"
+            return DemoLibrary.model(mode: mode, bestiary: bestiary ?? BestiaryStore())
+        }
         do {
             let file = try LibraryFile.standard()
             return AppModel(library: try file.load(), bestiary: bestiary ?? BestiaryStore(), file: file)

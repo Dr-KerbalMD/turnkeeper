@@ -50,7 +50,7 @@ private struct SlotRow: View {
         let entry = model.entry(slot.creatureKey)
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
-                ArtImage(path: entry?.art.token ?? "", size: 44, shape: .circle)
+                ArtImage(path: entry?.art.thumbnail ?? "", size: 44, shape: .circle, alignment: .top)
                 VStack(alignment: .leading) {
                     Text(slot.customName.isEmpty ? (entry?.name ?? "Unknown creature") : slot.customName)
                         .font(.headline)

@@ -14,13 +14,15 @@ struct ArtImage: View {
     let size: CGFloat
     var shape: Shape = .rectangle
     var contentMode: ContentMode = .fill
+    /// Which part stays visible when filling: the top keeps faces in view.
+    var alignment: Alignment = .center
     @Environment(AppModel.self) private var model
     @Environment(\.displayScale) private var displayScale
     @State private var image: CGImage?
 
     var body: some View {
         content
-            .frame(width: size, height: size)
+            .frame(width: size, height: size, alignment: alignment)
             .clipShape(clip)
             .task(id: path) { image = await load() }
     }
@@ -29,6 +31,7 @@ struct ArtImage: View {
     private var content: some View {
         if let image {
             Image(decorative: image, scale: displayScale).resizable().aspectRatio(contentMode: contentMode)
+                .frame(width: size, height: size, alignment: alignment)
         } else {
             ZStack {
                 Rectangle().fill(.quaternary)
@@ -72,4 +75,9 @@ actor ArtLoader {
         if let image { cache.setObject(image, forKey: key) }
         return image
     }
+}
+
+extension ArtReference {
+    /// The best picture for a small circle: the portrait, since Foundry ring tokens have wide margins.
+    var thumbnail: String { portrait.isEmpty ? token : portrait }
 }

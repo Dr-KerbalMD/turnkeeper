@@ -115,7 +115,7 @@ private struct BestiaryRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ArtImage(path: entry.art.token, size: 48, shape: .circle)
+            ArtImage(path: entry.art.thumbnail, size: 48, shape: .circle, alignment: .top)
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.name).font(.headline)
                 Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
