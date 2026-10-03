@@ -16,8 +16,7 @@ final class TurnReminderUITests: XCTestCase {
         XCTAssertTrue(next.waitForExistence(timeout: 10))
         next.tap()
         XCTAssertTrue(app.staticTexts["Slowed 1"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["1 action fewer this turn."].exists
-                      || app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'fewer'")).count > 0)
+        XCTAssertTrue(app.staticTexts["1 action fewer this turn."].exists)
         app.buttons["Got It"].tap()
         XCTAssertTrue(next.waitForExistence(timeout: 5))
         XCTAssertTrue(next.isEnabled)
