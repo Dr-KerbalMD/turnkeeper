@@ -49,6 +49,13 @@ public extension CombatState {
         self[id] = combatant
     }
 
+    /// Knocked out at 0 HP: dying 1 plus wounded, and its place moves to just before the current turn.
+    mutating func knockOut(_ id: UUID) {
+        let wounded = self[id]?.condition(ConditionSlug.wounded)?.value ?? 0
+        addCondition(AppliedCondition(slug: ConditionSlug.dying, value: 1 + wounded), to: id)
+        moveBeforeCurrent(id)
+    }
+
     mutating func removeCondition(_ conditionID: UUID, from id: UUID) {
         self[id]?.conditions.removeAll { $0.id == conditionID }
     }

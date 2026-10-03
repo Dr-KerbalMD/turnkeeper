@@ -158,6 +158,16 @@ struct TurnAdvancerTests {
         #expect(state.order == [ids[1], ids[0], ids[2]])
     }
 
+    @Test("Knocked out: dying 1 plus wounded, moved to just before the current turn")
+    func knockOut() {
+        var (state, ids) = fight()
+        state = TurnAdvancer.next(state).state
+        state.addCondition(AppliedCondition(slug: "wounded", value: 1), to: ids[2])
+        state.knockOut(ids[2])
+        #expect(state[ids[2]]?.condition("dying")?.value == 2)
+        #expect(state.order == [ids[0], ids[2], ids[1]])
+    }
+
     @Test("Benched creatures come in at their initiative")
     func bench() {
         var (state, ids) = fight()
