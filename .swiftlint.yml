@@ -29,3 +29,8 @@ opt_in_rules:
   - first_where
   - sorted_first_last
   - toggle_bool
+inclusive_language:
+  # "Remaster" is Paizo's name for the 2024 Pathfinder rules revision, a game term in the data.
+  override_allowed_terms:
+    - remaster
+    - remastered
