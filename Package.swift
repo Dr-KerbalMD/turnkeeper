@@ -16,6 +16,7 @@ let package = Package(
         .executableTarget(name: "CombatPad", dependencies: ["CombatPadUI"]),
         .target(name: "FoundryImport", dependencies: ["CombatPadKit"]),
         .executableTarget(name: "BestiaryImport", dependencies: ["FoundryImport"]),
+        .executableTarget(name: "CardSnapshots", dependencies: ["CombatPadUI"]),
         .testTarget(
             name: "CombatPadKitTests",
             dependencies: ["CombatPadKit"]
