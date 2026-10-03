@@ -15,8 +15,26 @@ in the style of the Paizo Combat Pad. See `docs/specs/combat-pad/` for the requi
 - `make ipad-install` installs on a connected iPad. Put your team in `ios/Local.xcconfig`
   (`DEVELOPMENT_TEAM = …`). A free team's signature lasts 7 days, so reinstall weekly.
 
+## Use
+- **Plan:** add a campaign (Pathfinder or Starfinder), a party, and scenarios. Each scenario has
+  difficulty variants (PFS challenge-point brackets, SFS easier/base/harder). Plan each encounter per
+  variant, with creatures, a bench and events, and watch the budget bar. The scenario page shows every
+  encounter at every difficulty.
+- **Run:** press Run (or a cell in the scenario grid). In setup, creatures roll initiative. Hold a PC's
+  strip and say the number, tap it to type, or use Listen for All. Then Begin Combat. During the fight,
+  drag strips to reorder, tap one to pin its card, long-press for actions, and press Next (or space).
+  Reminders block Next until dismissed.
+- **Show players:** the eye button shows the creature's Battle Card back on an external display or
+  AirPlay screen (iPad), in the Players window (Mac), or full screen.
+- **Share:** export a campaign as a `.combatpad` file (AirDrop, Files, Finder) and open it on the other
+  device, or use Sync with Nearby Device on both. Edits made on both sides are kept as conflict copies.
+- **Demo:** launch with `--demo planner`, `--demo setup`, `--demo board` or `--demo starfinder` for an
+  in-memory sample that leaves the saved library alone.
+
 ## Test
-`make test` and `make lint` (Swift); `.venv/bin/python -m pytest` and `.venv/bin/ruff check .` (Python).
+`make test` and `make lint` (Swift); `make ipad-uitest` (iPad UI tests, against the demo fight);
+`.venv/bin/python -m pytest` and `.venv/bin/ruff check .` (Python). `make cards KEYS="<creature key>[:elite]"`
+renders battle cards to `tmp/cards` for comparing with the printed decks.
 
 ## Layout
 - `Sources/CombatPadKit`: models and rules

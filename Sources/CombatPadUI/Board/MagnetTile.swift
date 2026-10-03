@@ -23,7 +23,7 @@ struct MagnetTile: View {
             ArtImage(path: tileArt, size: 46, shape: .circle, alignment: .top)
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text(combatant.name).font(.headline).lineLimit(1).minimumScaleFactor(0.7)
+                    Text(combatant.name).font(.headline).lineLimit(2).minimumScaleFactor(0.8)
                     if combatant.template != .normal { TemplateBadge(template: combatant.template, color: .black) }
                 }
                 ConditionChips(combatant: combatant) { sheet = .conditions(combatant.id) }

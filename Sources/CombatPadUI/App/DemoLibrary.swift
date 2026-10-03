@@ -2,11 +2,13 @@ import CombatPadKit
 import Foundation
 
 /// A sample campaign for trying the app and for screenshots, used with the `--demo` launch argument:
-/// `--demo planner` opens the planner, `--demo setup` a fight in setup, `--demo board` a fight in round 1.
+/// `--demo planner` opens the planner, `--demo setup` a fight in setup, `--demo board` a fight in round 1, and
+/// `--demo starfinder` a Starfinder fight in round 1.
 enum DemoLibrary {
     @MainActor
     static func model(mode: String, bestiary: BestiaryStore) -> AppModel {
         let model = AppModel(bestiary: bestiary)
+        if mode == "starfinder" { return starfinder(model: model, bestiary: bestiary) }
         let campaign = model.addCampaign(name: "Demo: PFS Season 7", game: .pathfinder)
         let party = Party(campaignID: campaign.id, name: "Friday table", level: 3,
                           members: ["Valeros", "Ezren", "Kyra", "Merisiel"].map(PartyMember.init))
@@ -21,6 +23,30 @@ enum DemoLibrary {
         }
         model.startCombat(encounter: encounter, variantLabel: "16–18 CP", party: party)
         if mode == "board", var session = model.activeSession {
+            session.state = startedFight(session.state, bestiary: bestiary)
+            model.library.save(session)
+        }
+        return model
+    }
+
+    @MainActor
+    private static func starfinder(model: AppModel, bestiary: BestiaryStore) -> AppModel {
+        let campaign = model.addCampaign(name: "Demo: SFS Season 1", game: .starfinder)
+        let party = Party(campaignID: campaign.id, name: "Crew", level: 7,
+                          members: ["Navasi", "Obozaya", "Keskodai", "Iseph"].map(PartyMember.init))
+        model.library.save(party)
+        model.addScenario(to: campaign.id, name: "#1-99: Aeon Ambush", labels: VariantScheme.starfinderSociety.labels)
+        guard let scenario = model.library.scenarios(in: campaign.id).first else { return model }
+        var encounter = Encounter(scenarioID: scenario.id, name: "A: Hangar Bay")
+        var base = EncounterVariant(label: "Base")
+        var troopers = EncounterSlot(creatureKey: key("Aeon Guard Trooper", bestiary))
+        troopers.count = 2
+        base.slots = [troopers, EncounterSlot(creatureKey: key("Aeon Guard Commander", bestiary)),
+                      EncounterSlot(creatureKey: key("Akata", bestiary))]
+        encounter.setVariant(base)
+        model.library.save(encounter)
+        model.startCombat(encounter: encounter, variantLabel: "Base", party: party)
+        if var session = model.activeSession {
             session.state = startedFight(session.state, bestiary: bestiary)
             model.library.save(session)
         }
