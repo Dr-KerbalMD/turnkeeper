@@ -7,6 +7,7 @@ struct CampaignSidebar: View {
     @Environment(AppModel.self) private var model
     @State private var isAdding = false
     @State private var isImporting = false
+    @State private var isSyncing = false
     @State private var exportDocument: LibraryDocument?
 
     var body: some View {
@@ -22,8 +23,12 @@ struct CampaignSidebar: View {
         .toolbar {
             ToolbarItem { Button("Add Campaign", systemImage: "plus") { isAdding = true } }
             ToolbarItem { Button("Import…", systemImage: "square.and.arrow.down") { isImporting = true } }
+            ToolbarItem {
+                Button("Sync with Nearby Device", systemImage: "arrow.triangle.2.circlepath") { isSyncing = true }
+            }
         }
         .sheet(isPresented: $isAdding) { NewCampaignSheet() }
+        .sheet(isPresented: $isSyncing) { NearbySyncSheet() }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.combatPadLibrary, .json]) { result in
             if case let .success(url) = result { model.importLibraryFile(url) }
         }
