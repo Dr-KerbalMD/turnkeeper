@@ -12,7 +12,7 @@ PF2E_REPO="${PF2E_REPO:-$HOME/git/pf2e}"
 FOUNDRY_MODULES="${FOUNDRY_MODULES:-$HOME/Library/Application Support/FoundryVTT/Data/modules}"
 SCROLLKEEPER_FILES="${SCROLLKEEPER_FILES:-$HOME/Library/Application Support/Scrollkeeper/Files}"
 
-if [ ! -x .venv/bin/python ]; then
+if [ ! -x .venv/bin/python ] || ! .venv/bin/python -c "import fontTools, brotli, pymupdf" 2>/dev/null; then
     python3 -m venv .venv
     .venv/bin/pip install --quiet -r requirements.txt
 fi
@@ -25,6 +25,13 @@ if [ -d "$SCROLLKEEPER_FILES" ]; then
 else
     echo "Skipping PDF art: $SCROLLKEEPER_FILES does not exist."
 fi
+
+echo "Converting fonts..."
+.venv/bin/python scripts/convert_fonts.py --fonts "$PF2E_REPO/static/fonts" --out Generated/Fonts
+
+echo "Copying condition icons..."
+mkdir -p Generated/Conditions
+cp "$PF2E_REPO"/static/icons/conditions/*.webp Generated/Conditions/
 
 echo "Importing the bestiary from $PF2E_REPO..."
 swift build -c release --product BestiaryImport
