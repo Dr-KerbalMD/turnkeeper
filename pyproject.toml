@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B", "SIM", "C4"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pdfart"]
+
+[tool.pytest.ini_options]
+testpaths = ["scripts/tests"]
+pythonpath = ["scripts"]

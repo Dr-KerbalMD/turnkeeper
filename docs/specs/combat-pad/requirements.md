@@ -63,9 +63,12 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R4.11 Every turn advance can be undone.
 - R4.12 The battle card follows the current turn. Tapping a tile pins that card.
 - R4.13 Art can be shown full screen. If an external display is connected, the art goes there.
+- R4.14 The player view shows the creature's Battle Card back, taken from the user's Battle Cards
+  PDFs. A creature without a card gets a back drawn in the same style around its portrait.
 
 ## R5 Battle cards
 - R5.1 Pathfinder cards follow the Pathfinder Bestiary Battle Cards look.
 - R5.2 Starfinder cards follow the Alien Archive Battle Cards look, but with 2e content.
 - R5.3 Complex hazards get a hazard card in the same style.
-- R5.4 No Paizo artwork or commercial fonts are copied into the app.
+- R5.4 The card fronts are drawn in code, with free fonts. Paizo art (tokens, pawns and card backs)
+  comes only from the user's own purchased PDFs, at import time, and is never committed.

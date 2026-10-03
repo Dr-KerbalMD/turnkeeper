@@ -1,0 +1,10 @@
+{
+  "foundryModulePriority": [
+    "pf2e-tokens-monster-core",
+    "pf2e-tokens-bestiaries",
+    "pf2e-tokens-characters",
+    "pf2e-beginner-box"
+  ],
+  "remasterPdfKeywords": ["Monster Core", "NPC Core", "Alien Core", "Howl of the Wild", "Rage of Elements"],
+  "pdfOverrides": {}
+}

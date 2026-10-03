@@ -8,9 +8,10 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 | `Sources/CombatPadKit` | Models and rules, with no UI: Bestiary, Rules, Library, Combat, Sharing, Text. |
 | `Sources/CombatPadUI` | SwiftUI shared by iPad and Mac: themes, board, battle cards, planning, bestiary browser. |
 | `Sources/CombatPad` | Mac app entry point. |
-| `Sources/BestiaryImport` | CLI that turns the pf2e packs and art into `Generated/`. |
+| `Sources/FoundryImport` | Library that parses Foundry documents, converts rules text and matches art. |
+| `Sources/BestiaryImport` | CLI around FoundryImport that writes `Generated/`. |
 | `ios/CombatPad.xcodeproj` | iPad app. It references the package as `..` and bundles `Generated/` as a folder reference. |
-| `scripts/extract_pdf_art.py` | PyMuPDF extractor for art from the Paizo token and pawn PDFs. |
+| `scripts/extract_pdf_art.py`, `scripts/pdfart/` | PyMuPDF extractor for token, pawn and card art from the Paizo PDFs, run in the project `.venv`. |
 | `Generated/` | Import output, gitignored and bundled into both apps. |
 
 ## Bestiary import pipeline
@@ -27,11 +28,26 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 5. **Foundry art.** Every module's `flags.compendiumArtMappings.{pf2e,sf2e}` file maps
    `<system>.<pack>` → `_id` → portrait and token. Only IDs that exist are used. Module priority comes
    from `art-sources.json`.
-6. **PDF art.** `extract_pdf_art.py` pairs embedded images with their printed labels. For token
+6. **PDF art.** `extract_pdf_art.py` finds every folder in Scrollkeeper's downloads whose name contains
+   "Battle Cards", "Pawn" or "Token Box", and pairs embedded images with their printed labels. For token
    fronts and backs, the label is the text at the same position on the next page. For pawns, it is the
    text below the image. Names are matched to creatures after normalization, including "X, Y" → "Y X".
    `art-overrides.json` holds manual fixes.
-7. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
+7. **Battle card backs.** These make the player view, the "what you're fighting" screen. Each art
+   page of a Battle Cards PDF is rendered whole, frame included, at about 200 dpi to
+   `Generated/CardBacks/<set>/<slug>.webp`. It is named by the title on its stat page; "continued
+   from card N" pages are skipped. `art-sources.json` gives each PDF's layout:
+   - `cardsAlternating`: art page, then stat page (Pathfinder Bestiary).
+   - `cardsBlocks`: a run of stat pages, then a run of art pages in the same order (Monster Core).
+   - `cardsSplitFiles`: a FRONTS PDF and a BACKS PDF matched by page number (Abomination Vaults,
+     Alien Archive).
+   
+   Card titles such as "AEON, AXIOMITE" are matched by token set against the creature name, with the
+   family prefix optional. Remastered creatures prefer remaster sets such as Monster Core, and legacy
+   creatures prefer legacy sets. Creatures without a card get a card back drawn in the same style:
+   a parchment frame around a red field with the portrait for Pathfinder, and a neon frame with a
+   name plate for Starfinder.
+8. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
    `packs/<game>.<pack>.json` per pack, plus `conditions.json`, the art files, and
    `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
 
