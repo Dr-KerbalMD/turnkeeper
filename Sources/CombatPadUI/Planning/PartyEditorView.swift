@@ -26,6 +26,9 @@ struct PartyEditorView: View {
                         .buttonStyle(.borderless)
                         .help(member.isAway ? "Away: not in budgets; waits on the bench in fights"
                                             : "At the table")
+                        RemoveButton(title: "Remove \(member.name)") {
+                            update { $0.members.removeAll { $0.id == member.id } }
+                        }
                     }
                 }
                 .onDelete { offsets in update { $0.members.remove(atOffsets: offsets) } }

@@ -14,7 +14,8 @@ struct SlotsSection: View {
         Section("Creatures") {
             ForEach(encounter.variant(label).slots) { slot in
                 SlotRow(slot: slot, scenarioID: encounter.scenarioID, party: party,
-                        change: { change in updateSlot(slot.id, change) })
+                        change: { change in updateSlot(slot.id, change) },
+                        remove: { updateVariant { $0.slots.removeAll { $0.id == slot.id } } })
             }
             .onDelete { offsets in updateVariant { $0.slots.remove(atOffsets: offsets) } }
             .onMove { source, target in updateVariant { $0.slots.move(fromOffsets: source, toOffset: target) } }
@@ -51,6 +52,7 @@ private struct SlotRow: View {
     let scenarioID: UUID
     let party: Party?
     let change: (@escaping (inout EncounterSlot) -> Void) -> Void
+    let remove: () -> Void
     @Environment(AppModel.self) private var model
     @State private var isShowingCard = false
     @State private var isEditingConditions = false
@@ -84,6 +86,7 @@ private struct SlotRow: View {
                     .buttonStyle(.borderless)
                 Stepper("× \(slot.count)", value: field(\.count), in: 1...20)
                     .fixedSize()
+                RemoveButton(title: "Remove from Encounter", action: remove)
             }
             HStack {
                 Picker("Template", selection: field(\.template)) {
@@ -118,6 +121,7 @@ private struct SlotRow: View {
         }
         .acceptsArtwork(for: slot.creatureKey, model: model)
         .contextMenu {
+            Button("Remove from Encounter", systemImage: "trash", role: .destructive, action: remove)
             if model.hasPastedArtwork(slot.creatureKey) {
                 Button("Remove Pasted Artwork", systemImage: "photo.badge.minus") {
                     model.removeArtwork(for: slot.creatureKey)

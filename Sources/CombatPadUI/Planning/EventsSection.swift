@@ -11,27 +11,44 @@ struct EventsSection: View {
     var body: some View {
         Section("Events") {
             ForEach(encounter.variant(label).events) { event in
-                Button { editingEvent = event } label: {
-                    VStack(alignment: .leading) {
-                        Text(event.label).font(.headline)
-                        Text(EventDescription.text(for: event, slots: encounter.variant(label).slots, model: model))
-                            .font(.caption).foregroundStyle(.secondary)
+                HStack {
+                    Button { editingEvent = event } label: {
+                        VStack(alignment: .leading) {
+                            Text(event.label).font(.headline)
+                            Text(EventDescription.text(for: event, slots: encounter.variant(label).slots, model: model))
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.primary)
+                    RemoveButton(title: "Remove Event") { removeEvents { $0.id == event.id } }
+                }
+                .contextMenu {
+                    Button("Remove Event", systemImage: "trash", role: .destructive) {
+                        removeEvents { $0.id == event.id }
                     }
                 }
-                .buttonStyle(.plain)
             }
             .onDelete { offsets in
-                model.changeVariant(encounterID: encounter.id, variantLabel: label) { [model, encounter, label] in
-                    var edited = model.encounter(encounter.id) ?? encounter
-                    var variant = edited.variant(label)
-                    variant.events.remove(atOffsets: offsets)
-                    edited.setVariant(variant)
-                    model.library.save(edited)
-                }
+                let ids = Set(offsets.map { encounter.variant(label).events[$0].id })
+                removeEvents { ids.contains($0.id) }
             }
             Button("Add Event…", systemImage: "bell.badge") {
                 editingEvent = EncounterEvent(label: "", trigger: .startOfRound)
             }
+        }
+    }
+
+    /// Removes events from the variant, asking first if that would reset a fight in progress.
+    private func removeEvents(where matches: @escaping (EncounterEvent) -> Bool) {
+        model.changeVariant(encounterID: encounter.id, variantLabel: label) { [model, encounter, label] in
+            var edited = model.encounter(encounter.id) ?? encounter
+            var variant = edited.variant(label)
+            variant.events.removeAll(where: matches)
+            edited.setVariant(variant)
+            model.library.save(edited)
         }
     }
 }

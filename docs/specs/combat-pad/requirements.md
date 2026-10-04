@@ -42,6 +42,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   events. A variant can be copied from another one.
 - R3.5 A slot has a creature, count, template (elite, normal or weak), side, whether it starts on
   the bench, and the conditions and temporary HP its creatures start the fight with.
+  Slots, events and party members each have a remove button (and a context menu item), since
+  swipe-to-delete exists only on the iPad.
 - R3.5a Custom creatures and complex hazards belong to a campaign and work everywhere bestiary creatures do
   (cards, templates, conditions, budget, initiative). They are made or edited in a form with a live battle
   card; lists are typed as printed ("Acrobatics +5", "2d8+11 bludgeoning plus 1d6 fire", "DC 22 basic
