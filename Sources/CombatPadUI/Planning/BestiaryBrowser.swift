@@ -15,12 +15,18 @@ struct BestiaryBrowser: View {
         let entries = model.bestiary.index.entries.filter { filter.games == .both || $0.game == game }
         return Set(entries.map(\.source.title).filter { !$0.isEmpty }).sorted()
     }
+    /// The campaign's custom creatures, listed with the bestiary and first among equals.
+    private var customEntries: [BestiaryIndexEntry] {
+        guard let campaignID = model.selectedCampaign?.id else { return [] }
+        return model.library.customCreatures(in: campaignID).map { BestiaryIndexEntry(creature: $0.creature) }
+    }
+
     @State private var added: [String: Int] = [:]
     @State private var previewKey: String?
 
     var body: some View {
         NavigationStack {
-            let results = filter.results(in: model.bestiary.index.entries, defaultGame: game)
+            let results = filter.results(in: customEntries + model.bestiary.index.entries, defaultGame: game)
             List {
                 Section { FilterControls(filter: $filter, partyLevel: partyLevel, sources: sources) }
                 Section("\(results.count) found") {
@@ -90,11 +96,26 @@ struct BestiaryFilter: Equatable {
             (games == .both || entry.game == defaultGame)
                 && (minimumLevel...maximumLevel).contains(entry.level)
                 && matchesKind(entry) && (rarity == "any" || entry.traits.rarity == rarity)
-                && (source == "any" || entry.source.title == source)
+                && matchesSource(entry)
                 && (query.isEmpty || entry.name.lowercased().contains(query) || entry.traits.traits.contains(query))
         }
-        .sorted { ($0.level, $0.name) < ($1.level, $1.name) }
+        .sorted { first, second in
+            let firstIsCustom = CustomCreature.isCustomKey(first.key)
+            guard firstIsCustom == CustomCreature.isCustomKey(second.key) else { return firstIsCustom }
+            return (first.level, first.name) < (second.level, second.name)
+        }
     }
+
+    private func matchesSource(_ entry: BestiaryIndexEntry) -> Bool {
+        switch source {
+        case "any": return true
+        case Self.customSource: return CustomCreature.isCustomKey(entry.key)
+        default: return entry.source.title == source
+        }
+    }
+
+    /// The Source picker's tag for the campaign's custom creatures.
+    static let customSource = "custom creatures"
 
     private func matchesKind(_ entry: BestiaryIndexEntry) -> Bool {
         switch kind {
@@ -132,6 +153,7 @@ private struct FilterControls: View {
         }
         Picker("Source", selection: $filter.source) {
             Text("Any").tag("any")
+            Text("Custom Creatures").tag(BestiaryFilter.customSource)
             ForEach(sources, id: \.self) { Text($0).tag($0) }
         }
     }

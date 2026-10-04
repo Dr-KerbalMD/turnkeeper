@@ -46,6 +46,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
   (cards, templates, conditions, budget, initiative). They are made or edited in a form with a live battle
   card; lists are typed as printed ("Acrobatics +5", "2d8+11 bludgeoning plus 1d6 fire", "DC 22 basic
   Reflex"), and DCs and damage in ability text still adjust with templates and conditions.
+  The bestiary browser lists the campaign's custom creatures first, with a Custom Creatures source filter.
+  A custom creature's slot offers Edit Creature… and Delete Custom Creature… (which removes it from every
+  encounter), and the editor's Paste button replaces it with a stat block copied from Pluck.
 - R3.5b Stat blocks copied or dragged from Pluck (or pasted as plain text) become custom creatures in the
   encounter. A block for a subtier goes into the variant with that subtier; a summary lists what was added
   and anything kept as text, with Review… to open the editor.

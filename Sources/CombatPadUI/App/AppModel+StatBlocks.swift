@@ -34,4 +34,24 @@ extension AppModel {
         }
         return plan
     }
+
+    /// The live encounters with a slot for the creature, in any variant.
+    func encountersUsing(key: String) -> [Encounter] {
+        library.encounters.filter { encounter in
+            !encounter.isDeleted && encounter.variants.contains { $0.slots.contains { $0.creatureKey == key } }
+        }
+    }
+
+    /// Deletes a custom creature and takes it out of every encounter.
+    func deleteCustomCreature(key: String) {
+        guard let custom = library.customCreature(key: key) else { return }
+        for var encounter in encountersUsing(key: key) {
+            for var variant in encounter.variants {
+                variant.slots.removeAll { $0.creatureKey == key }
+                encounter.setVariant(variant)
+            }
+            library.save(encounter)
+        }
+        library.deleteCustomCreature(custom.id)
+    }
 }

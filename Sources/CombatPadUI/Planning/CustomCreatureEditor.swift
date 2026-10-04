@@ -30,6 +30,13 @@ struct CustomCreatureEditor: View {
                     }
                 }
                 .toolbar {
+                    ToolbarItem {
+                        // Replaces the draft only; Cancel still keeps the creature as it was.
+                        PasteButton(supportedContentTypes: StatBlockPasteboard.acceptedTypes) { providers in
+                            replace(from: providers)
+                        }
+                        .help("Replace with a stat block copied from Pluck")
+                    }
                     if !isWide {
                         ToolbarItem {
                             Toggle(isOn: $isShowingCard) { Label("Card", systemImage: "rectangle.portrait") }
@@ -55,4 +62,12 @@ struct CustomCreatureEditor: View {
     }
 
     private var preview: Creature { draft.creature(from: original.creature) }
+
+    private func replace(from providers: [NSItemProvider]) {
+        Task {
+            guard let block = await StatBlockPasteboard.blocks(from: providers).first else { return }
+            let conversion = StatBlockConverter.convert(block, key: original.key, game: original.creature.game)
+            draft = CreatureDraft(conversion.creature)
+        }
+    }
 }

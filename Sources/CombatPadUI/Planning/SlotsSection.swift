@@ -53,6 +53,7 @@ private struct SlotRow: View {
     @State private var isShowingCard = false
     @State private var isEditingConditions = false
     @State private var isEditingCreature = false
+    @State private var isConfirmingDelete = false
 
     var body: some View {
         let entry = model.entry(slot.creatureKey)
@@ -109,6 +110,20 @@ private struct SlotRow: View {
             ConditionEditor(title: model.entry(slot.creatureKey)?.name ?? "",
                             conditions: slot.conditions) { edit in change { edit(&$0.conditions) } }
         }
+        .contextMenu {
+            if slot.isCustom {
+                Button("Edit Creature…", systemImage: "pencil") { isEditingCreature = true }
+                Button("Delete Custom Creature…", systemImage: "trash", role: .destructive) {
+                    isConfirmingDelete = true
+                }
+            }
+        }
+        .alert("Delete \(model.entry(slot.creatureKey)?.name ?? "this creature")?", isPresented: $isConfirmingDelete) {
+            Button("Delete", role: .destructive) { model.deleteCustomCreature(key: slot.creatureKey) }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(deleteMessage)
+        }
         .sheet(isPresented: $isEditingCreature) {
             if let custom = model.library.customCreature(key: slot.creatureKey) {
                 CustomCreatureEditor(custom: custom) { model.library.save($0) }
@@ -135,6 +150,12 @@ private struct SlotRow: View {
 
     private var startingConditionsText: String {
         "Starts " + slot.conditions.map(ConditionLabel.short).joined(separator: ", ").lowercased()
+    }
+
+    private var deleteMessage: String {
+        let count = model.encountersUsing(key: slot.creatureKey).count
+        let place = count == 1 ? "this encounter" : "\(count) encounters"
+        return "It's removed from \(place), and from the campaign's custom creatures."
     }
 
     private func field<Value>(_ path: WritableKeyPath<EncounterSlot, Value>) -> Binding<Value> {
