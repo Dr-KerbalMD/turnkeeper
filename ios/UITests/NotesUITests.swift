@@ -1,6 +1,6 @@
 import XCTest
 
-/// The board's notes panes: editable, collapsible with a tap on the header.
+/// The board's right half: notes panes that edit and collapse, and the card that flips to show its art.
 final class NotesUITests: XCTestCase {
     private var app: XCUIApplication!
 
@@ -16,6 +16,8 @@ final class NotesUITests: XCTestCase {
         XCTAssertTrue(encounterHeader.waitForExistence(timeout: 10))
         let planned = app.textViews.matching(NSPredicate(format: "value CONTAINS 'trapdoor'")).firstMatch
         XCTAssertTrue(planned.exists)
+        // Right after launch the board is still settling; a tap then can land before the header is ready.
+        XCTAssertTrue(waitUntil { encounterHeader.isHittable })
         encounterHeader.tap()
         XCTAssertTrue(waitUntil { !planned.exists })
         encounterHeader.tap()
@@ -26,6 +28,18 @@ final class NotesUITests: XCTestCase {
         creatureNotes.typeText("Flees at half HP")
         XCTAssertTrue(app.textViews.matching(NSPredicate(format: "value CONTAINS 'Flees at half HP'"))
             .firstMatch.waitForExistence(timeout: 3))
+    }
+
+    /// The flip button shows the GM the art; the next turn turns the card back to its stat block.
+    func testFlipCardShowsArtUntilTheTurnMoves() {
+        let flip = app.buttons["Flip Card"]
+        XCTAssertTrue(flip.waitForExistence(timeout: 10))
+        flip.tap()
+        let back = app.buttons["Show Stat Block"]
+        XCTAssertTrue(back.waitForExistence(timeout: 3))
+        XCTAssertFalse(app.staticTexts["Perception"].exists)
+        app.buttons["Next"].tap()
+        XCTAssertTrue(waitUntil { !back.exists })
     }
 
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {

@@ -7,6 +7,7 @@ struct CardPanel: View {
     let controller: BoardController
     @Environment(AppModel.self) private var model
     private var layout = StoredSplitLayout()
+    @State private var isFlipped = false
 
     init(controller: BoardController) {
         self.controller = controller
@@ -24,6 +25,8 @@ struct CardPanel: View {
             }
         }
         .padding(12)
+        // A new turn, or another strip tapped, shows the stat block again.
+        .onChange(of: controller.cardCombatant?.id) { isFlipped = false }
     }
 
     @ViewBuilder
@@ -86,7 +89,9 @@ struct CardPanel: View {
     @ViewBuilder
     private func card(for combatant: Combatant) -> some View {
         if let creature = controller.creature(for: combatant) {
-            BattleCard(creature: creature, template: combatant.template, conditions: combatant.conditions)
+            FlippableCard(entry: controller.entry(for: combatant), isFlipped: $isFlipped) {
+                BattleCard(creature: creature, template: combatant.template, conditions: combatant.conditions)
+            }
         } else {
             PlayerCard(combatant: combatant)
         }

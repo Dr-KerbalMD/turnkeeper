@@ -7,6 +7,7 @@ struct CreaturePreview: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var template: CreatureTemplate
+    @State private var isFlipped = false
     /// Conditions shown on the card, such as a planned creature's starting conditions.
     let conditions: [AppliedCondition]
 
@@ -21,8 +22,10 @@ struct CreaturePreview: View {
         NavigationStack {
             Group {
                 if let creature = model.creature(key) {
-                    BattleCard(creature: creature, template: template, conditions: conditions)
-                        .padding()
+                    FlippableCard(entry: model.entry(key), isFlipped: $isFlipped) {
+                        BattleCard(creature: creature, template: template, conditions: conditions)
+                    }
+                    .padding()
                 } else {
                     ContentUnavailableView("Not in the bestiary", systemImage: "questionmark")
                 }
