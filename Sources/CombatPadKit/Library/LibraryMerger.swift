@@ -29,6 +29,7 @@ public enum LibraryMerger {
         merge(incoming.sessions, into: &local.sessions, summary: &summary)
         merge(incoming.customCreatures, into: &local.customCreatures, summary: &summary)
         merge(incoming.customArt, into: &local.customArt, summary: &summary)
+        merge(incoming.handouts, into: &local.handouts, summary: &summary)
         return summary
     }
 

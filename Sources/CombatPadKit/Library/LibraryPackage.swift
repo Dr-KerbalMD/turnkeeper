@@ -41,7 +41,7 @@ public struct LibraryPackage: Codable, Sendable {
     /// The package with the images its art records point to, read from `store`.
     public func addingImages(from store: ArtStore) -> LibraryPackage {
         var package = self
-        for fileName in library.liveArtFileNames {
+        for fileName in library.liveImageFileNames {
             package.images[fileName] = store.data(for: fileName)
         }
         return package
@@ -67,6 +67,7 @@ public struct LibraryPackage: Codable, Sendable {
         let subjects = Set(subset.encounters.flatMap { $0.variants.flatMap { $0.slots.map(\.creatureKey) } })
             .union(subset.customCreatures.map(\.key))
         subset.customArt = library.customArt.filter { subjects.contains($0.subject) }
+        subset.handouts = library.handouts.filter { scenarioIDs.contains($0.scenarioID) }
         return LibraryPackage(library: subset, bestiaryRevision: bestiaryRevision)
     }
 

@@ -44,7 +44,7 @@ struct CustomArtTests {
         defer { try? FileManager.default.removeItem(at: store.directory) }
         let kept = try store.add(try image(width: 10, height: 10), for: "pf2e.monster-core.goblin")
         let stale = try store.add(try image(width: 10, height: 10), for: "pf2e.monster-core.goblin")
-        #expect(kept.fileName.hasPrefix(kept.id.uuidString) && kept.byteCount > 0)
+        #expect(kept.fileName.hasSuffix(".jpg") && kept.fileName != stale.fileName && kept.byteCount > 0)
         #expect(store.contains(kept.fileName) && store.contains(stale.fileName))
         store.sweep(keeping: [kept.fileName])
         #expect(store.contains(kept.fileName) && !store.contains(stale.fileName))
@@ -57,9 +57,9 @@ struct CustomArtTests {
         library.save(first)
         library.save(CustomArt(subject: "goblin", fileName: "b.jpg", byteCount: 3))
         #expect(library.customArt(for: "goblin")?.fileName == "b.jpg")
-        #expect(library.liveArtFileNames == ["b.jpg"])
+        #expect(library.liveImageFileNames == ["b.jpg"])
         library.deleteCustomArt(for: "goblin")
-        #expect(library.customArt(for: "goblin") == nil && library.liveArtFileNames.isEmpty)
+        #expect(library.customArt(for: "goblin") == nil && library.liveImageFileNames.isEmpty)
         let json = try #require(String(bytes: try JSONEncoder().encode(library), encoding: .utf8))
         #expect(json.contains("a.jpg") && !json.contains("images"))
     }
@@ -89,8 +89,31 @@ struct CustomArtTests {
             .addingImages(from: store)
         #expect(package.library.customArt.map(\.subject) == ["goblin"])
         let decoded = try LibraryPackage.decode(package.encoded())
-        #expect(decoded.images.keys.sorted() == package.library.liveArtFileNames.sorted())
+        #expect(decoded.images.keys.sorted() == package.library.liveImageFileNames.sorted())
         try decoded.writeImages(to: received)
         #expect(received.contains(try #require(decoded.library.customArt(for: "goblin")).fileName))
+    }
+}
+
+@Suite("Handouts")
+struct HandoutTests {
+    @Test("Handouts belong to a scenario, keep their image file live, and go with it")
+    func handouts() {
+        var library = Library()
+        let campaign = Campaign(name: "Season 7", game: .pathfinder)
+        let scenario = Scenario(campaignID: campaign.id, name: "#7-03")
+        library.save(campaign)
+        library.save(scenario)
+        var map = Handout(scenarioID: scenario.id, name: "Map of the Docks")
+        #expect(!map.hasImage && map.imagePath.isEmpty)
+        map.fileName = "map.jpg"
+        library.save(map)
+        library.save(Handout(scenarioID: scenario.id, name: "A Letter"))
+        #expect(library.handouts(in: scenario.id).map(\.name) == ["A Letter", "Map of the Docks"])
+        #expect(library.liveImageFileNames == ["map.jpg"] && map.imagePath == "Pasted/map.jpg")
+        let package = LibraryPackage.campaign(campaign.id, from: library, bestiaryRevision: "")
+        #expect(package.library.handouts.count == 2)
+        library.deleteScenario(scenario.id)
+        #expect(library.handouts(in: scenario.id).isEmpty && library.liveImageFileNames.isEmpty)
     }
 }

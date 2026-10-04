@@ -43,13 +43,17 @@ public struct ArtStore: Sendable {
 
     /// Stores a pasted image for `subject`, downscaled, and returns the record that points to it.
     public func add(_ image: Data, for subject: String) throws -> CustomArt {
+        let stored = try store(image)
+        return CustomArt(subject: subject, fileName: stored.fileName, byteCount: stored.byteCount)
+    }
+
+    /// Stores an image, downscaled, under a new file name.
+    public func store(_ image: Data) throws -> StoredImage {
         let prepared = try PreparedImage(image)
-        let id = UUID()
-        var art = CustomArt(subject: subject, fileName: "\(id.uuidString).\(prepared.fileExtension)",
-                            byteCount: prepared.data.count)
-        art.id = id
-        try write(prepared.data, as: art.fileName)
-        return art
+        let stored = StoredImage(fileName: "\(UUID().uuidString).\(prepared.fileExtension)",
+                                 byteCount: prepared.data.count)
+        try write(prepared.data, as: stored.fileName)
+        return stored
     }
 
     /// Removes files no live record points to.
@@ -59,6 +63,12 @@ public struct ArtStore: Sendable {
             try? FileManager.default.removeItem(at: url(for: file))
         }
     }
+}
+
+/// An image file in the store.
+public struct StoredImage: Sendable, Equatable {
+    public var fileName: String
+    public var byteCount: Int
 }
 
 /// A pasted image ready to store: at most 2048 px on its long side, JPEG, or PNG when it has transparency.

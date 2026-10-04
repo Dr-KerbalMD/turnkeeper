@@ -94,6 +94,11 @@ Ported from the pf2e system, with tests.
   records' files, written to the store before the library is merged. `AppModel.entry` swaps pasted art in as
   `Pasted/<file>` paths, which `AppModel.artURL` resolves to the store, so every view and the player view
   show it; the card back is cleared so the drawn back frames it.
+- **Handouts.** `Handout` records (scenario, name, image file) store their image in the same `ArtStore`
+  and travel in packages the same way. `PlayerDisplay` shows either a creature or a handout.
+- **System paste buttons.** Pasting uses SwiftUI's `PasteButton`, which reads the pasteboard without iOS's
+  Allow Paste prompt. Where a toolbar may be crowded, it sits in the page instead: iOS ignores a paste
+  button it can't see in full.
 - **Lenient loading.** `Library` decodes each kind of record as a lossy array, so older libraries and
   unreadable records don't stop the rest from loading. Record fields added later decode with defaults.
 - **Variants.** An encounter keeps one `EncounterVariant` (slots and events) per scenario variant label.
