@@ -7,7 +7,7 @@ struct SlotsSection: View {
     let label: String
     let party: Party?
     @Binding var isBrowsing: Bool
-    @Binding var isAddingNPC: Bool
+    @Binding var isAddingCustom: Bool
     @Environment(AppModel.self) private var model
 
     var body: some View {
@@ -19,7 +19,7 @@ struct SlotsSection: View {
             .onMove { source, target in updateVariant { $0.slots.move(fromOffsets: source, toOffset: target) } }
             // One button per row: in a form, a tap anywhere in a row triggers every plain button in it.
             Button("Add Creature…", systemImage: "plus") { isBrowsing = true }
-            Button("Add Custom NPC…", systemImage: "person.badge.plus") { isAddingNPC = true }
+            Button("Add Custom Creature…", systemImage: "person.badge.plus") { isAddingCustom = true }
         }
     }
 
@@ -51,6 +51,7 @@ private struct SlotRow: View {
     @Environment(AppModel.self) private var model
     @State private var isShowingCard = false
     @State private var isEditingConditions = false
+    @State private var isEditingCreature = false
 
     var body: some View {
         let entry = model.entry(slot.creatureKey)
@@ -60,22 +61,23 @@ private struct SlotRow: View {
                     HStack(spacing: 12) {
                         ArtImage(path: entry?.art.thumbnail ?? "", size: 44, shape: .circle, alignment: .top)
                         VStack(alignment: .leading) {
-                            Text(slot.customName.isEmpty ? (entry?.name ?? "Unknown creature") : slot.customName)
-                                .font(.headline)
+                            Text(entry?.name ?? "Unknown creature").font(.headline)
                             Text(details(entry)).font(.caption).foregroundStyle(.secondary)
                         }
                     }
                 }
                 .buttonStyle(.borderless)
                 .foregroundStyle(.primary)
-                .disabled(slot.isCustom)
                 .help("Show the battle card")
                 Spacer()
-                if !slot.isCustom {
-                    Button("Card", systemImage: "rectangle.portrait") { isShowingCard = true }
+                if slot.isCustom {
+                    Button("Edit Creature…", systemImage: "pencil") { isEditingCreature = true }
                         .labelStyle(.iconOnly)
                         .buttonStyle(.borderless)
                 }
+                Button("Card", systemImage: "rectangle.portrait") { isShowingCard = true }
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(.borderless)
                 Stepper("× \(slot.count)", value: field(\.count), in: 1...20)
                     .fixedSize()
             }
@@ -103,8 +105,13 @@ private struct SlotRow: View {
             CreaturePreview(key: slot.creatureKey, template: slot.template, conditions: slot.conditions)
         }
         .sheet(isPresented: $isEditingConditions) {
-            ConditionEditor(title: model.entry(slot.creatureKey)?.name ?? slot.customName,
+            ConditionEditor(title: model.entry(slot.creatureKey)?.name ?? "",
                             conditions: slot.conditions) { edit in change { edit(&$0.conditions) } }
+        }
+        .sheet(isPresented: $isEditingCreature) {
+            if let custom = model.library.customCreature(key: slot.creatureKey) {
+                CustomCreatureEditor(custom: custom) { model.library.save($0) }
+            }
         }
     }
 
@@ -134,7 +141,7 @@ private struct SlotRow: View {
     }
 
     private func details(_ entry: BestiaryIndexEntry?) -> String {
-        let baseLevel = slot.isCustom ? slot.customLevel : (entry?.level ?? 0)
+        let baseLevel = entry?.level ?? 0
         let level = slot.template.level(base: baseLevel)
         var parts = ["Level \(level)"]
         if let party {
@@ -144,45 +151,5 @@ private struct SlotRow: View {
         }
         if let source = entry?.source.title, !source.isEmpty { parts.append(source) }
         return parts.joined(separator: " · ")
-    }
-}
-
-/// Adds an NPC or ally that isn't in the bestiary.
-struct CustomNPCSheet: View {
-    let add: (EncounterSlot) -> Void
-    @Environment(\.dismiss) private var dismiss
-    @State private var name = ""
-    @State private var level = 1
-    @State private var hitPoints = 20
-    @State private var side = Side.ally
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                TextField("Name", text: $name)
-                Stepper("Level \(level)", value: $level, in: -1...25)
-                Stepper("HP \(hitPoints)", value: $hitPoints, in: 1...999)
-                Picker("Side", selection: $side) {
-                    Text("Ally").tag(Side.ally)
-                    Text("Enemy").tag(Side.enemy)
-                }
-                .pickerStyle(.segmented)
-            }
-            .formStyle(.grouped)
-            .navigationTitle("Custom NPC")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        var slot = EncounterSlot.customNPC(name: name.isEmpty ? "NPC" : name, level: level,
-                                                           hitPoints: hitPoints)
-                        slot.side = side
-                        add(slot)
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .frame(minWidth: 360, minHeight: 260)
     }
 }

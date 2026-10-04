@@ -20,7 +20,7 @@ struct CreaturePreview: View {
     var body: some View {
         NavigationStack {
             Group {
-                if let creature = model.bestiary.creature(key) {
+                if let creature = model.creature(key) {
                     BattleCard(creature: creature, template: template, conditions: conditions)
                         .padding()
                 } else {

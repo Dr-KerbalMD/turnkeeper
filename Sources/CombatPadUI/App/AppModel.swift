@@ -66,8 +66,18 @@ final class AppModel {
         library.sessions.first { $0.id == activeSessionID }
     }
 
+    /// A creature's summary, from the campaign's custom creatures or the bestiary.
     func entry(_ key: String) -> BestiaryIndexEntry? {
-        bestiary.entry(key)
+        if CustomCreature.isCustomKey(key) {
+            return library.customCreature(key: key).map { BestiaryIndexEntry(creature: $0.creature) }
+        }
+        return bestiary.entry(key)
+    }
+
+    /// A creature's full stat block, from the campaign's custom creatures or the bestiary.
+    func creature(_ key: String) -> Creature? {
+        if CustomCreature.isCustomKey(key) { return library.customCreature(key: key)?.creature }
+        return bestiary.creature(key)
     }
 
     /// Saves now, for when the app goes to the background.

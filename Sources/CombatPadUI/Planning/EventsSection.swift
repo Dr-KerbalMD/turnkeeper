@@ -67,6 +67,6 @@ enum EventDescription {
     @MainActor
     static func name(_ slotID: UUID, _ slots: [EncounterSlot], _ model: AppModel) -> String {
         guard let slot = slots.first(where: { $0.id == slotID }) else { return "a removed creature" }
-        return slot.customName.isEmpty ? (model.entry(slot.creatureKey)?.name ?? "creature") : slot.customName
+        return model.entry(slot.creatureKey)?.name ?? "creature"
     }
 }

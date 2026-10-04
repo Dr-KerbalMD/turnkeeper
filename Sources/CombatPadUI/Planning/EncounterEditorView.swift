@@ -8,7 +8,7 @@ struct EncounterEditorView: View {
     @State private var label = ""
     @State private var partyID: UUID?
     @State private var isBrowsing = false
-    @State private var isAddingNPC = false
+    @State private var isAddingCustom = false
     @State private var editingEvent: EncounterEvent?
     @State private var isConfirmingStartOver = false
 
@@ -26,7 +26,7 @@ struct EncounterEditorView: View {
                 if let party = model.party(partyID) { budget(for: current.variant(label), party: party) }
             }
             SlotsSection(encounter: current, label: label, party: model.party(partyID),
-                         isBrowsing: $isBrowsing, isAddingNPC: $isAddingNPC)
+                         isBrowsing: $isBrowsing, isAddingCustom: $isAddingCustom)
             EventsSection(encounter: current, label: label, editingEvent: $editingEvent)
         }
         .formStyle(.grouped)
@@ -38,7 +38,14 @@ struct EncounterEditorView: View {
         .sheet(isPresented: $isBrowsing) {
             BestiaryBrowser(game: model.game, partyLevel: model.party(partyID)?.level) { key in addCreature(key) }
         }
-        .sheet(isPresented: $isAddingNPC) { CustomNPCSheet { slot in addSlot(slot) } }
+        .sheet(isPresented: $isAddingCustom) {
+            if let scenario {
+                CustomCreatureEditor(custom: newCustomCreature(in: scenario)) { custom in
+                    model.library.save(custom)
+                    addSlot(EncounterSlot(creatureKey: custom.key))
+                }
+            }
+        }
         .sheet(item: $editingEvent) { event in
             EventEditor(event: event, slots: current.variant(label).slots) { saveEvent($0) }
         }
@@ -144,6 +151,12 @@ struct EncounterEditorView: View {
                 variant.slots.append(EncounterSlot(creatureKey: key))
             }
         }
+    }
+
+    private func newCustomCreature(in scenario: Scenario) -> CustomCreature {
+        var custom = CustomCreature(campaignID: scenario.campaignID, game: model.game, name: "")
+        custom.scenarioID = scenario.id
+        return custom
     }
 
     private func addSlot(_ slot: EncounterSlot) {

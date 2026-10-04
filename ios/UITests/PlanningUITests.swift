@@ -22,7 +22,7 @@ final class PlanningUITests: XCTestCase {
         addCreature.tap()
         XCTAssertTrue(app.navigationBars["Bestiary"].waitForExistence(timeout: 5))
         app.buttons["Done"].tap()
-        XCTAssertFalse(app.navigationBars["Custom NPC"].waitForExistence(timeout: 3))
+        XCTAssertFalse(app.navigationBars["New Creature"].waitForExistence(timeout: 3))
         XCTAssertFalse(app.navigationBars["Bestiary"].exists)
     }
 

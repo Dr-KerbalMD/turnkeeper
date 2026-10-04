@@ -177,20 +177,18 @@ final class BoardController {
     // MARK: Lookups
 
     func creature(for combatant: Combatant) -> Creature? {
-        combatant.creatureKey.isEmpty ? nil : model.bestiary.creature(combatant.creatureKey)
+        combatant.creatureKey.isEmpty ? nil : model.creature(combatant.creatureKey)
     }
 
     func entry(for combatant: Combatant) -> BestiaryIndexEntry? {
-        model.bestiary.entry(combatant.creatureKey)
+        model.entry(combatant.creatureKey)
     }
 
-    /// Maximum HP with the template and drained applied; custom NPCs use the HP they were given.
+    /// Maximum HP with the template and drained applied; 0 when the creature is unknown.
     func maxHitPoints(of combatant: Combatant) -> Int {
-        if let creature = creature(for: combatant) {
-            return StatBlockPresenter(creature: creature, template: combatant.template,
-                                      conditions: combatant.conditions).maxHitPoints.value
-        }
-        return combatant.customMaxHitPoints
+        guard let creature = creature(for: combatant) else { return 0 }
+        return StatBlockPresenter(creature: creature, template: combatant.template,
+                                  conditions: combatant.conditions).maxHitPoints.value
     }
 
     private static func stealthFirst(_ first: Skill, _ second: Skill) -> Bool {
