@@ -60,7 +60,8 @@ struct PartyPicker: View {
         Picker("Party", selection: $partyID) {
             Text("None").tag(UUID?.none)
             ForEach(model.library.parties(in: campaignID)) { party in
-                Text("\(party.name) (level \(party.level), \(party.members.count) PCs)").tag(UUID?.some(party.id))
+                Text("\(party.name) (level \(party.level), \(party.presentMembers.count) PCs)")
+                    .tag(UUID?.some(party.id))
             }
         }
     }
@@ -98,7 +99,7 @@ private struct ScenarioGrid: View {
     private func cell(_ encounter: Encounter, _ label: String) -> some View {
         let variant = encounter.variant(label)
         if let party, !variant.slots.isEmpty {
-            let budget = EncounterBudget(partyLevel: party.level, partySize: party.members.count)
+            let budget = party.budget
             let experience = budget.experience(of: variant) { model.entry($0) }
             Button {
                 model.startCombat(encounter: encounter, variantLabel: label, party: party)

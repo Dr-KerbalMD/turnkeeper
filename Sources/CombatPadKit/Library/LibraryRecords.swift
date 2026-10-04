@@ -47,14 +47,34 @@ public struct Party: LibraryRecord, Hashable {
         self.level = level
         self.members = members
     }
+
+    /// The players at the table this session, which is what encounter budgets are worked out for.
+    public var presentMembers: [PartyMember] { members.filter { !$0.isAway } }
+
+    /// An encounter budget for this party's level and the players present.
+    public var budget: EncounterBudget { EncounterBudget(partyLevel: level, partySize: presentMembers.count) }
 }
 
 public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
     public var id = UUID()
     public var name: String
+    /// Not at the table this session: left out of budgets, and waiting on the bench in fights.
+    public var isAway = false
 
     public init(name: String) {
         self.name = name
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, isAway
+    }
+
+    /// Libraries saved before players could be away have no `isAway`; they read as present.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        isAway = try container.decodeIfPresent(Bool.self, forKey: .isAway) ?? false
     }
 }
 

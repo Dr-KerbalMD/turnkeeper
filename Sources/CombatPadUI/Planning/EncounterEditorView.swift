@@ -65,7 +65,7 @@ struct EncounterEditorView: View {
     }
 
     private func budget(for variant: EncounterVariant, party: Party) -> some View {
-        let budget = EncounterBudget(partyLevel: party.level, partySize: party.members.count)
+        let budget = party.budget
         return BudgetBar(experience: budget.experience(of: variant) { model.entry($0) }, budget: budget)
     }
 

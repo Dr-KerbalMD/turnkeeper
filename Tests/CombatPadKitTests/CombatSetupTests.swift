@@ -36,6 +36,20 @@ struct CombatSetupTests {
         #expect(state.phase == .setup)
     }
 
+    @Test("Away players wait on the bench and aren't counted in the budget")
+    func awayPlayers() throws {
+        var away = PartyMember(name: "Merisiel")
+        away.isAway = true
+        let party = Party(campaignID: UUID(), name: "Table", level: 3, members: [PartyMember(name: "Kyra"), away])
+        let state = CombatSetup.state(for: EncounterVariant(label: "Base"), party: party) { _ in nil }
+        #expect(state.ladder.map(\.name) == ["Kyra"])
+        #expect(state.bench.map(\.name) == ["Merisiel"])
+        #expect(party.budget.partySize == 1)
+        let saved = #"{"id":"5A1C3A2E-0000-4000-8000-000000000001","name":"Ezren"}"#
+        let decoded = try JSONDecoder().decode(PartyMember.self, from: Data(saved.utf8))
+        #expect(!decoded.isAway)
+    }
+
     @Test("A variant's XP uses template-adjusted levels and leaves out allies")
     func experience() {
         var variant = EncounterVariant(label: "Base")

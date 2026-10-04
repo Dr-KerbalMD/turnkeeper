@@ -109,7 +109,7 @@ private struct SlotRow: View {
         let level = slot.template.level(base: baseLevel)
         var parts = ["Level \(level)"]
         if let party {
-            let budget = EncounterBudget(partyLevel: party.level, partySize: party.members.count)
+            let budget = party.budget
             parts.append(slot.side == .ally ? "ally, no XP" : "\(budget.experience(forLevel: level)) XP each")
             if budget.isOutsideTable(level: level) { parts.append("outside the XP table") }
         }

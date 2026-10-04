@@ -7,7 +7,11 @@ public enum CombatSetup {
     public static func state(
         for variant: EncounterVariant, party: Party?, lookup: (String) -> BestiaryIndexEntry?
     ) -> CombatState {
-        let pcs = (party?.members ?? []).map { Combatant(kind: .playerCharacter, name: $0.name) }
+        let pcs = (party?.members ?? []).map { member -> Combatant in
+            var pc = Combatant(kind: .playerCharacter, name: member.name)
+            if member.isAway { pc.place = .bench }  // A late arrival is brought in from the bench.
+            return pc
+        }
         let creatures = combatants(for: variant.slots, lookup: lookup)
         return CombatState(combatants: pcs + creatures, events: variant.events.filter(\.isEnabled))
     }
