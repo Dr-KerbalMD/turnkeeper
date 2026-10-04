@@ -10,6 +10,7 @@ struct EncounterEditorView: View {
     @State private var isBrowsing = false
     @State private var isAddingNPC = false
     @State private var editingEvent: EncounterEvent?
+    @State private var isConfirmingStartOver = false
 
     var body: some View {
         let scenario = model.scenario(encounter.scenarioID)
@@ -51,7 +52,12 @@ struct EncounterEditorView: View {
             .pickerStyle(.segmented)
             Menu("Copy from another difficulty") {
                 ForEach(labels.filter { $0 != label }, id: \.self) { source in
-                    Button(source) { update { $0.copyVariant(from: source, to: label) } }
+                    Button(source) {
+                        let target = label
+                        model.changeVariant(encounterID: encounter.id, variantLabel: target) {
+                            update { $0.copyVariant(from: source, to: target) }
+                        }
+                    }
                 }
             }
         }
@@ -63,12 +69,35 @@ struct EncounterEditorView: View {
         return BudgetBar(experience: budget.experience(of: variant) { model.entry($0) }, budget: budget)
     }
 
+    /// Run, or Resume when a fight is in progress, with Start Over in its menu.
+    @ViewBuilder
     private func runButton(_ current: Encounter) -> some View {
-        Button("Run", systemImage: "play.fill") {
-            model.startCombat(encounter: current, variantLabel: label, party: model.party(partyID))
+        if model.inProgressSession(encounterID: current.id, variantLabel: label) != nil {
+            Menu {
+                Button("Start Over…", systemImage: "arrow.counterclockwise", role: .destructive) {
+                    isConfirmingStartOver = true
+                }
+            } label: {
+                Label("Resume", systemImage: "play.fill")
+            } primaryAction: {
+                model.startCombat(encounter: current, variantLabel: label, party: model.party(partyID))
+            }
+            .help("Return to the fight in progress at \(label)")
+            .confirmationDialog("Start this fight over?", isPresented: $isConfirmingStartOver,
+                                titleVisibility: .visible) {
+                Button("Start Over", role: .destructive) {
+                    model.startOver(encounter: current, variantLabel: label, party: model.party(partyID))
+                }
+            } message: {
+                Text("The fight in progress ends, and a new one starts from the plan.")
+            }
+        } else {
+            Button("Run", systemImage: "play.fill") {
+                model.startCombat(encounter: current, variantLabel: label, party: model.party(partyID))
+            }
+            .disabled(current.variant(label).slots.isEmpty)
+            .help("Start this encounter at \(label)")
         }
-        .disabled(current.variant(label).slots.isEmpty)
-        .help("Start this encounter at \(label)")
     }
 
     private func setUp(_ scenario: Scenario?) {
@@ -86,11 +115,15 @@ struct EncounterEditorView: View {
         model.library.save(edited)
     }
 
-    private func updateVariant(_ change: (inout EncounterVariant) -> Void) {
-        update { encounter in
-            var variant = encounter.variant(label)
-            change(&variant)
-            encounter.setVariant(variant)
+    /// Changes the difficulty's creatures or events, asking first if that would reset a fight in progress.
+    private func updateVariant(_ change: @escaping (inout EncounterVariant) -> Void) {
+        let label = label
+        model.changeVariant(encounterID: encounter.id, variantLabel: label) {
+            update { encounter in
+                var variant = encounter.variant(label)
+                change(&variant)
+                encounter.setVariant(variant)
+            }
         }
     }
 

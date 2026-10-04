@@ -106,6 +106,11 @@ private struct ScenarioGrid: View {
                 VStack(alignment: .leading) {
                     Text("\(experience) XP").monospacedDigit()
                     Text(budget.threat(forExperience: experience).rawValue.capitalized).font(.caption)
+                    if model.inProgressSession(encounterID: encounter.id, variantLabel: label) != nil {
+                        Label("In progress", systemImage: "circle.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.orange)
+                    }
                 }
             }
             .buttonStyle(.borderless)

@@ -57,27 +57,4 @@ extension AppModel {
     func defaultParty(for campaignID: UUID?) -> Party? {
         campaignID.flatMap { library.parties(in: $0).first }
     }
-
-    // MARK: Combat
-
-    /// Starts a fight from an encounter variant and opens the board in its setup phase.
-    func startCombat(encounter: Encounter, variantLabel: String, party: Party?) {
-        guard var scenario = scenario(encounter.scenarioID) else { return }
-        let state = CombatSetup.state(for: encounter.variant(variantLabel), party: party) { bestiary.entry($0) }
-        let context = SessionContext(campaignID: scenario.campaignID, encounterID: encounter.id,
-                                     variantLabel: variantLabel, name: "\(encounter.name) · \(variantLabel)")
-        let session = CombatSession(context: context, state: state)
-        library.save(session)
-        scenario.lastVariantLabel = variantLabel
-        library.save(scenario)
-        activeSessionID = session.id
-    }
-
-    func resumeCombat(_ id: UUID) {
-        activeSessionID = id
-    }
-
-    func closeBoard() {
-        activeSessionID = nil
-    }
 }

@@ -87,28 +87,35 @@ private struct ScenarioRows: View {
     }
 }
 
-/// Fights started earlier, to continue on this device.
+/// Fights to continue, and finished ones to look back at.
 private struct SavedFightsSection: View {
     let campaignID: UUID
     @Environment(AppModel.self) private var model
 
     var body: some View {
         let sessions = model.library.sessions(in: campaignID)
-        if !sessions.isEmpty {
-            Section("Saved fights") {
-                ForEach(sessions) { session in
-                    Button {
-                        model.resumeCombat(session.id)
-                    } label: {
-                        LabeledContent(session.name, value: "round \(max(session.state.round, 1))")
-                    }
-                    .contextMenu {
-                        Button("Delete", systemImage: "trash", role: .destructive) {
-                            model.library.deleteSession(session.id)
-                        }
-                    }
-                }
+        let unfinished = sessions.filter { !$0.isFinished }
+        let finished = sessions.filter(\.isFinished).prefix(10)
+        if !unfinished.isEmpty {
+            Section("Fights in progress") {
+                ForEach(unfinished) { session in row(session, detail: "round \(max(session.state.round, 1))") }
             }
+        }
+        if !finished.isEmpty {
+            Section("Finished fights") {
+                ForEach(Array(finished)) { session in row(session, detail: "over") }
+            }
+        }
+    }
+
+    private func row(_ session: CombatSession, detail: String) -> some View {
+        Button {
+            model.resumeCombat(session.id)
+        } label: {
+            LabeledContent(session.name, value: detail)
+        }
+        .contextMenu {
+            Button("Delete", systemImage: "trash", role: .destructive) { model.library.deleteSession(session.id) }
         }
     }
 }

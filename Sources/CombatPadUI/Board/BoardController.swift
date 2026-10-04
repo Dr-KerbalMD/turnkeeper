@@ -12,6 +12,8 @@ final class BoardController {
     private(set) var reminders: [Reminder] = []
     /// The combatant whose card is pinned; nil follows the current turn.
     var pinnedID: UUID?
+    /// The GM chose Keep Going after every enemy fell; cleared once an enemy is up again.
+    private var victoryAcknowledged = false
     private var undoStack: [CombatState] = []
     private var redoStack: [CombatState] = []
     @ObservationIgnored private var generator = SystemRandomNumberGenerator()
@@ -26,6 +28,15 @@ final class BoardController {
     var canUndo: Bool { !undoStack.isEmpty }
     var canRedo: Bool { !redoStack.isEmpty }
     var isBlocked: Bool { !reminders.isEmpty }
+    var isFinished: Bool { session?.isFinished ?? false }
+
+    /// Every enemy that has joined the fight is at 0 HP.
+    var isVictorious: Bool {
+        state.phase == .active && state.allEnemiesDown { maxHitPoints(of: $0) }
+    }
+
+    /// Whether to offer ending the fight: all enemies are down and the GM hasn't said to keep going.
+    var showsVictory: Bool { isVictorious && !victoryAcknowledged && !isBlocked && !isFinished }
 
     /// The combatant whose card shows: the pinned one, or whoever's turn it is.
     var cardCombatant: Combatant? {
@@ -50,6 +61,30 @@ final class BoardController {
         var newState = state
         edit(&newState)
         save(newState)
+    }
+
+    // MARK: The whole fight
+
+    /// Puts the fight back to setup from the encounter's current plan. It can be undone.
+    func reset() {
+        guard let session, let fresh = model.freshState(for: session) else { return }
+        reminders.removeAll()
+        pinnedID = nil
+        change { $0 = fresh }
+    }
+
+    func keepGoing() {
+        victoryAcknowledged = true
+    }
+
+    /// Ends the fight and closes the board. The next Run starts a new one.
+    func endCombat() {
+        model.finishSession(sessionID)
+        model.closeBoard()
+    }
+
+    func reopen() {
+        model.reopenSession(sessionID)
     }
 
     func undo() {
@@ -143,5 +178,6 @@ final class BoardController {
         guard var session else { return }
         session.state = newState
         model.library.save(session)
+        if !isVictorious { victoryAcknowledged = false }
     }
 }

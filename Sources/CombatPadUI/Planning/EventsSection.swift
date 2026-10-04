@@ -21,11 +21,13 @@ struct EventsSection: View {
                 .buttonStyle(.plain)
             }
             .onDelete { offsets in
-                var edited = model.encounter(encounter.id) ?? encounter
-                var variant = edited.variant(label)
-                variant.events.remove(atOffsets: offsets)
-                edited.setVariant(variant)
-                model.library.save(edited)
+                model.changeVariant(encounterID: encounter.id, variantLabel: label) { [model, encounter, label] in
+                    var edited = model.encounter(encounter.id) ?? encounter
+                    var variant = edited.variant(label)
+                    variant.events.remove(atOffsets: offsets)
+                    edited.setVariant(variant)
+                    model.library.save(edited)
+                }
             }
             Button("Add Event…", systemImage: "bell.badge") {
                 editingEvent = EncounterEvent(label: "", trigger: .startOfRound)

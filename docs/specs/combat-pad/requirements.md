@@ -65,6 +65,13 @@ ladder, and the right half is the notes side, which shows the battle card of the
   start of a turn; persistent damage and frightened at the end of a turn; custom notes at either. Next
   is blocked until every reminder has been dismissed.
 - R4.11 Every turn advance can be undone.
+- R4.11a Closing the board never loses a fight: Run resumes the unfinished fight for that encounter and
+  difficulty (shown as Resume, with Start Over behind a confirmation).
+- R4.11b Reset Combat returns the fight to setup from the current plan; it can be undone.
+- R4.11c When every enemy that joined the fight is at 0 HP, the app offers to end combat. Benched enemies,
+  hazards and allies don't count. Finished fights can be reopened.
+- R4.11d Changing an in-progress difficulty's creatures or events in the planner warns that the fight will
+  be reset, and ends it if the GM goes ahead.
 - R4.12 The battle card follows the current turn. Tapping a tile pins that card.
 - R4.13 Art can be shown full screen; on the iPad the player view covers the whole screen. If an external display is connected, the art goes there.
 - R4.14 The player view shows the creature's Battle Card back, taken from the user's Battle Cards

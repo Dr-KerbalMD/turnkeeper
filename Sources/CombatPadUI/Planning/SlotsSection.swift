@@ -23,15 +23,20 @@ struct SlotsSection: View {
         }
     }
 
-    private func updateVariant(_ change: (inout EncounterVariant) -> Void) {
-        var edited = model.encounter(encounter.id) ?? encounter
-        var variant = edited.variant(label)
-        change(&variant)
-        edited.setVariant(variant)
-        model.library.save(edited)
+    /// Changes the difficulty's creatures, asking first if that would reset a fight in progress.
+    private func updateVariant(_ change: @escaping (inout EncounterVariant) -> Void) {
+        let encounterID = encounter.id
+        let label = label
+        model.changeVariant(encounterID: encounterID, variantLabel: label) { [model, encounter] in
+            var edited = model.encounter(encounterID) ?? encounter
+            var variant = edited.variant(label)
+            change(&variant)
+            edited.setVariant(variant)
+            model.library.save(edited)
+        }
     }
 
-    private func updateSlot(_ id: UUID, _ change: (inout EncounterSlot) -> Void) {
+    private func updateSlot(_ id: UUID, _ change: @escaping (inout EncounterSlot) -> Void) {
         updateVariant { variant in
             if let index = variant.slots.firstIndex(where: { $0.id == id }) { change(&variant.slots[index]) }
         }
@@ -42,7 +47,7 @@ struct SlotsSection: View {
 private struct SlotRow: View {
     let slot: EncounterSlot
     let party: Party?
-    let change: ((inout EncounterSlot) -> Void) -> Void
+    let change: (@escaping (inout EncounterSlot) -> Void) -> Void
     @Environment(AppModel.self) private var model
     @State private var isShowingCard = false
 

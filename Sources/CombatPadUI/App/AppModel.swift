@@ -25,6 +25,8 @@ final class AppModel {
     var errorMessage: String?
     /// A passing message, such as the result of an import.
     var statusMessage: String?
+    /// A planning edit that would reset a fight in progress, waiting for the GM to confirm.
+    var pendingPlanChange: PendingPlanChange?
 
     @ObservationIgnored private let file: LibraryFile?
     @ObservationIgnored private var saveTask: Task<Void, Never>?

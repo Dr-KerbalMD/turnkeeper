@@ -31,6 +31,7 @@ private struct BoardContent: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            if controller.isFinished { FinishedBanner(controller: controller) }
             BoardTopBar(controller: controller, sheet: $sheet)
             Divider()
             GeometryReader { geometry in
@@ -48,6 +49,7 @@ private struct BoardContent: View {
         .background(PadBackground())
         .sheet(item: $sheet) { sheet in BoardSheetContent(sheet: sheet, controller: controller) }
         .sheet(isPresented: reminderBinding) { ReminderStack(controller: controller) }
+        .sheet(isPresented: victoryBinding) { VictorySheet(controller: controller) }
         .boardKeyboardShortcuts(controller: controller)
         .task { if controller.state.phase == .setup { await VoiceInitiative.shared.requestPermission() } }
         .focusable()
@@ -73,6 +75,10 @@ private struct BoardContent: View {
 
     private var reminderBinding: Binding<Bool> {
         Binding(get: { controller.isBlocked }, set: { _ in })
+    }
+
+    private var victoryBinding: Binding<Bool> {
+        Binding(get: { controller.showsVictory }, set: { _ in })
     }
 }
 
@@ -107,5 +113,46 @@ private extension View {
             .opacity(0)
             .accessibilityHidden(true)
         }
+    }
+}
+
+/// Every enemy is down: end the fight, or keep going if some might get back up.
+private struct VictorySheet: View {
+    let controller: BoardController
+
+    var body: some View {
+        VStack(spacing: 18) {
+            Image(systemName: "trophy.fill").font(.system(size: 54)).foregroundStyle(.yellow)
+            Text("Victory!").font(.largeTitle.bold())
+            Text("Every enemy in the fight is at 0 HP.").foregroundStyle(.secondary)
+            Button {
+                controller.endCombat()
+            } label: {
+                Text("End Combat").font(.headline).frame(maxWidth: .infinity, minHeight: 44)
+            }
+            .buttonStyle(.borderedProminent)
+            .keyboardShortcut(.defaultAction)
+            Button("Keep Going") { controller.keepGoing() }
+        }
+        .padding(32)
+        .frame(minWidth: 380)
+        .interactiveDismissDisabled()
+    }
+}
+
+/// Shown on a finished fight, which can be looked at or taken up again.
+private struct FinishedBanner: View {
+    let controller: BoardController
+
+    var body: some View {
+        HStack {
+            Label("This fight is over.", systemImage: "flag.checkered")
+            Spacer()
+            Button("Reopen Fight") { controller.reopen() }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(.orange.opacity(0.85))
+        .foregroundStyle(.white)
     }
 }

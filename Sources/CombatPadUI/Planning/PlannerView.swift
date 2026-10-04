@@ -21,6 +21,17 @@ struct PlannerView: View {
         } detail: {
             PlannerDetail()
         }
+        .confirmationDialog("A fight is in progress for this encounter.", isPresented: pendingBinding,
+                            titleVisibility: .visible, presenting: model.pendingPlanChange) { pending in
+            Button("Change and Reset", role: .destructive) { model.confirm(pending) }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("Changing its creatures or events will reset that fight.")
+        }
+    }
+
+    private var pendingBinding: Binding<Bool> {
+        Binding(get: { model.pendingPlanChange != nil }, set: { if !$0 { model.pendingPlanChange = nil } })
     }
 }
 

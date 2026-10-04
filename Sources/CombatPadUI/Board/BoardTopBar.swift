@@ -24,6 +24,7 @@ struct BoardTopBar: View {
         HStack(spacing: 12) {
             Button("Close", systemImage: "xmark") { model.closeBoard() }
                 .labelStyle(.iconOnly)
+                .help("Close the board. The fight is kept; Run or Resume brings it back.")
             VStack(alignment: .leading, spacing: 0) {
                 Text(controller.session?.name ?? "").font(.headline)
                 Text(roundText).font(.caption).foregroundStyle(.secondary)
@@ -39,6 +40,7 @@ struct BoardTopBar: View {
                     Button("Duration Arrow…", systemImage: "arrow.uturn.right") { sheet = .duration }
                     Button("Event…", systemImage: "bell") { sheet = .event }
                 }
+                FightMenu(controller: controller)
                 Button("Undo", systemImage: "arrow.uturn.backward") { controller.undo() }
                     .disabled(!controller.canUndo)
                 Button("Next", systemImage: "forward.end.fill") { controller.next() }
@@ -89,5 +91,23 @@ private struct DurationArrows: View {
     private func color(for marker: DurationMarker) -> Color {
         let colors: [Color] = [.orange, .purple, .teal, .pink, .indigo, .brown]
         return colors[Int(marker.id.uuid.0) % colors.count]
+    }
+}
+
+/// Resetting or ending the whole fight.
+private struct FightMenu: View {
+    let controller: BoardController
+    @State private var isConfirmingReset = false
+
+    var body: some View {
+        Menu("Fight", systemImage: "ellipsis.circle") {
+            Button("Reset Combat…", systemImage: "arrow.counterclockwise") { isConfirmingReset = true }
+            Button("End Combat", systemImage: "flag.checkered") { controller.endCombat() }
+        }
+        .confirmationDialog("Reset this fight?", isPresented: $isConfirmingReset, titleVisibility: .visible) {
+            Button("Reset Combat", role: .destructive) { controller.reset() }
+        } message: {
+            Text("Initiative, HP, conditions and the round go back to the start. Undo brings it all back.")
+        }
     }
 }
