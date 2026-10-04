@@ -78,7 +78,7 @@ public struct Library: Codable, Sendable, Hashable {
 
     /// Marks a campaign and everything in it deleted.
     public mutating func deleteCampaign(_ id: UUID) {
-        let now = Date()
+        let now = ChangeClock.now()
         mark(\.campaigns, now) { $0.id == id }
         mark(\.parties, now) { $0.campaignID == id }
         let scenarioIDs = Set(scenarios.filter { $0.campaignID == id }.map(\.id))
@@ -89,21 +89,21 @@ public struct Library: Codable, Sendable, Hashable {
     }
 
     public mutating func deleteScenario(_ id: UUID) {
-        let now = Date()
+        let now = ChangeClock.now()
         mark(\.scenarios, now) { $0.id == id }
         mark(\.encounters, now) { $0.scenarioID == id }
     }
 
-    public mutating func deleteParty(_ id: UUID) { mark(\.parties, Date()) { $0.id == id } }
-    public mutating func deleteEncounter(_ id: UUID) { mark(\.encounters, Date()) { $0.id == id } }
-    public mutating func deleteSession(_ id: UUID) { mark(\.sessions, Date()) { $0.id == id } }
-    public mutating func deleteCustomCreature(_ id: UUID) { mark(\.customCreatures, Date()) { $0.id == id } }
+    public mutating func deleteParty(_ id: UUID) { mark(\.parties, ChangeClock.now()) { $0.id == id } }
+    public mutating func deleteEncounter(_ id: UUID) { mark(\.encounters, ChangeClock.now()) { $0.id == id } }
+    public mutating func deleteSession(_ id: UUID) { mark(\.sessions, ChangeClock.now()) { $0.id == id } }
+    public mutating func deleteCustomCreature(_ id: UUID) { mark(\.customCreatures, ChangeClock.now()) { $0.id == id } }
 
     private mutating func upsert<Record: LibraryRecord>(
         _ record: Record, into path: WritableKeyPath<Library, [Record]>
     ) {
         var stamped = record
-        stamped.modifiedAt = Date()
+        stamped.modifiedAt = ChangeClock.now()
         if let index = self[keyPath: path].firstIndex(where: { $0.id == record.id }) {
             self[keyPath: path][index] = stamped
         } else {

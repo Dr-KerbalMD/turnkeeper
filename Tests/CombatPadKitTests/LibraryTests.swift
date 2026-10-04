@@ -132,3 +132,12 @@ struct LibraryTests {
         #expect(encounter.variant("High").slots[0].id != low.slots[0].id)
     }
 }
+
+@Suite("Change clock")
+struct ChangeClockTests {
+    @Test("Stamps always move forward, even in quick succession")
+    func increasing() {
+        let stamps = (0..<1000).map { _ in ChangeClock.now() }
+        #expect(zip(stamps, stamps.dropFirst()).allSatisfy { $0 < $1 })
+    }
+}
