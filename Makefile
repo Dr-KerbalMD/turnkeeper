@@ -1,4 +1,4 @@
-.PHONY: build test lint bestiary cards app run install ipad-simulator ipad-install ipad-uitest clean
+.PHONY: build test lint bestiary cards icon app run install ipad-simulator ipad-install ipad-uitest clean
 
 build:
 	swift build
@@ -33,6 +33,10 @@ ipad-simulator:
 # A free developer team's signature lasts 7 days, so run this again each week.
 ipad-install:
 	scripts/install-ipad.sh
+
+# Redraws the Mac and iPad icons from scripts/make-icon.swift.
+icon:
+	swift scripts/make-icon.swift
 
 # Runs the iPad UI tests in a simulator, against the demo fight.
 ipad-uitest:
