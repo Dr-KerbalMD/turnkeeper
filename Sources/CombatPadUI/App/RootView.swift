@@ -7,7 +7,10 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if let session = model.activeSession {
+            if let key = Self.demoCardBackKey {
+                // `--demo back <key>`: one creature's player view, for checking card backs.
+                if let entry = model.entry(key) { CardBackView(entry: entry) }
+            } else if let session = model.activeSession {
                 BoardView(sessionID: session.id)
             } else {
                 PlannerView()
@@ -20,6 +23,13 @@ struct RootView: View {
             Text(model.errorMessage ?? "")
         }
         .overlay(alignment: .bottom) { StatusToast() }
+    }
+
+    private static var demoCardBackKey: String? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "--demo"), arguments.indices.contains(index + 2),
+              arguments[index + 1] == "back" else { return nil }
+        return arguments[index + 2]
     }
 
     private var errorBinding: Binding<Bool> {
