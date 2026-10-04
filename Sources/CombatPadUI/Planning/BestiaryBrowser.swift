@@ -9,6 +9,7 @@ struct BestiaryBrowser: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var filter = BestiaryFilter()
+    @State private var hasSetUpFilter = false
     @State private var added: [String: Int] = [:]
     @State private var previewKey: String?
 
@@ -16,7 +17,7 @@ struct BestiaryBrowser: View {
         NavigationStack {
             let results = filter.results(in: model.bestiary.index.entries, defaultGame: game)
             List {
-                Section { FilterControls(filter: $filter) }
+                Section { FilterControls(filter: $filter, partyLevel: partyLevel) }
                 Section("\(results.count) found") {
                     ForEach(results.prefix(400)) { entry in
                         BestiaryRow(entry: entry, partyLevel: partyLevel, addedCount: added[entry.key] ?? 0) {
@@ -36,6 +37,11 @@ struct BestiaryBrowser: View {
             }
         }
         .frame(minWidth: 560, minHeight: 640)
+        .onAppear {
+            guard !hasSetUpFilter else { return }
+            hasSetUpFilter = true
+            filter.useLevels(around: partyLevel)
+        }
     }
 }
 
@@ -59,10 +65,18 @@ struct BestiaryFilter: Equatable {
     var text = ""
     var games = GameChoice.campaign
     var kind = KindChoice.all
-    var minimumLevel = -1
-    var maximumLevel = 25
+    var minimumLevel = EncounterBudget.lowestLevel
+    var maximumLevel = EncounterBudget.highestLevel
     var rarity = "any"
     var remasteredOnly = false
+
+    /// Party level −4 to +4, the levels the XP table covers; every level when there's no party.
+    mutating func useLevels(around partyLevel: Int?) {
+        let range = partyLevel.map { EncounterBudget(partyLevel: $0, partySize: 4).tableLevels }
+            ?? EncounterBudget.lowestLevel...EncounterBudget.highestLevel
+        minimumLevel = range.lowerBound
+        maximumLevel = range.upperBound
+    }
 
     func results(in entries: [BestiaryIndexEntry], defaultGame: Game) -> [BestiaryIndexEntry] {
         let query = text.lowercased().trimmingCharacters(in: .whitespaces)
@@ -87,6 +101,7 @@ struct BestiaryFilter: Equatable {
 
 private struct FilterControls: View {
     @Binding var filter: BestiaryFilter
+    let partyLevel: Int?
 
     var body: some View {
         Picker("Games", selection: $filter.games) {
@@ -97,12 +112,24 @@ private struct FilterControls: View {
             ForEach(BestiaryFilter.KindChoice.allCases, id: \.self) { Text($0.rawValue).tag($0) }
         }
         .pickerStyle(.segmented)
-        Stepper("Lowest level \(filter.minimumLevel)", value: $filter.minimumLevel, in: -1...filter.maximumLevel)
-        Stepper("Highest level \(filter.maximumLevel)", value: $filter.maximumLevel, in: filter.minimumLevel...25)
+        Stepper("Lowest level \(filter.minimumLevel)\(offset(filter.minimumLevel))", value: $filter.minimumLevel,
+                in: EncounterBudget.lowestLevel...filter.maximumLevel)
+        Stepper("Highest level \(filter.maximumLevel)\(offset(filter.maximumLevel))", value: $filter.maximumLevel,
+                in: filter.minimumLevel...EncounterBudget.highestLevel)
+        if partyLevel != nil {
+            Button("Party Range", systemImage: "arrow.uturn.backward") { filter.useLevels(around: partyLevel) }
+        }
         Picker("Rarity", selection: $filter.rarity) {
             ForEach(["any", "common", "uncommon", "rare", "unique"], id: \.self) { Text($0.capitalized).tag($0) }
         }
         Toggle("Remastered only", isOn: $filter.remasteredOnly)
+    }
+
+    /// " (PL −4)" next to a level, when there's a party.
+    private func offset(_ level: Int) -> String {
+        guard let partyLevel else { return "" }
+        let difference = level - partyLevel
+        return difference == 0 ? " (PL)" : " (PL \(difference > 0 ? "+" : "−")\(abs(difference)))"
     }
 }
 

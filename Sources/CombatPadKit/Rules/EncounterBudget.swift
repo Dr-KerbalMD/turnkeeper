@@ -40,6 +40,16 @@ public struct EncounterBudget: Sendable, Equatable {
         Self.creatureExperience[min(max(level - partyLevel, -4), 4)] ?? 0
     }
 
+    /// Creature levels the XP table covers for this party: party level −4 to +4, kept within the levels
+    /// creatures come in (−1 to 25).
+    public var tableLevels: ClosedRange<Int> {
+        let lower = min(max(Self.lowestLevel, partyLevel - 4), Self.highestLevel)
+        return lower...max(min(Self.highestLevel, partyLevel + 4), lower)
+    }
+
+    public static let lowestLevel = -1
+    public static let highestLevel = 25
+
     /// Whether a creature is more than four levels from the party, where the XP table stops.
     public func isOutsideTable(level: Int) -> Bool {
         abs(level - partyLevel) > 4

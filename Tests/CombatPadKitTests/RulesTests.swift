@@ -49,6 +49,13 @@ struct EncounterBudgetTests {
         #expect(ThreatLevel.allCases.map(budget.budget(for:)) == expected)
     }
 
+    @Test("The table's levels are party level ±4, kept within −1…25", arguments: [
+        (3, -1...7), (10, 6...14), (0, -1...4), (24, 20...25), (-1, -1...3), (40, 25...25)
+    ])
+    func tableLevels(partyLevel: Int, expected: ClosedRange<Int>) {
+        #expect(EncounterBudget(partyLevel: partyLevel, partySize: 4).tableLevels == expected)
+    }
+
     @Test("Threat is the lowest tier that covers the XP; above severe is extreme")
     func threat() {
         let budget = EncounterBudget(partyLevel: 3, partySize: 4)
