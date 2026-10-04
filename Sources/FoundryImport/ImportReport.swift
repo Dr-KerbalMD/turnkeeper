@@ -8,6 +8,8 @@ public struct ImportReport: Sendable {
     public var unparsedEnrichers: [String: Int] = [:]
     /// Names of PDF images that matched no creature, for `art-overrides.json`.
     public var unmatchedPdfArt: [String] = []
+    /// Creatures that borrowed art from a same-named creature in another pack.
+    public var borrowedArt: [String] = []
 
     public init() {}
 
@@ -17,6 +19,8 @@ public struct ImportReport: Sendable {
         lines += ["", "## Starfinder creatures without art", ""]
         lines += creatures.filter { $0.game == .starfinder && !$0.art.hasArt }
             .map { "- \($0.name) (\($0.source.pack))" }
+        lines += ["", "## Art borrowed from a creature of the same name", ""]
+        lines += borrowedArt.sorted().map { "- \($0)" }
         lines += ["", "## PDF art that matched no creature", ""]
         lines += Set(unmatchedPdfArt).sorted().map { "- \($0)" }
         lines += ["", "## Enrichers left as plain text", ""]

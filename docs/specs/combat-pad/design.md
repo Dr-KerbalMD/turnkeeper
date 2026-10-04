@@ -45,8 +45,11 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    Card titles such as "AEON, AXIOMITE" are matched by token set against the creature name, with the
    family prefix optional. Remastered creatures prefer remaster sets such as Monster Core, and legacy
    creatures prefer legacy sets. Creatures without a card get a card back drawn in the same style:
-   a parchment frame around a red field with the portrait for Pathfinder, and a neon frame with a
-   name plate for Starfinder.
+   a parchment frame around a red field with the portrait for Pathfinder; for Starfinder, the Alien
+   Archive look (teal scanline field, glowing frame, edge ticks, token hexagon, silver name plate and a
+   STARFINDER logo line). Art is scaled smoothly, since tokens are small.
+   A creature with no art of a kind borrows it from a same-named creature of the same game in another
+   pack (`ArtFallback`), preferring the one with the most art, then remastered; the report lists them.
 8. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
    `packs/<game>.<pack>.json` per pack, plus `conditions.json`, the art files, and
    `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.

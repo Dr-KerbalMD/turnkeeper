@@ -80,6 +80,7 @@ public struct BestiaryImporter {
             creatures[index].art = ArtChooser.combine(creatures[index].art, pdfArt: pdfArt)
             usedPdfArt.formUnion(pdfArt.values.map(\.path))
         }
+        report.borrowedArt = ArtFallback.borrow(into: &creatures)
         try copier.removeUnreferenced(keeping: Set(creatures.flatMap { [$0.art.portrait, $0.art.token] }))
         report.unmatchedPdfArt = pdfEntries.filter { !usedPdfArt.contains($0.path) }.map(\.name)
     }
