@@ -15,12 +15,43 @@ public struct LibraryPackage: Codable, Sendable {
     /// The bestiary import the creatures refer to, so a mismatch can be reported.
     public var bestiaryRevision: String
     public var library: Library
+    /// The bytes of the pasted images the library's art records point to, by file name.
+    public var images: [String: Data] = [:]
 
     public init(library: Library, bestiaryRevision: String, exportedAt: Date = Date()) {
         format = Self.currentFormat
         self.exportedAt = exportedAt
         self.bestiaryRevision = bestiaryRevision
         self.library = library
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case format, exportedAt, bestiaryRevision, library, images
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        format = try container.decode(Int.self, forKey: .format)
+        exportedAt = try container.decode(Date.self, forKey: .exportedAt)
+        bestiaryRevision = try container.decode(String.self, forKey: .bestiaryRevision)
+        library = try container.decode(Library.self, forKey: .library)
+        images = try container.decodeIfPresent([String: Data].self, forKey: .images) ?? [:]
+    }
+
+    /// The package with the images its art records point to, read from `store`.
+    public func addingImages(from store: ArtStore) -> LibraryPackage {
+        var package = self
+        for fileName in library.liveArtFileNames {
+            package.images[fileName] = store.data(for: fileName)
+        }
+        return package
+    }
+
+    /// Writes the package's images that `store` doesn't have yet; do this before merging the library.
+    public func writeImages(to store: ArtStore) throws {
+        for (fileName, data) in images where !store.contains(fileName) {
+            try store.write(data, as: fileName)
+        }
     }
 
     /// A package of one campaign with its parties, scenarios, encounters and sessions.
@@ -33,6 +64,9 @@ public struct LibraryPackage: Codable, Sendable {
         subset.encounters = library.encounters.filter { scenarioIDs.contains($0.scenarioID) }
         subset.sessions = library.sessions.filter { $0.campaignID == id }
         subset.customCreatures = library.customCreatures.filter { $0.campaignID == id }
+        let subjects = Set(subset.encounters.flatMap { $0.variants.flatMap { $0.slots.map(\.creatureKey) } })
+            .union(subset.customCreatures.map(\.key))
+        subset.customArt = library.customArt.filter { subjects.contains($0.subject) }
         return LibraryPackage(library: subset, bestiaryRevision: bestiaryRevision)
     }
 

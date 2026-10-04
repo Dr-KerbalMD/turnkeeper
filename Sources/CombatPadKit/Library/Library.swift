@@ -9,11 +9,12 @@ public struct Library: Codable, Sendable, Hashable {
     public var encounters: [Encounter] = []
     public var sessions: [CombatSession] = []
     public var customCreatures: [CustomCreature] = []
+    public var customArt: [CustomArt] = []
 
     public init() {}
 
     private enum CodingKeys: String, CodingKey {
-        case campaigns, parties, scenarios, encounters, sessions, customCreatures
+        case campaigns, parties, scenarios, encounters, sessions, customCreatures, customArt
     }
 
     /// Reads each kind of record leniently: a kind missing from an older library reads as empty, and a
@@ -26,6 +27,7 @@ public struct Library: Codable, Sendable, Hashable {
         encounters = try container.lossyArray(forKey: .encounters)
         sessions = try container.lossyArray(forKey: .sessions)
         customCreatures = try container.lossyArray(forKey: .customCreatures)
+        customArt = try container.lossyArray(forKey: .customArt)
     }
 
     // MARK: Queries (deleted records left out)
@@ -58,6 +60,16 @@ public struct Library: Codable, Sendable, Hashable {
         customCreatures.first { $0.key == key && !$0.isDeleted }
     }
 
+    /// The pasted art for a creature, the newest when both devices pasted some.
+    public func customArt(for subject: String) -> CustomArt? {
+        customArt.filter { $0.subject == subject && !$0.isDeleted }.max { $0.modifiedAt < $1.modifiedAt }
+    }
+
+    /// The image files that live art records point to.
+    public var liveArtFileNames: Set<String> {
+        Set(customArt.filter { !$0.isDeleted }.map(\.fileName))
+    }
+
     public func customCreatures(in campaignID: UUID) -> [CustomCreature] {
         customCreatures.filter { $0.campaignID == campaignID && !$0.isDeleted }
             .sorted { $0.creature.name < $1.creature.name }
@@ -75,6 +87,16 @@ public struct Library: Codable, Sendable, Hashable {
     public mutating func save(_ encounter: Encounter) { upsert(encounter, into: \.encounters) }
     public mutating func save(_ session: CombatSession) { upsert(session, into: \.sessions) }
     public mutating func save(_ custom: CustomCreature) { upsert(custom, into: \.customCreatures) }
+
+    /// Points `art.subject` at new art, retiring whatever it had before.
+    public mutating func save(_ art: CustomArt) {
+        deleteCustomArt(for: art.subject)
+        upsert(art, into: \.customArt)
+    }
+
+    public mutating func deleteCustomArt(for subject: String) {
+        mark(\.customArt, ChangeClock.now()) { $0.subject == subject }
+    }
 
     /// Marks a campaign and everything in it deleted.
     public mutating func deleteCampaign(_ id: UUID) {

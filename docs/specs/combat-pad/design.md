@@ -87,6 +87,13 @@ Ported from the pf2e system, with tests.
   text. `StatBlockConverter` reads each labeled entry with the `StatBlockText` parsers into a `Creature`;
   anything it can't read is kept as ability text and reported. `StatBlockImport` plans the import: one
   custom creature per block, placed in the variant whose label names the block's subtier.
+- **Pasted artwork.** A `CustomArt` record points a creature key at an image file in the `ArtStore`
+  (`Application Support/Combat Pad/Art/`); `library.json` never holds image bytes. Images are downscaled to
+  2048 px (`PreparedImage`) and saved as JPEG, or PNG with transparency. A new image gets a new file; files
+  no live record points to are swept at launch. `LibraryPackage.images` carries the bytes of the packaged
+  records' files, written to the store before the library is merged. `AppModel.entry` swaps pasted art in as
+  `Pasted/<file>` paths, which `AppModel.artURL` resolves to the store, so every view and the player view
+  show it; the card back is cleared so the drawn back frames it.
 - **Lenient loading.** `Library` decodes each kind of record as a lossy array, so older libraries and
   unreadable records don't stop the rest from loading. Record fields added later decode with defaults.
 - **Variants.** An encounter keeps one `EncounterVariant` (slots and events) per scenario variant label.
@@ -113,5 +120,6 @@ Ported from the pf2e system, with tests.
 ## Known limits
 - The iPad build uses a free personal team, so it must be reinstalled every 7 days.
 - PDF art is 192–330 px, so it looks soft when shown full screen.
+- Pasted art is newest-wins when both devices paste art for the same creature; there are no conflict copies.
 - Creatures in a `.combatpad` file are referenced by bestiary key, so both devices should run the same
   bestiary import.
