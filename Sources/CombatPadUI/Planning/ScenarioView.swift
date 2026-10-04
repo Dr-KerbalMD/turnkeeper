@@ -12,7 +12,15 @@ struct ScenarioView: View {
             Section {
                 TextField("Name", text: binding(\.name)).titleEntry()
                 TextField("Levels", text: binding(\.levelRange), prompt: Text("1–4"))
-                TextField("Variants, comma separated", text: labelsBinding)
+                HStack {
+                    TextField("Variants, comma separated", text: labelsBinding)
+                    Menu("Presets") {
+                        ForEach(VariantScheme.allCases, id: \.self) { scheme in
+                            Button(scheme.title) { update { $0.variantLabels = scheme.labels } }
+                        }
+                    }
+                    .fixedSize()
+                }
                 TextField("Notes", text: binding(\.notes), axis: .vertical).lineLimit(3...8)
             }
             Section {

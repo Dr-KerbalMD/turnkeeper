@@ -24,6 +24,7 @@ struct StarfinderBattleCard: View {
                     section("OFFENSE", content.offense + content.offensive)
                     section("STATISTICS", content.statistics)
                     section("SPECIAL ABILITIES", content.interaction)
+                    SourceLine(text: content.source, color: Color(hex: 0x9FC7D2, opacity: 0.7))
                 }
                 .padding(18)
             }

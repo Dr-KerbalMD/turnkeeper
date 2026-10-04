@@ -101,16 +101,27 @@ public struct Scenario: LibraryRecord, Hashable {
     }
 }
 
-/// Preset difficulty schemes.
+/// Preset difficulty schemes. The labels stay editable; these just fill them in.
 public enum VariantScheme: String, CaseIterable, Sendable {
-    case pathfinderSociety
-    case starfinderSociety
+    case challengePointsLowTier
+    case challengePointsHighTier
+    case easierBaseHarder
     case single
+
+    public var title: String {
+        switch self {
+        case .challengePointsLowTier: return "Challenge Points, low tier"
+        case .challengePointsHighTier: return "Challenge Points, high tier"
+        case .easierBaseHarder: return "Easier, Base, Harder"
+        case .single: return "One version"
+        }
+    }
 
     public var labels: [String] {
         switch self {
-        case .pathfinderSociety: return ["10–11 CP", "12–13 CP", "14–15 CP", "16–18 CP"]
-        case .starfinderSociety: return ["Easier", "Base", "Harder"]
+        case .challengePointsLowTier: return ["10–11 CP", "12–13 CP", "14–15 CP", "16–18 CP"]
+        case .challengePointsHighTier: return ["19–22 CP", "23–27 CP", "28–32 CP", "33+ CP"]
+        case .easierBaseHarder: return ["Easier", "Base", "Harder"]
         case .single: return ["Standard"]
         }
     }

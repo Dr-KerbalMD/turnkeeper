@@ -60,20 +60,41 @@ private extension View {
 private struct ScenarioRows: View {
     let scenario: Scenario
     @Environment(AppModel.self) private var model
+    /// Collapsed scenarios on this device, as comma-separated IDs. New scenarios start expanded.
+    @AppStorage("collapsedScenarios") private var collapsed = ""
 
     var body: some View {
-        Label(scenario.name, systemImage: "map")
-            .font(.headline)
-            .tag(PlannerSelection.scenario(scenario.id))
-            .contextMenu {
-                Button("Add Encounter", systemImage: "plus") { model.addEncounter(to: scenario.id) }
-                Button("Delete Scenario", systemImage: "trash", role: .destructive) {
-                    model.library.deleteScenario(scenario.id)
-                }
+        HStack {
+            Button {
+                toggle()
+            } label: {
+                Image(systemName: "chevron.right")
+                    .rotationEffect(.degrees(isExpanded ? 90 : 0))
+                    .frame(width: 20)
             }
+            .buttonStyle(.borderless)
+            .accessibilityLabel(isExpanded ? "Collapse \(scenario.name)" : "Expand \(scenario.name)")
+            Label(scenario.name, systemImage: "map").font(.headline)
+            Spacer()
+            if !isExpanded {
+                Text("\(model.library.encounters(in: scenario.id).count)").foregroundStyle(.secondary)
+            }
+        }
+        .tag(PlannerSelection.scenario(scenario.id))
+        .contextMenu {
+            Button("Add Encounter", systemImage: "plus") { model.addEncounter(to: scenario.id) }
+            Button("Delete Scenario", systemImage: "trash", role: .destructive) {
+                model.library.deleteScenario(scenario.id)
+            }
+        }
+        if isExpanded { contents }
+    }
+
+    @ViewBuilder
+    private var contents: some View {
         ForEach(model.library.encounters(in: scenario.id)) { encounter in
             Label(encounter.name, systemImage: "flame")
-                .padding(.leading, 20)
+                .padding(.leading, 28)
                 .tag(PlannerSelection.encounter(encounter.id))
                 .contextMenu {
                     Button("Delete Encounter", systemImage: "trash", role: .destructive) {
@@ -82,8 +103,17 @@ private struct ScenarioRows: View {
                 }
         }
         Button("Add Encounter", systemImage: "plus") { model.addEncounter(to: scenario.id) }
-            .padding(.leading, 20)
+            .padding(.leading, 28)
             .foregroundStyle(.secondary)
+    }
+
+    private var collapsedIDs: Set<String> { Set(collapsed.split(separator: ",").map(String.init)) }
+    private var isExpanded: Bool { !collapsedIDs.contains(scenario.id.uuidString) }
+
+    private func toggle() {
+        var ids = collapsedIDs
+        if isExpanded { ids.insert(scenario.id.uuidString) } else { ids.remove(scenario.id.uuidString) }
+        withAnimation { collapsed = ids.sorted().joined(separator: ",") }
     }
 }
 
@@ -134,18 +164,16 @@ private struct NewScenarioSheet: View {
             Form {
                 TextField("Name", text: $name, prompt: Text("#7-03: The Sunken Vault")).titleEntry()
                 Picker("Difficulty variants", selection: $scheme) {
-                    Text("Pathfinder Society (challenge points)").tag(VariantScheme.pathfinderSociety)
-                    Text("Starfinder Society (easier/base/harder)").tag(VariantScheme.starfinderSociety)
-                    Text("One version").tag(VariantScheme.single)
+                    ForEach(VariantScheme.allCases, id: \.self) { Text($0.title).tag($0) }
                 }
                 TextField("Variant labels, comma separated", text: $labels)
-                Text("Challenge-point brackets differ between scenarios; edit them to match the one you're running.")
+                Text("The labels can be edited to match the scenario being run.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
             .formStyle(.grouped)
             .navigationTitle("New Scenario")
-            .onAppear { scheme = campaign.game == .starfinder ? .starfinderSociety : .single }
+            .onAppear { scheme = .easierBaseHarder }
             .onChange(of: scheme, initial: true) { labels = scheme.labels.joined(separator: ", ") }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }

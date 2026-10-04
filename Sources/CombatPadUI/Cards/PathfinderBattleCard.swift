@@ -22,6 +22,7 @@ struct PathfinderBattleCard: View {
                 lines(content.defensive)
                 Rule()
                 lines(content.offense + content.offensive)
+                SourceLine(text: content.source, color: Color(hex: 0x231A12, opacity: 0.55))
             }
             .padding(20)
         }
@@ -91,6 +92,22 @@ struct TemplateBadge: View {
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
                 .background(template == .elite ? color : Color(hex: 0x4A5A6A), in: Capsule())
+        }
+    }
+}
+
+/// The book a creature comes from, small and quiet at the foot of the card.
+struct SourceLine: View {
+    let text: String
+    let color: Color
+
+    var body: some View {
+        if !text.isEmpty {
+            Text(text)
+                .font(.custom(FontName.condensedItalic, size: 11))
+                .foregroundStyle(color)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.top, 6)
         }
     }
 }

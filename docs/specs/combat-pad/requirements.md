@@ -23,7 +23,7 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R2.4 The import writes a report covering counts per pack, creatures without art, unmatched PDF art,
   and enrichers it couldn't parse.
 - R2.5 The browser searches by name and trait, and filters by level, game, source, rarity, size and
-  kind. With a party chosen, the level filter starts at party level −4 to +4.
+  kind, and by source book. With a party chosen, the level filter starts at party level −4 to +4.
 - R2.6 A creature's battle card can be opened from the browser and from its row in an encounter, with the
   slot's template applied.
 
@@ -32,8 +32,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R3.2 Parties are built separately from encounters. A PC has only a name.
 - R3.2a Campaigns can be renamed and switched between Pathfinder and Starfinder; a new one needs a name.
 - R3.2b Name fields capitalize each word and skip autocorrect, so fantasy names stay as typed.
-- R3.3 A scenario holds ordered encounters and a variant scheme: challenge-point brackets for PFS,
-  Easier/Base/Harder for SFS, or a single variant.
+- R3.3 A scenario holds ordered encounters and editable difficulty labels, filled from presets:
+  Challenge Points low tier (10–11 … 16–18 CP), high tier (19–22 … 33+ CP), Easier/Base/Harder, or one
+  version. Scenarios can be collapsed in the list; the choice is remembered on each device.
 - R3.4 Each encounter has one variant per scheme label. Each variant has its own creatures, bench and
   events. A variant can be copied from another one.
 - R3.5 A slot has a creature, count, template (elite, normal or weak), side, and whether it starts on
@@ -85,5 +86,6 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R5.1 Pathfinder cards follow the Pathfinder Bestiary Battle Cards look.
 - R5.2 Starfinder cards follow the Alien Archive Battle Cards look, but with 2e content.
 - R5.3 Complex hazards get a hazard card in the same style.
+- R5.3a Every card shows its source book in small text at the bottom.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art (tokens, pawns and card backs)
   comes only from the user's own purchased PDFs, at import time, and is never committed.

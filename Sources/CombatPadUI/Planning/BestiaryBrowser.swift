@@ -10,6 +10,11 @@ struct BestiaryBrowser: View {
     @Environment(\.dismiss) private var dismiss
     @State private var filter = BestiaryFilter()
     @State private var hasSetUpFilter = false
+
+    private var sources: [String] {
+        let entries = model.bestiary.index.entries.filter { filter.games == .both || $0.game == game }
+        return Set(entries.map(\.source.title).filter { !$0.isEmpty }).sorted()
+    }
     @State private var added: [String: Int] = [:]
     @State private var previewKey: String?
 
@@ -17,7 +22,7 @@ struct BestiaryBrowser: View {
         NavigationStack {
             let results = filter.results(in: model.bestiary.index.entries, defaultGame: game)
             List {
-                Section { FilterControls(filter: $filter, partyLevel: partyLevel) }
+                Section { FilterControls(filter: $filter, partyLevel: partyLevel, sources: sources) }
                 Section("\(results.count) found") {
                     ForEach(results.prefix(400)) { entry in
                         BestiaryRow(entry: entry, partyLevel: partyLevel, addedCount: added[entry.key] ?? 0) {
@@ -68,7 +73,8 @@ struct BestiaryFilter: Equatable {
     var minimumLevel = EncounterBudget.lowestLevel
     var maximumLevel = EncounterBudget.highestLevel
     var rarity = "any"
-    var remasteredOnly = false
+    /// A book title, or "any".
+    var source = "any"
 
     /// Party level −4 to +4, the levels the XP table covers; every level when there's no party.
     mutating func useLevels(around partyLevel: Int?) {
@@ -84,7 +90,7 @@ struct BestiaryFilter: Equatable {
             (games == .both || entry.game == defaultGame)
                 && (minimumLevel...maximumLevel).contains(entry.level)
                 && matchesKind(entry) && (rarity == "any" || entry.traits.rarity == rarity)
-                && (!remasteredOnly || entry.source.isRemastered)
+                && (source == "any" || entry.source.title == source)
                 && (query.isEmpty || entry.name.lowercased().contains(query) || entry.traits.traits.contains(query))
         }
         .sorted { ($0.level, $0.name) < ($1.level, $1.name) }
@@ -102,6 +108,8 @@ struct BestiaryFilter: Equatable {
 private struct FilterControls: View {
     @Binding var filter: BestiaryFilter
     let partyLevel: Int?
+    /// The books in the games being browsed, alphabetically.
+    let sources: [String]
 
     var body: some View {
         Picker("Games", selection: $filter.games) {
@@ -122,7 +130,10 @@ private struct FilterControls: View {
         Picker("Rarity", selection: $filter.rarity) {
             ForEach(["any", "common", "uncommon", "rare", "unique"], id: \.self) { Text($0.capitalized).tag($0) }
         }
-        Toggle("Remastered only", isOn: $filter.remasteredOnly)
+        Picker("Source", selection: $filter.source) {
+            Text("Any").tag("any")
+            ForEach(sources, id: \.self) { Text($0).tag($0) }
+        }
     }
 
     /// " (PL −4)" next to a level, when there's a party.

@@ -35,7 +35,7 @@ enum DemoLibrary {
         let party = Party(campaignID: campaign.id, name: "Crew", level: 7,
                           members: ["Navasi", "Obozaya", "Keskodai", "Iseph"].map(PartyMember.init))
         model.library.save(party)
-        model.addScenario(to: campaign.id, name: "#1-99: Aeon Ambush", labels: VariantScheme.starfinderSociety.labels)
+        model.addScenario(to: campaign.id, name: "#1-99: Aeon Ambush", labels: VariantScheme.easierBaseHarder.labels)
         guard let scenario = model.library.scenarios(in: campaign.id).first else { return model }
         var encounter = Encounter(scenarioID: scenario.id, name: "A: Hangar Bay")
         var base = EncounterVariant(label: "Base")

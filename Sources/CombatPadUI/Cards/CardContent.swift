@@ -8,6 +8,8 @@ struct CardContent {
     var levelLabel: String
     var template: CreatureTemplate
     var traits: TraitLine
+    /// The book, such as "Pathfinder Monster Core", for the small line at the bottom.
+    var source: String
     var senses: [CardLine] = []
     var statistics: [CardLine] = []
     var interaction: [CardLine] = []
@@ -25,6 +27,9 @@ struct CardContent {
         levelLabel = "\(creature.kind == .hazard ? "HAZARD" : "CREATURE") \(presenter.level)"
         template = presenter.template
         traits = creature.traits
+        source = creature.source.title.isEmpty
+            ? creature.source.pack.replacingOccurrences(of: "-", with: " ").capitalized
+            : creature.source.title
         senses = builder.sensesLines()
         statistics = builder.statisticsLines()
         interaction = builder.abilityLines(in: .interaction)
