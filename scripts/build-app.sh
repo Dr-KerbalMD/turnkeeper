@@ -62,9 +62,9 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Combat Pad listens while you hold a player's strip, so you can say their initiative.</string>
+    <string>Combat Pad listens while you hold Hold to Say Initiative, so you can say the initiative total.</string>
     <key>NSSpeechRecognitionUsageDescription</key>
-    <string>Combat Pad turns the initiative you say into a number, on this device.</string>
+    <string>Combat Pad turns the initiative you say into a number, on this device when it can.</string>
     <key>NSLocalNetworkUsageDescription</key>
     <string>Combat Pad syncs encounters with your other devices on this network.</string>
     <key>NSBonjourServices</key>
