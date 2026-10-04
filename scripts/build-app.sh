@@ -127,4 +127,9 @@ PLIST
 
 # Ad-hoc signature: enough to run locally; Gatekeeper will still ask on other Macs.
 codesign --force --sign - "$APP"
+# The bundle is rebuilt at the same path, so Finder and LaunchServices keep showing the icon they cached
+# for it (none, from the first build). Touching it and re-registering makes them read the icon again.
+touch "$APP"
+LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+[ -x "$LSREGISTER" ] && "$LSREGISTER" -f "$APP"
 echo "Built $APP ($VERSION)"
