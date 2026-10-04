@@ -18,13 +18,14 @@ struct CombatSetupTests {
          "pit": entry("pit", "Drowning Pit", level: 3, kind: .hazard)]
     }
 
-    @Test("Creatures are numbered across slots, benched ones wait, and PCs join")
+    @Test("Creatures are numbered across slots and templates, benched ones wait, and PCs join")
     func combatants() {
         var variant = EncounterVariant(label: "Base")
         var goblins = EncounterSlot(creatureKey: "goblin")
         goblins.count = 2
         var reserve = EncounterSlot(creatureKey: "goblin")
         reserve.startsOnBench = true
+        reserve.template = .weak  // A weak stack shares the numbering.
         variant.slots = [goblins, reserve, EncounterSlot(creatureKey: "pit")]
         let party = Party(campaignID: UUID(), name: "Table 1", level: 1, members: [PartyMember(name: "Kyra")])
         let state = CombatSetup.state(for: variant, party: party) { bestiary[$0] }

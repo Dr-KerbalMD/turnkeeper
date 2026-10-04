@@ -145,13 +145,8 @@ struct EncounterEditorView: View {
     }
 
     private func addCreature(_ key: String) {
-        updateVariant { variant in
-            if let index = variant.slots.firstIndex(where: { $0.creatureKey == key && $0.template == .normal }) {
-                variant.slots[index].count += 1
-            } else {
-                variant.slots.append(EncounterSlot(creatureKey: key))
-            }
-        }
+        // Always a new stack, even of a creature already here, since it may become weak or elite.
+        updateVariant { $0.slots.append(EncounterSlot(creatureKey: key)) }
     }
 
     private func newCustomCreature(in scenario: Scenario) -> CustomCreature {

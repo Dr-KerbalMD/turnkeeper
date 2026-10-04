@@ -115,6 +115,11 @@ struct MagnetTile: View {
         RoundedRectangle(cornerRadius: 10)
             .fill(combatant.magnet.color.gradient)
             .overlay {
+                if let border = combatant.template.borderColor {
+                    RoundedRectangle(cornerRadius: 10).strokeBorder(border, lineWidth: 4)
+                }
+            }
+            .overlay {
                 if isCurrent { RoundedRectangle(cornerRadius: 10).stroke(.yellow, lineWidth: 2) }
             }
             .shadow(color: .black.opacity(0.4), radius: 2, y: 1)

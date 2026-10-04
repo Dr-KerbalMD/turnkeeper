@@ -56,6 +56,17 @@ extension Magnet {
     }
 }
 
+/// The border on a weak or elite creature's strip, so separate stacks of one creature stand apart.
+extension CreatureTemplate {
+    var borderColor: Color? {
+        switch self {
+        case .elite: return Color(hex: 0xE040FB)
+        case .weak: return Color(hex: 0x80DEEA)
+        case .normal: return nil
+        }
+    }
+}
+
 extension Color {
     init(hex: UInt32, opacity: Double = 1) {
         self.init(

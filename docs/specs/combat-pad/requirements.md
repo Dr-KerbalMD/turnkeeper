@@ -43,7 +43,10 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R3.5 A slot has a creature, count, template (elite, normal or weak), side, whether it starts on
   the bench, and the conditions and temporary HP its creatures start the fight with.
   Slots, events and party members each have a remove button (and a context menu item), since
-  swipe-to-delete exists only on the iPad.
+  swipe-to-delete exists only on the iPad. Adding a creature that is already in the encounter adds a new
+  slot, so one stack can be made weak or elite. Combatants of the same creature are numbered together across
+  slots (Wolf 1, Wolf 2, even when one is weak), and on the board weak and elite strips have a colored border,
+  a different color for each.
 - R3.5a Custom creatures and complex hazards belong to a campaign and work everywhere bestiary creatures do
   (cards, templates, conditions, budget, initiative). They are made or edited in a form with a live battle
   card; lists are typed as printed ("Acrobatics +5", "2d8+11 bludgeoning plus 1d6 fire", "DC 22 basic
