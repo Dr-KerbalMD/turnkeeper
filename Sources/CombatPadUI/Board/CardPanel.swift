@@ -1,29 +1,75 @@
 import CombatPadKit
 import SwiftUI
 
-/// The notes half of the pad: the battle card of whoever's turn it is (or the pinned combatant), and the
-/// encounter's notes below.
+/// The notes half of the pad: the battle card of whoever's turn it is (or the pinned combatant), then the
+/// notes about that creature in this scenario and the encounter's notes, in a split the GM can resize.
 struct CardPanel: View {
     let controller: BoardController
     @Environment(AppModel.self) private var model
-    @State private var notesExpanded = true
+    private var layout = StoredSplitLayout()
+
+    init(controller: BoardController) {
+        self.controller = controller
+    }
 
     var body: some View {
         VStack(spacing: 10) {
             header
-            Group {
-                if let combatant = controller.cardCombatant {
-                    card(for: combatant)
-                } else {
-                    ContentUnavailableView("No one is acting", systemImage: "rectangle.portrait",
-                                           description: Text("Begin combat, or tap a strip to see its card."))
-                        .foregroundStyle(.white)
-                }
+            PaneStack(layout: layout.projectedValue, visible: visiblePanes, titles: titles) {
+                cardArea
+            } creatureNotes: {
+                NotesEditor(text: creatureNoteBinding)
+            } encounterNotes: {
+                NotesEditor(text: encounterNotesBinding)
             }
-            .frame(maxHeight: .infinity)
-            NotesPanel(controller: controller, isExpanded: $notesExpanded)
         }
         .padding(12)
+    }
+
+    @ViewBuilder
+    private var cardArea: some View {
+        if let combatant = controller.cardCombatant {
+            card(for: combatant)
+        } else {
+            ContentUnavailableView("No one is acting", systemImage: "rectangle.portrait",
+                                   description: Text("Begin combat, or tap a strip to see its card."))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    /// Creature notes show for creatures and hazards, not PCs.
+    private var visiblePanes: Set<Int> {
+        let hasCreature = !(controller.cardCombatant?.creatureKey.isEmpty ?? true) && scenarioID != nil
+        return hasCreature ? SplitLayout.allPanes : [SplitLayout.card, SplitLayout.encounterNotes]
+    }
+
+    private var titles: [Int: String] {
+        let name = controller.cardCombatant.flatMap { controller.entry(for: $0)?.name } ?? ""
+        return [SplitLayout.creatureNotes: "Creature Notes · \(name)", SplitLayout.encounterNotes: "Encounter Notes"]
+    }
+
+    private var encounter: Encounter? { controller.session.flatMap { model.encounter($0.encounterID) } }
+    private var scenarioID: UUID? { encounter?.scenarioID }
+
+    private var creatureNoteBinding: Binding<String> {
+        let subject = controller.cardCombatant?.creatureKey ?? ""
+        return Binding { [model, scenarioID] in
+            scenarioID.map { model.library.creatureNote(scenarioID: $0, subject: subject).text } ?? ""
+        } set: { [model, scenarioID] text in
+            guard let scenarioID else { return }
+            var note = model.library.creatureNote(scenarioID: scenarioID, subject: subject)
+            note.text = text
+            model.library.save(note)
+        }
+    }
+
+    private var encounterNotesBinding: Binding<String> {
+        Binding { [encounter] in encounter?.notes ?? "" } set: { [model, encounter] text in
+            guard var edited = encounter.flatMap({ model.encounter($0.id) }) else { return }
+            edited.notes = text
+            model.library.save(edited)
+        }
     }
 
     private var header: some View {
@@ -79,41 +125,14 @@ private struct PlayerCard: View {
     }
 }
 
-/// The encounter's planning notes, read-only, and this fight's scratch notes, like the pad's write-on area.
-private struct NotesPanel: View {
-    let controller: BoardController
-    @Binding var isExpanded: Bool
-    @Environment(AppModel.self) private var model
+/// A notes text area on the board, saved as it's typed.
+private struct NotesEditor: View {
+    @Binding var text: String
 
     var body: some View {
-        DisclosureGroup(isExpanded: $isExpanded) {
-            VStack(alignment: .leading, spacing: 6) {
-                if let notes = encounterNotes, !notes.isEmpty {
-                    Text(notes).font(.callout).foregroundStyle(.secondary)
-                }
-                TextEditor(text: scratchBinding)
-                    .font(.callout)
-                    .frame(minHeight: 70, maxHeight: 140)
-                    .scrollContentBackground(.hidden)
-                    .background(.background.opacity(0.6), in: RoundedRectangle(cornerRadius: 8))
-            }
-        } label: {
-            Label("Notes", systemImage: "note.text").font(.headline)
-        }
-        .padding(10)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
-    }
-
-    private var encounterNotes: String? {
-        controller.session.flatMap { model.encounter($0.encounterID)?.notes }
-    }
-
-    private var scratchBinding: Binding<String> {
-        Binding(get: { controller.session?.scratchNotes ?? "" },
-                set: { text in
-                    guard var session = controller.session else { return }
-                    session.scratchNotes = text
-                    model.library.save(session)
-                })
+        TextEditor(text: $text)
+            .font(.callout)
+            .scrollContentBackground(.hidden)
+            .background(.background.opacity(0.6), in: RoundedRectangle(cornerRadius: 8))
     }
 }

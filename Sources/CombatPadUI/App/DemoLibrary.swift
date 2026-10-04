@@ -7,6 +7,8 @@ import Foundation
 enum DemoLibrary {
     @MainActor
     static func model(mode: String, bestiary: BestiaryStore) -> AppModel {
+        // Demos (and the UI tests that drive them) start from the default card and notes split.
+        UserDefaults.standard.removeObject(forKey: "cardNotesSplit")
         let artFolder = FileManager.default.temporaryDirectory.appendingPathComponent("CombatPadDemoArt")
         let model = AppModel(bestiary: bestiary, artStore: ArtStore(directory: artFolder))
         if mode == "starfinder" { return starfinder(model: model, bestiary: bestiary) }

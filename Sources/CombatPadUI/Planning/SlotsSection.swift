@@ -13,7 +13,8 @@ struct SlotsSection: View {
     var body: some View {
         Section("Creatures") {
             ForEach(encounter.variant(label).slots) { slot in
-                SlotRow(slot: slot, party: party, change: { change in updateSlot(slot.id, change) })
+                SlotRow(slot: slot, scenarioID: encounter.scenarioID, party: party,
+                        change: { change in updateSlot(slot.id, change) })
             }
             .onDelete { offsets in updateVariant { $0.slots.remove(atOffsets: offsets) } }
             .onMove { source, target in updateVariant { $0.slots.move(fromOffsets: source, toOffset: target) } }
@@ -47,6 +48,7 @@ struct SlotsSection: View {
 /// One slot: art, name, level and XP, with its settings.
 private struct SlotRow: View {
     let slot: EncounterSlot
+    let scenarioID: UUID
     let party: Party?
     let change: (@escaping (inout EncounterSlot) -> Void) -> Void
     @Environment(AppModel.self) private var model
@@ -101,6 +103,10 @@ private struct SlotRow: View {
                 Toggle("Starts on bench", isOn: field(\.startsOnBench))
             }
             startingState
+            TextField("Creature notes", text: noteBinding, prompt: Text("Notes for this creature in the scenario"),
+                      axis: .vertical)
+                .lineLimit(1...6)
+                .font(.callout)
         }
         .padding(.vertical, 4)
         .sheet(isPresented: $isShowingCard) {
@@ -156,6 +162,17 @@ private struct SlotRow: View {
 
     private var startingConditionsText: String {
         "Starts " + slot.conditions.map(ConditionLabel.short).joined(separator: ", ").lowercased()
+    }
+
+    /// The scenario's note for this creature, shared with every encounter it's in and with the board.
+    private var noteBinding: Binding<String> {
+        Binding { [model, scenarioID, slot] in
+            model.library.creatureNote(scenarioID: scenarioID, subject: slot.creatureKey).text
+        } set: { [model, scenarioID, slot] text in
+            var note = model.library.creatureNote(scenarioID: scenarioID, subject: slot.creatureKey)
+            note.text = text
+            model.library.save(note)
+        }
     }
 
     private var deleteMessage: String {
