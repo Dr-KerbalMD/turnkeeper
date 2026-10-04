@@ -106,6 +106,19 @@ cat > "$APP/Contents/Info.plist" <<PLIST
             </dict>
         </dict>
     </array>
+    <key>UTImportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>io.github.scooper4711.pluck.statblock</string>
+            <key>UTTypeDescription</key>
+            <string>Pathfinder Stat Block</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.json</string>
+            </array>
+        </dict>
+    </array>
     <key>NSHumanReadableCopyright</key>
     <string>Not published, endorsed, or specifically approved by Paizo.</string>
 </dict>

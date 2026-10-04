@@ -27,6 +27,8 @@ final class AppModel {
     var statusMessage: String?
     /// A planning edit that would reset a fight in progress, waiting for the GM to confirm.
     var pendingPlanChange: PendingPlanChange?
+    /// What the last paste or drop of stat blocks added, shown until dismissed.
+    var statBlockImport: StatBlockImport?
 
     @ObservationIgnored private let file: LibraryFile?
     @ObservationIgnored private var saveTask: Task<Void, Never>?

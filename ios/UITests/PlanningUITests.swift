@@ -39,6 +39,34 @@ final class PlanningUITests: XCTestCase {
         XCTAssertTrue(waitUntil { next.isHittable })
     }
 
+    /// A stat block pasted as plain text becomes a custom creature in the encounter, ready to review.
+    func testPastingAStatBlockAddsACustomCreature() {
+        UIPasteboard.general.string = """
+        Gwibble — Creature 3
+        Small, Fey
+        Perception +9; darkvision
+        AC 19; Fort +7, Ref +11, Will +9
+        HP 45
+        Speed 25 feet
+        Melee ◆ jaws +12 (agile), Damage 2d6+4 piercing
+        """
+        app.launchArguments = ["--demo", "planner"]
+        app.launch()
+        XCTAssertTrue(app.navigationBars["A: Ambush on the Docks"].waitForExistence(timeout: 10))
+        let paste = app.buttons["Paste"]
+        for _ in 0..<8 where !paste.isHittable {
+            app.swipeUp()
+        }
+        paste.tap()
+        let added = app.alerts["Stat Blocks Added"]
+        XCTAssertTrue(added.waitForExistence(timeout: 5))
+        XCTAssertTrue(added.staticTexts["Added Gwibble (Creature 3)."].exists)
+        added.buttons["Review…"].tap()
+        XCTAssertTrue(app.navigationBars["Gwibble"].waitForExistence(timeout: 5))
+        app.buttons["Cancel"].tap()
+        XCTAssertTrue(app.staticTexts["Gwibble"].waitForExistence(timeout: 5))
+    }
+
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {

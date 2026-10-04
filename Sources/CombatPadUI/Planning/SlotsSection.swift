@@ -20,6 +20,7 @@ struct SlotsSection: View {
             // One button per row: in a form, a tap anywhere in a row triggers every plain button in it.
             Button("Add Creature…", systemImage: "plus") { isBrowsing = true }
             Button("Add Custom Creature…", systemImage: "person.badge.plus") { isAddingCustom = true }
+            PasteStatBlocksRow(encounterID: encounter.id, label: label)
         }
     }
 

@@ -30,6 +30,7 @@ struct EncounterEditorView: View {
             EventsSection(encounter: current, label: label, editingEvent: $editingEvent)
         }
         .formStyle(.grouped)
+        .modifier(StatBlockImportModifier(encounterID: encounter.id, label: label))
         .navigationTitle(current.name)
         .toolbar { runButton(current) }
         .onAppear { setUp(scenario) }
