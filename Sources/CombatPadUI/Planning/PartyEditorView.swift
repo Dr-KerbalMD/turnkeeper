@@ -17,6 +17,8 @@ struct PartyEditorView: View {
                     HStack {
                         TextField("Name", text: memberName(member.id)).nameEntry()
                             .foregroundStyle(member.isAway ? .secondary : .primary)
+                        Stepper("Level \(member.level ?? party.level)", value: levelBinding(member.id), in: 1...20)
+                            .fixedSize()
                         Toggle(isOn: awayBinding(member.id)) {
                             Label("Away", systemImage: member.isAway ? "moon.zzz.fill" : "person.fill.checkmark")
                         }
@@ -51,6 +53,15 @@ struct PartyEditorView: View {
     private func binding<Value>(_ path: WritableKeyPath<Party, Value>) -> Binding<Value> {
         Binding(get: { (model.party(party.id) ?? party)[keyPath: path] },
                 set: { value in update { $0[keyPath: path] = value } })
+    }
+
+    /// A member's level, which follows the party's level until it is changed.
+    private func levelBinding(_ id: UUID) -> Binding<Int> {
+        Binding(get: { party.members.first { $0.id == id }?.level ?? party.level },
+                set: { level in update { party in
+                    guard let index = party.members.firstIndex(where: { $0.id == id }) else { return }
+                    party.members[index].level = level
+                } })
     }
 
     private func awayBinding(_ id: UUID) -> Binding<Bool> {

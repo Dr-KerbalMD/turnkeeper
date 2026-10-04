@@ -60,13 +60,15 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
     public var name: String
     /// Not at the table this session: left out of budgets, and waiting on the bench in fights.
     public var isAway = false
+    /// The character's own level, for challenge points. Nil means the party's level.
+    public var level: Int?
 
     public init(name: String) {
         self.name = name
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, isAway
+        case id, name, isAway, level
     }
 
     /// Libraries saved before players could be away have no `isAway`; they read as present.
@@ -75,6 +77,7 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
         id = try container.decode(UUID.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         isAway = try container.decodeIfPresent(Bool.self, forKey: .isAway) ?? false
+        level = try container.decodeIfPresent(Int.self, forKey: .level)
     }
 }
 

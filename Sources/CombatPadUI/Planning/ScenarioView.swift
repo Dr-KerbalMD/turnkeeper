@@ -25,6 +25,7 @@ struct ScenarioView: View {
             }
             Section {
                 PartyPicker(campaignID: scenario.campaignID, partyID: $partyID)
+                ChallengePointsLine(scenario: scenario, party: model.party(partyID))
                 ScenarioGrid(scenario: scenario, party: model.party(partyID))
             } header: {
                 Text("Encounters by difficulty")
@@ -127,6 +128,24 @@ private struct ScenarioGrid: View {
         } else {
             Text(variant.slots.isEmpty ? "—" : "\(variant.slots.reduce(0) { $0 + $1.count }) creatures")
                 .foregroundStyle(.secondary)
+        }
+    }
+}
+
+/// "Party: 16 CP → 16–18 CP", or why challenge points can't be worked out.
+struct ChallengePointsLine: View {
+    let scenario: Scenario?
+    let party: Party?
+
+    var body: some View {
+        if let scenario, let party, scenario.variantLabels.contains(where: { ChallengePoints.range(of: $0) != nil }) {
+            if let points = party.challengePoints(levelRange: scenario.levelRange) {
+                let label = ChallengePoints.label(for: points, among: scenario.variantLabels)
+                LabeledContent("Challenge points", value: "\(points) CP" + (label.map { " → \($0)" } ?? ""))
+            } else {
+                Text("Set the scenario's levels (such as 3–6) to work out challenge points.")
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
         }
     }
 }

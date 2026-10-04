@@ -31,6 +31,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R3.1 A campaign has a game (Pathfinder or Starfinder), which sets the look and the default bestiary.
 - R3.2 Parties are built separately from encounters. A PC has only a name.
 - R3.2a Campaigns can be renamed and switched between Pathfinder and Starfinder; a new one needs a name.
+- R3.2a1 Each PC can have their own level, used for challenge points: the lowest allowed level of the
+  scenario's level range gives 2 points, then 3, 4 and 6. The present players' total picks the matching
+  difficulty label (such as 16–18 CP), which becomes the encounter's default difficulty.
 - R3.2b Name fields capitalize each word and skip autocorrect, so fantasy names stay as typed.
 - R3.3 A scenario holds ordered encounters and editable difficulty labels, filled from presets:
   Challenge Points low tier (10–11 … 16–18 CP), high tier (19–22 … 33+ CP), Easier/Base/Harder, or one
