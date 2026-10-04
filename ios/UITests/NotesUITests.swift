@@ -19,9 +19,12 @@ final class NotesUITests: XCTestCase {
         // Right after launch the board is still settling; a tap then can land before the header is ready.
         XCTAssertTrue(waitUntil { encounterHeader.isHittable })
         encounterHeader.tap()
-        XCTAssertTrue(waitUntil { !planned.exists })
+        XCTAssertTrue(waitUntil { !planned.exists }, describe(encounterHeader))
+        // A second tap a fraction of a second after the first, on a header that just moved, is dropped;
+        // people don't tap that fast, but the test does.
+        Thread.sleep(forTimeInterval: 1)
         encounterHeader.tap()
-        XCTAssertTrue(planned.waitForExistence(timeout: 3))
+        XCTAssertTrue(planned.waitForExistence(timeout: 3), describe(encounterHeader))
 
         let creatureNotes = app.textViews.element(boundBy: 0)
         creatureNotes.tap()
@@ -40,6 +43,13 @@ final class NotesUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["Perception"].exists)
         app.buttons["Next"].tap()
         XCTAssertTrue(waitUntil { !back.exists })
+    }
+
+    private func describe(_ header: XCUIElement) -> String {
+        let views = app.textViews.allElementsBoundByIndex.map { view in
+            "\(view.frame) \((view.value as? String)?.prefix(12) ?? "")"
+        }
+        return "header \(header.frame) hittable \(header.isHittable); text views \(views)"
     }
 
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {

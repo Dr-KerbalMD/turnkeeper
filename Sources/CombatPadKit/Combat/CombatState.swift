@@ -54,6 +54,13 @@ public struct CombatState: Codable, Sendable, Hashable {
         ladder.filter { $0.initiative == nil }
     }
 
+    /// Whose initiative voice entry sets next: the strip the GM chose, else the first one still without a
+    /// number, so entry walks down the ladder by itself. Nil when everyone has one.
+    public func initiativeTarget(chosen: UUID?) -> UUID? {
+        if let chosen, ladder.contains(where: { $0.id == chosen }) { return chosen }
+        return combatantsWithoutInitiative.first?.id
+    }
+
     /// Whether every enemy that has joined the fight is at 0 HP. Benched enemies haven't joined, hazards are
     /// disabled rather than killed, and allies and PCs don't count. False when there are no such enemies.
     public func allEnemiesDown(maxHitPoints: (Combatant) -> Int) -> Bool {

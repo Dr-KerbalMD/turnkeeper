@@ -56,18 +56,14 @@ private struct BoardContent: View {
         .onKeyPress(KeyEquivalent("i"), phases: [.down, .up]) { press in holdToSpeak(press) }
     }
 
-    /// On the Mac, holding I listens for the tapped strip's initiative during setup.
+    /// On the Mac, holding I works like the hold-to-talk button: it listens for the highlighted strip.
     private func holdToSpeak(_ press: KeyPress) -> KeyPress.Result {
-        guard controller.state.phase == .setup, let id = controller.pinnedID else { return .ignored }
+        guard controller.state.phase == .setup, let id = controller.initiativeTargetID else { return .ignored }
         let voice = VoiceInitiative.shared
         if press.phase == .down, voice.listeningFor == nil {
             voice.listen(for: id)
         } else if press.phase == .up, voice.listeningFor == id {
-            Task {
-                if let value = SpokenNumberParser.initiative(from: await voice.finish()) {
-                    controller.change { $0.setInitiative(value, for: id) }
-                }
-            }
+            Task { _ = controller.recordSpokenInitiative(await voice.finish()) }
         }
         return .handled
     }

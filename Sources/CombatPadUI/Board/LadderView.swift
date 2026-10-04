@@ -25,6 +25,7 @@ struct LadderView: View {
                 .padding(12)
             }
             if controller.state.phase == .active { gutters }
+            if controller.state.phase == .setup { HoldToTalkButton(controller: controller) }
             BenchTray(controller: controller) { id in
                 controller.bringInFromBench(id)
                 sheet = .initiative(id)

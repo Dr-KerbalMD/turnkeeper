@@ -49,7 +49,7 @@ struct PaneStack<Card: View, CreatureNotes: View, EncounterNotes: View>: View {
             } label: {
                 Label(titles[pane] ?? "", systemImage: isCollapsed ? "chevron.right" : "chevron.down")
                     .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: 24, alignment: .leading)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)

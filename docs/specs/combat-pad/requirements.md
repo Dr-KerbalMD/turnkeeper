@@ -82,9 +82,13 @@ ladder, and the right half is the notes side, which shows the battle card of the
   join later get their number entered the same way.
 - R4.2a Begin Combat warns, naming them, when anyone on the ladder has no initiative; Go Back outlines
   them, Begin Anyway puts them last.
-- R4.3 In Setup only, each strip has a microphone button that listens while held; letting go sets the
-  spoken total. Only numbers are recognized, never names. While listening, the creature's modifiers are
-  shown large. After Begin combat, nothing listens and strips are dragged to reorder.
+- R4.3 In Setup only, one large Hold to Say Initiative button sits below the ladder (and on the Mac,
+  holding I does the same). It sets the highlighted strip: the first without an initiative, or the one
+  the GM tapped. Letting go sets the spoken total and moves the highlight to the next strip without one.
+  A missed number shows a short message to try again; it never opens the keypad. Only numbers are
+  recognized, never names, on the device where it can (else Apple's recognizer). While listening, the
+  creature's modifiers are shown large. After Begin combat, nothing listens and strips are dragged to
+  reorder.
 - R4.4 Tiles show the name, initiative, HP and conditions. Tiles are colored like magnets: red for
   enemies, blue for PCs, green for NPCs, gray for hazards.
 - R4.5 Creature HP tracks damage, healing and temporary HP. PCs track no HP.

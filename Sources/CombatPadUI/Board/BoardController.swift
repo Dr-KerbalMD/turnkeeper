@@ -14,6 +14,8 @@ final class BoardController {
     var pinnedID: UUID?
     /// After "Go Back" from Begin Combat: strips still missing an initiative are outlined.
     var highlightsMissingInitiative = false
+    /// The strip the GM tapped to enter its initiative by voice; otherwise entry walks down the ladder.
+    var chosenForInitiative: UUID?
     /// The GM chose Keep Going after every enemy fell; cleared once an enemy is up again.
     private var victoryAcknowledged = false
     private var undoStack: [CombatState] = []

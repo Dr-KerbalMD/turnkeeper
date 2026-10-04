@@ -22,23 +22,50 @@ final class VoiceInitiative {
     @ObservationIgnored private var request: SFSpeechAudioBufferRecognitionRequest?
     @ObservationIgnored private var task: SFSpeechRecognitionTask?
     @ObservationIgnored private var isFinal = false
+    /// For UI tests: what the "microphone" hears on each hold, from `--fake-voice 17,nineteen,mumble`.
+    @ObservationIgnored private var scripted: [String]?
+    /// Why voice entry is off, for the button to explain; empty when it's available.
+    private(set) var unavailableReason = ""
 
-    private init() {}
+    private init() {
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "--fake-voice"), arguments.indices.contains(index + 1) {
+            scripted = arguments[index + 1].split(separator: ",").map(String.init)
+        }
+    }
 
     /// Asks for speech and microphone permission; voice entry stays off if either is refused.
     func requestPermission() async {
+        guard scripted == nil else {
+            isAvailable = true
+            return
+        }
         let speech = await Self.speechAuthorization()
         let microphone = await AVAudioApplication.requestRecordPermission()
-        isAvailable = speech == .authorized && microphone && recognizer?.supportsOnDeviceRecognition == true
+        isAvailable = speech == .authorized && microphone && recognizer?.isAvailable == true
+        unavailableReason = switch (speech == .authorized, microphone, recognizer?.isAvailable == true) {
+        case (false, _, _): "Voice entry needs Speech Recognition access in Settings."
+        case (_, false, _): "Voice entry needs Microphone access in Settings."
+        case (_, _, false): "Speech recognition isn't available right now."
+        default: ""
+        }
     }
 
     /// Starts listening. Numbers are primed as likely words, which makes them much more accurate.
     func listen(for id: UUID, names: [String] = []) {
-        guard isAvailable, let recognizer, listeningFor == nil else { return }
+        guard isAvailable, listeningFor == nil else { return }
+        if var scripted {
+            transcript = scripted.isEmpty ? "" : scripted.removeFirst()
+            self.scripted = scripted
+            listeningFor = id
+            return
+        }
+        guard let recognizer else { return }
         transcript = ""
         isFinal = false
         let request = SFSpeechAudioBufferRecognitionRequest()
-        request.requiresOnDeviceRecognition = true
+        // On the device when it can be, so numbers never leave it; otherwise Apple's server recognizer.
+        request.requiresOnDeviceRecognition = recognizer.supportsOnDeviceRecognition
         request.shouldReportPartialResults = true
         request.contextualStrings = (1...60).map(String.init) + names
         do {
@@ -54,6 +81,10 @@ final class VoiceInitiative {
     /// Stops listening and returns what was heard, after waiting up to half a second for the final result.
     func finish() async -> String {
         guard listeningFor != nil else { return transcript }
+        if scripted != nil {
+            listeningFor = nil
+            return transcript
+        }
         stopAudio()
         request?.endAudio()
         for _ in 0..<10 where !isFinal {

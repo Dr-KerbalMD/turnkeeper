@@ -53,7 +53,7 @@ struct BoardTopBar: View {
     private var roundText: String {
         let state = controller.state
         if state.phase == .setup {
-            return "Roll for initiative: hold a strip's microphone and say the total, or tap the number"
+            return "Roll for initiative: hold the button below and say the total, or tap a number"
         }
         let name = state.current?.name ?? "—"
         return "Round \(state.round) · \(name)'s turn"

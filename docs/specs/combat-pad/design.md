@@ -67,6 +67,10 @@ Ported from the pf2e system, with tests.
   queue. The order is end-of-turn, end-of-round, start-of-round, initiative-count events, expiring
   durations, then start-of-turn.
 - **`ReminderRules`.** Condition reminders by timing, with their actions.
+- **Voice entry.** `CombatState.initiativeTarget(chosen:)` picks whose initiative is next.
+  `HoldToTalkButton` tracks the hold with a zero-distance drag gesture; a zero-duration long press ends as
+  soon as it begins, which made the old per-strip buttons stop listening at once. `--fake-voice a,b,c`
+  scripts what each hold hears, for UI tests.
 - **`SpokenNumberParser`.** Turns a transcript into an initiative number. Number words, digits and
   ties are supported, and the last number heard wins.
 
