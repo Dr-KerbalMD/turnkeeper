@@ -25,7 +25,10 @@ struct LadderView: View {
                 .padding(12)
             }
             if controller.state.phase == .active { gutters }
-            BenchTray(controller: controller)
+            BenchTray(controller: controller) { id in
+                controller.bringInFromBench(id)
+                sheet = .initiative(id)
+            }
         }
         .padding(.bottom, 10)
     }
@@ -57,8 +60,9 @@ struct LadderView: View {
         let state = controller.state
         switch state[id]?.place {
         case .bench:
-            controller.bringInFromBench(id, initiative: state[target]?.initiative)
+            controller.bringInFromBench(id)
             controller.change { $0.move(id, toIndex: $0.order.firstIndex(of: target) ?? 0) }
+            sheet = .initiative(id)
         case .delaying:
             controller.change { $0.endDelay(id) }
         default:
@@ -149,9 +153,10 @@ private struct DropZone: View {
     }
 }
 
-/// Creatures waiting off the ladder. Tap to bring one in (it rolls initiative), or drag it into place.
+/// Creatures waiting off the ladder. Tap to bring one in and enter its initiative, or drag it into place.
 private struct BenchTray: View {
     let controller: BoardController
+    let bringIn: (UUID) -> Void
 
     var body: some View {
         let bench = controller.state.bench
@@ -162,7 +167,7 @@ private struct BenchTray: View {
                     HStack {
                         ForEach(bench) { combatant in
                             Button {
-                                controller.bringInFromBench(combatant.id)
+                                bringIn(combatant.id)
                             } label: {
                                 Label(combatant.name, systemImage: "arrow.up.circle")
                                     .padding(.horizontal, 10)
@@ -172,7 +177,7 @@ private struct BenchTray: View {
                             }
                             .buttonStyle(.plain)
                             .draggable(combatant.id.uuidString)
-                            .help("Bring into the fight with a rolled initiative")
+                            .help("Bring into the fight and enter its initiative")
                         }
                     }
                 }

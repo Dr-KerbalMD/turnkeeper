@@ -8,7 +8,6 @@ enum BoardSheet: Identifiable, Hashable {
     case conditions(UUID)
     case duration
     case event
-    case listenForAll
 
     var id: String { String(describing: self) }
 }
@@ -32,9 +31,7 @@ struct BoardTopBar: View {
             DurationArrows(controller: controller)
             Spacer()
             if controller.state.phase == .setup {
-                Button("Listen for All", systemImage: "mic") { sheet = .listenForAll }
-                Button("Begin Combat", systemImage: "flag.checkered") { controller.beginCombat() }
-                    .buttonStyle(.borderedProminent)
+                BeginCombatButton(controller: controller)
             } else {
                 Menu("Add", systemImage: "plus") {
                     Button("Duration Arrow…", systemImage: "arrow.uturn.right") { sheet = .duration }
@@ -55,7 +52,9 @@ struct BoardTopBar: View {
 
     private var roundText: String {
         let state = controller.state
-        if state.phase == .setup { return "Roll for initiative: hold a strip and say the number, or tap it" }
+        if state.phase == .setup {
+            return "Roll for initiative: hold a strip's microphone and say the total, or tap the number"
+        }
         let name = state.current?.name ?? "—"
         return "Round \(state.round) · \(name)'s turn"
     }
@@ -109,5 +108,39 @@ private struct FightMenu: View {
         } message: {
             Text("Initiative, HP, conditions and the round go back to the start. Undo brings it all back.")
         }
+    }
+}
+
+/// Begins combat, first warning when someone on the ladder still has no initiative.
+private struct BeginCombatButton: View {
+    let controller: BoardController
+    @State private var missing: [Combatant] = []
+
+    var body: some View {
+        Button("Begin Combat", systemImage: "flag.checkered") {
+            missing = controller.state.combatantsWithoutInitiative
+            if missing.isEmpty { controller.beginCombat() }
+        }
+        .buttonStyle(.borderedProminent)
+        // An alert rather than a confirmation dialog: on the iPad a dialog becomes a popover, which hides the
+        // cancel button, and Go Back must always be there.
+        .alert(title, isPresented: isWarning) {
+            Button("Go Back", role: .cancel) { controller.highlightsMissingInitiative = true }
+            Button("Begin Anyway") { controller.beginCombat() }
+        } message: {
+            Text("Begin Anyway puts them at the bottom of the order.")
+        }
+    }
+
+    private var title: String {
+        let names = missing.map(\.name)
+        let list = names.count > 1
+            ? names.dropLast().joined(separator: ", ") + " and " + (names.last ?? "")
+            : names.first ?? ""
+        return "\(list) \(names.count == 1 ? "has" : "have") no initiative yet."
+    }
+
+    private var isWarning: Binding<Bool> {
+        Binding(get: { !missing.isEmpty }, set: { if !$0 { missing = [] } })
     }
 }

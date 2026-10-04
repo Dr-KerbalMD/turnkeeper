@@ -12,6 +12,8 @@ final class BoardController {
     private(set) var reminders: [Reminder] = []
     /// The combatant whose card is pinned; nil follows the current turn.
     var pinnedID: UUID?
+    /// After "Go Back" from Begin Combat: strips still missing an initiative are outlined.
+    var highlightsMissingInitiative = false
     /// The GM chose Keep Going after every enemy fell; cleared once an enemy is up again.
     private var victoryAcknowledged = false
     private var undoStack: [CombatState] = []
@@ -121,7 +123,8 @@ final class BoardController {
     private func perform(_ action: ReminderAction, amount: Int) {
         if case let .bringIn(slotIDs) = action {
             let ids = state.bench.filter { $0.slotID.map(slotIDs.contains) ?? false }.map(\.id)
-            amend { state in ids.forEach { state.bringIn($0, initiative: rollInitiative(for: state[$0])) } }
+            // They join at the end of the order; the GM rolls and enters their initiative.
+            amend { state in ids.forEach { state.bringIn($0) } }
         } else {
             amend { $0.apply(action, amount: amount) }
         }
@@ -129,15 +132,7 @@ final class BoardController {
 
     // MARK: Initiative
 
-    /// Rolls initiative for every creature and hazard that has none yet. PCs are left to the players.
-    func rollCreatureInitiative() {
-        change { state in
-            for combatant in state.combatants where combatant.kind != .playerCharacter && combatant.initiative == nil {
-                state.setInitiative(rollInitiative(for: combatant), for: combatant.id)
-            }
-        }
-    }
-
+    /// For the optional Roll button: d20 plus the creature's initiative modifier. The GM normally rolls.
     func rollInitiative(for combatant: Combatant?) -> Double {
         guard let combatant else { return 10 }
         let modifier = creature(for: combatant).map {
@@ -146,8 +141,32 @@ final class BoardController {
         return CombatSetup.rollInitiative(modifier: modifier, using: &generator)
     }
 
-    func bringInFromBench(_ id: UUID, initiative: Double? = nil) {
-        change { state in state.bringIn(id, initiative: initiative ?? rollInitiative(for: state[id])) }
+    /// Brings a benched combatant onto the ladder without an initiative, for the GM to enter one.
+    func bringInFromBench(_ id: UUID) {
+        change { $0.bringIn(id) }
+    }
+
+    /// Initiative modifiers to do the math with: Perception first, then Stealth, then the other skills, with
+    /// the template and conditions applied. Empty for PCs.
+    func initiativeSkills(for combatant: Combatant) -> [InitiativeSkill] {
+        guard let creature = creature(for: combatant) else { return [] }
+        let presenter = StatBlockPresenter(creature: creature, template: combatant.template,
+                                           conditions: combatant.conditions)
+        var skills: [InitiativeSkill] = []
+        if creature.kind == .creature {
+            skills.append(InitiativeSkill(name: "Perception", modifier: presenter.perception.value,
+                                          isInitiative: creature.initiativeStatistic == "perception"))
+        }
+        if creature.kind == .hazard {
+            // A hazard's Stealth is its own statistic, which is also what it rolls for initiative.
+            skills.append(InitiativeSkill(name: "Stealth", modifier: presenter.initiative.value,
+                                          isInitiative: creature.initiativeStatistic == "stealth"))
+        }
+        skills += creature.skills.sorted(by: Self.stealthFirst).map { skill in
+            InitiativeSkill(name: skill.name, modifier: presenter.skill(skill).value,
+                            isInitiative: skill.name.lowercased() == creature.initiativeStatistic)
+        }
+        return skills
     }
 
     func beginCombat() {
@@ -174,10 +193,24 @@ final class BoardController {
         return combatant.customMaxHitPoints
     }
 
+    private static func stealthFirst(_ first: Skill, _ second: Skill) -> Bool {
+        (first.name == "Stealth" ? 0 : 1, first.name) < (second.name == "Stealth" ? 0 : 1, second.name)
+    }
+
     private func save(_ newState: CombatState) {
         guard var session else { return }
         session.state = newState
         model.library.save(session)
         if !isVictorious { victoryAcknowledged = false }
     }
+}
+
+/// One modifier in the initiative skill summary.
+struct InitiativeSkill: Identifiable, Hashable {
+    var name: String
+    var modifier: Int
+    /// The statistic the stat block says to roll for initiative.
+    var isInitiative: Bool
+
+    var id: String { name }
 }

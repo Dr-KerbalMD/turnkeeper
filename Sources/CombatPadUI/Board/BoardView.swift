@@ -17,9 +17,7 @@ struct BoardView: View {
             }
         }
         .task(id: sessionID) {
-            let controller = BoardController(sessionID: sessionID, model: model)
-            if controller.state.phase == .setup { controller.rollCreatureInitiative() }
-            self.controller = controller
+            self.controller = BoardController(sessionID: sessionID, model: model)
         }
     }
 }
@@ -47,6 +45,7 @@ private struct BoardContent: View {
             }
         }
         .background(PadBackground())
+        .overlay { ListeningOverlay(controller: controller) }
         .sheet(item: $sheet) { sheet in BoardSheetContent(sheet: sheet, controller: controller) }
         .sheet(isPresented: reminderBinding) { ReminderStack(controller: controller) }
         .sheet(isPresented: victoryBinding) { VictorySheet(controller: controller) }
@@ -154,5 +153,51 @@ private struct FinishedBanner: View {
         .padding(.vertical, 8)
         .background(.orange.opacity(0.85))
         .foregroundStyle(.white)
+    }
+}
+
+/// While a microphone is held: who is being listened for, what is heard, and the creature's modifiers to
+/// add to the die, large enough to read at arm's length.
+private struct ListeningOverlay: View {
+    let controller: BoardController
+    @State private var voice = VoiceInitiative.shared
+
+    var body: some View {
+        if let id = voice.listeningFor, let combatant = controller.state[id] {
+            VStack(alignment: .leading, spacing: 12) {
+                Label("Listening for \(combatant.name)…", systemImage: "waveform").font(.title2.bold())
+                Text(voice.transcript.isEmpty ? "Say the total" : voice.transcript)
+                    .font(.largeTitle.monospacedDigit())
+                InitiativeSkillsView(skills: controller.initiativeSkills(for: combatant), size: 22)
+            }
+            .padding(24)
+            .frame(maxWidth: 460, alignment: .leading)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18))
+            .shadow(radius: 20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+            .padding(32)
+            .allowsHitTesting(false)
+            .transition(.opacity)
+        }
+    }
+}
+
+/// The modifiers a creature might roll for initiative; the one its stat block names is highlighted.
+struct InitiativeSkillsView: View {
+    let skills: [InitiativeSkill]
+    var size: CGFloat = 17
+
+    var body: some View {
+        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 4) {
+            ForEach(skills) { skill in
+                GridRow {
+                    Text(skill.name).font(.system(size: size, weight: skill.isInitiative ? .bold : .regular))
+                    Text(signed(skill.modifier)).font(.system(size: size, weight: .bold).monospacedDigit())
+                    if skill.isInitiative {
+                        Text("initiative").font(.system(size: size * 0.7)).foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
     }
 }

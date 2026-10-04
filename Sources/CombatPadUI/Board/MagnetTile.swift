@@ -2,8 +2,8 @@ import CombatPadKit
 import SwiftUI
 
 /// One combatant's magnet: initiative, token, name, HP and condition chips, colored like the paper pad's
-/// magnets. Tap to show its card; drag to reorder once combat has begun; during setup, press and hold to say
-/// its initiative.
+/// magnets. Tap to show its card, long-press for its menu, drag to reorder once combat has begun. During
+/// setup, a microphone button next to the initiative listens while held.
 struct MagnetTile: View {
     let controller: BoardController
     let combatant: Combatant
@@ -20,11 +20,17 @@ struct MagnetTile: View {
                 .foregroundStyle(.yellow)
                 .opacity(isCurrent ? 1 : 0)
             initiativeBadge
+            if isSetup && voice.isAvailable {
+                MicButton(isListening: isListening, onPress: startListening, onRelease: stopListening)
+            }
             ArtImage(path: tileArt, size: 46, shape: .circle, alignment: .top)
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(combatant.name).font(.headline).lineLimit(2).minimumScaleFactor(0.8)
                     if combatant.template != .normal { TemplateBadge(template: combatant.template, color: .black) }
+                }
+                if isSetup && combatant.initiative == nil, let hint = modifierHint {
+                    Text(hint).font(.caption.bold()).opacity(0.85)
                 }
                 ConditionChips(combatant: combatant) { sheet = .conditions(combatant.id) }
             }
@@ -36,12 +42,13 @@ struct MagnetTile: View {
         .foregroundStyle(.white)
         .background(background)
         .overlay { if isListening { RoundedRectangle(cornerRadius: 10).stroke(.yellow, lineWidth: 3) } }
+        .overlay {
+            if isMissingInitiative { RoundedRectangle(cornerRadius: 10).stroke(.orange, style: missingStyle) }
+        }
         .modifier(Shake(shakes: shakes))
         .contentShape(Rectangle())
         .onTapGesture { controller.pinnedID = combatant.id }
         .contextMenu { TileMenu(controller: controller, combatant: combatant, sheet: $sheet) }
-        .modifier(SetupVoiceGesture(isEnabled: isSetup && voice.isAvailable, onPress: startListening,
-                                    onRelease: stopListening))
         .modifier(DraggableUnlessSetup(id: combatant.id, isSetup: isSetup))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isCurrent ? .isSelected : [])
@@ -50,6 +57,22 @@ struct MagnetTile: View {
     private var tileArt: String { controller.entry(for: combatant)?.art.thumbnail ?? "" }
 
     private var isListening: Bool { voice.listeningFor == combatant.id }
+
+    /// Outlined after Begin Combat's "Go Back", or while a creature that joined mid-fight still needs one.
+    private var isMissingInitiative: Bool {
+        combatant.initiative == nil && combatant.place == .ladder
+            && (controller.highlightsMissingInitiative || controller.state.phase == .active)
+    }
+
+    private var missingStyle: StrokeStyle { StrokeStyle(lineWidth: 3, dash: [8, 5]) }
+
+    /// "Perc +7 · Stealth +9": what to add to the die, for the GM's math.
+    private var modifierHint: String? {
+        let skills = controller.initiativeSkills(for: combatant).prefix(2)
+        guard !skills.isEmpty else { return nil }
+        return skills.map { "\($0.name == "Perception" ? "Perc" : $0.name) \(signed($0.modifier))" }
+            .joined(separator: " · ")
+    }
 
     private var initiativeBadge: some View {
         Button { sheet = .initiative(combatant.id) } label: {
@@ -111,7 +134,7 @@ enum InitiativeText {
     }
 }
 
-/// Lets strips be dragged to reorder, except during setup, when pressing and holding means "listen".
+/// Lets strips be dragged to reorder once combat has begun; during setup the order follows the numbers.
 private struct DraggableUnlessSetup: ViewModifier {
     let id: UUID
     let isSetup: Bool
@@ -121,27 +144,30 @@ private struct DraggableUnlessSetup: ViewModifier {
     }
 }
 
-/// Press and hold to listen; let go to stop. Only during setup.
-private struct SetupVoiceGesture: ViewModifier {
-    let isEnabled: Bool
+/// A microphone that listens while it is held down, and glows while listening.
+private struct MicButton: View {
+    let isListening: Bool
     let onPress: () -> Void
     let onRelease: () -> Void
     @State private var isPressing = false
 
-    func body(content: Content) -> some View {
-        if isEnabled {
-            content.onLongPressGesture(minimumDuration: 0.25) {} onPressingChanged: { pressing in
-                if pressing {
+    var body: some View {
+        Image(systemName: isListening ? "mic.fill" : "mic")
+            .font(.title2)
+            .frame(width: 44, height: 44)
+            .background(isListening ? Color.yellow.opacity(0.9) : Color.black.opacity(0.3), in: Circle())
+            .foregroundStyle(isListening ? .black : .white)
+            .contentShape(Circle())
+            .onLongPressGesture(minimumDuration: 0, maximumDistance: 60) {} onPressingChanged: { pressing in
+                if pressing && !isPressing {
                     isPressing = true
                     onPress()
-                } else if isPressing {
+                } else if !pressing && isPressing {
                     isPressing = false
                     onRelease()
                 }
             }
-        } else {
-            content
-        }
+            .accessibilityLabel("Hold to say the initiative")
     }
 }
 

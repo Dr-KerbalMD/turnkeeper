@@ -93,6 +93,9 @@ struct InitiativePad: View {
     var body: some View {
         VStack(spacing: 14) {
             Text(controller.state[id]?.name ?? "").font(.title2.bold())
+            if let combatant = controller.state[id] {
+                InitiativeSkillsView(skills: controller.initiativeSkills(for: combatant))
+            }
             NumberPad(digits: $digits)
             Toggle("Add ½ to go after a tie", isOn: $addHalf)
             HStack {
@@ -112,9 +115,12 @@ struct InitiativePad: View {
 
     private func set(_ value: Double) {
         controller.change { state in
+            if state[id]?.place == .bench { state.bringIn(id) }
             state.setInitiative(value, for: id)
             if state.phase == .active { state.sortByInitiativeKeepingCurrent() }
         }
+        controller.highlightsMissingInitiative = !controller.state.combatantsWithoutInitiative.isEmpty
+            && controller.highlightsMissingInitiative
         dismiss()
     }
 }

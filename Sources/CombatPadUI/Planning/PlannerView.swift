@@ -21,8 +21,8 @@ struct PlannerView: View {
         } detail: {
             PlannerDetail()
         }
-        .confirmationDialog("A fight is in progress for this encounter.", isPresented: pendingBinding,
-                            titleVisibility: .visible, presenting: model.pendingPlanChange) { pending in
+        .alert("A fight is in progress for this encounter.", isPresented: pendingBinding,
+               presenting: model.pendingPlanChange) { pending in
             Button("Change and Reset", role: .destructive) { model.confirm(pending) }
             Button("Cancel", role: .cancel) {}
         } message: { _ in

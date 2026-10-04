@@ -16,7 +16,6 @@ struct BoardSheetContent: View {
             EventEditor(event: EncounterEvent(label: "", trigger: .initiative(20)), slots: []) { event in
                 controller.change { $0.addEvent(event) }
             }
-        case .listenForAll: ListenForAllSheet(controller: controller)
         }
     }
 }
@@ -62,53 +61,5 @@ private struct DurationEditor: View {
             }
         }
         .frame(minWidth: 400, minHeight: 320)
-    }
-}
-
-/// Listens for "Valeros 18, Ezren 12, Kyra 21" and sets each PC's initiative.
-private struct ListenForAllSheet: View {
-    let controller: BoardController
-    @Environment(\.dismiss) private var dismiss
-    @State private var voice = VoiceInitiative.shared
-    private let listenerID = UUID()
-
-    var body: some View {
-        VStack(spacing: 18) {
-            Text("Say each player's name and initiative").font(.title3.bold())
-            Text(voice.transcript.isEmpty ? "…" : voice.transcript)
-                .font(.title2)
-                .frame(maxWidth: .infinity, minHeight: 80)
-                .padding()
-                .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
-            if voice.isAvailable {
-                Button(voice.listeningFor == nil ? "Start Listening" : "Done", systemImage: "mic.fill") {
-                    if voice.listeningFor == nil {
-                        voice.listen(for: listenerID, names: names)
-                    } else {
-                        Task { await finish() }
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-            } else {
-                Text("Speech recognition on this device isn't available or wasn't allowed.").foregroundStyle(.secondary)
-            }
-            Button("Cancel") {
-                voice.cancel()
-                dismiss()
-            }
-        }
-        .padding(24)
-        .frame(minWidth: 420)
-    }
-
-    private var pcs: [Combatant] { controller.state.combatants.filter { $0.kind == .playerCharacter } }
-    private var names: [String] { pcs.map(\.name) }
-
-    private func finish() async {
-        let heard = SpokenNumberParser.assignments(from: await voice.finish(), names: names)
-        controller.change { state in
-            for pc in pcs { if let value = heard[pc.name] { state.setInitiative(value, for: pc.id) } }
-        }
-        dismiss()
     }
 }
