@@ -45,6 +45,8 @@ private struct PlannerDetail: View {
             if let scenario = model.scenario(id) { ScenarioView(scenario: scenario) } else { empty }
         case let .encounter(id):
             if let encounter = model.encounter(id) { EncounterEditorView(encounter: encounter) } else { empty }
+        case let .handout(id):
+            if let handout = model.handout(id) { HandoutView(handout: handout) } else { empty }
         case let .party(id):
             if let party = model.party(id) { PartyEditorView(party: party) } else { empty }
         case nil:

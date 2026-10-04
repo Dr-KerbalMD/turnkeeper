@@ -12,13 +12,29 @@ import UIKit
 final class PlayerDisplay {
     static let shared = PlayerDisplay()
 
-    var entry: BestiaryIndexEntry?
+    /// The creature on show; setting it replaces any handout.
+    var entry: BestiaryIndexEntry? {
+        didSet { if entry != nil { handout = nil } }
+    }
+    /// The handout on show, as its name and image path.
+    private(set) var handout: (name: String, imagePath: String)?
     var hasSecondScreen = false
     /// The bestiary and art store, so the second screen can load art without the app model.
     var bestiary = BestiaryStore()
     var artStore: ArtStore?
 
     private init() {}
+
+    func show(handout: Handout) {
+        entry = nil
+        self.handout = (handout.name, handout.imagePath)
+    }
+
+    /// Clears the second screen.
+    func hide() {
+        entry = nil
+        handout = nil
+    }
 }
 
 /// The second screen's content: the current card back, or a dark screen between creatures.
@@ -30,6 +46,10 @@ struct PlayerScreen: View {
             Color.black.ignoresSafeArea()
             if let entry = display.entry {
                 CardBackView(entry: entry)
+                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore))
+                    .transition(.opacity)
+            } else if let handout = display.handout {
+                HandoutPlayerView(name: handout.name, imagePath: handout.imagePath)
                     .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore))
                     .transition(.opacity)
             }
@@ -84,7 +104,7 @@ struct ShowPlayersButton: View {
 
     var body: some View {
         Menu {
-            Button("Hide from Players", systemImage: "eye.slash") { PlayerDisplay.shared.entry = nil }
+            Button("Hide from Players", systemImage: "eye.slash") { PlayerDisplay.shared.hide() }
             #if os(macOS)
             Button("Open Players Window", systemImage: "macwindow") { openWindow(id: PlayerWindow.id) }
             #endif

@@ -97,6 +97,29 @@ final class PlanningUITests: XCTestCase {
         XCTAssertFalse(remove.exists)
     }
 
+    /// A handout gets a pasted image and is shown to the players full screen with its name.
+    func testHandoutShownToPlayers() {
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 60))
+        UIPasteboard.general.image = renderer.image { context in
+            UIColor.brown.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 80, height: 60))
+        }
+        app.launchArguments = ["--demo", "planner"]
+        app.launch()
+        let add = app.buttons["Add Handout"].firstMatch
+        XCTAssertTrue(add.waitForExistence(timeout: 10))
+        add.tap()
+        XCTAssertTrue(app.navigationBars["Handout 1"].waitForExistence(timeout: 5))
+        let show = app.buttons["Show Players"]
+        XCTAssertFalse(show.isEnabled)
+        app.buttons["Paste"].tap()
+        XCTAssertTrue(waitUntil { show.isEnabled })
+        show.tap()
+        XCTAssertTrue(app.staticTexts["Handout 1"].waitForExistence(timeout: 5))
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertTrue(waitUntil { show.isHittable })
+    }
+
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {

@@ -7,6 +7,7 @@ enum PlannerSelection: Hashable {
     case scenario(UUID)
     case encounter(UUID)
     case party(UUID)
+    case handout(UUID)
 }
 
 /// The app's state: the library, the bestiary, and what is selected or running. Every library change is
@@ -56,7 +57,7 @@ final class AppModel {
             let file = try LibraryFile.standard()
             let library = try file.load()
             let artStore = try? ArtStore.standard()
-            artStore?.sweep(keeping: library.liveArtFileNames)
+            artStore?.sweep(keeping: library.liveImageFileNames)
             return AppModel(library: library, bestiary: bestiary ?? BestiaryStore(), file: file, artStore: artStore)
         } catch {
             let model = AppModel(bestiary: bestiary ?? BestiaryStore())

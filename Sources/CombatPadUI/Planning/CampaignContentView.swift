@@ -83,6 +83,7 @@ private struct ScenarioRows: View {
         .tag(PlannerSelection.scenario(scenario.id))
         .contextMenu {
             Button("Add Encounter", systemImage: "plus") { model.addEncounter(to: scenario.id) }
+            Button("Add Handout", systemImage: "doc.richtext") { model.addHandout(to: scenario.id) }
             Button("Delete Scenario", systemImage: "trash", role: .destructive) {
                 model.library.deleteScenario(scenario.id)
             }
@@ -103,6 +104,19 @@ private struct ScenarioRows: View {
                 }
         }
         Button("Add Encounter", systemImage: "plus") { model.addEncounter(to: scenario.id) }
+            .padding(.leading, 28)
+            .foregroundStyle(.secondary)
+        ForEach(model.library.handouts(in: scenario.id)) { handout in
+            Label(handout.name, systemImage: "doc.richtext")
+                .padding(.leading, 28)
+                .tag(PlannerSelection.handout(handout.id))
+                .contextMenu {
+                    Button("Delete Handout", systemImage: "trash", role: .destructive) {
+                        model.library.deleteHandout(handout.id)
+                    }
+                }
+        }
+        Button("Add Handout", systemImage: "doc.badge.plus") { model.addHandout(to: scenario.id) }
             .padding(.leading, 28)
             .foregroundStyle(.secondary)
     }

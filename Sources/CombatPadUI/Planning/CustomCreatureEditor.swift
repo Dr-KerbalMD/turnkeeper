@@ -22,21 +22,17 @@ struct CustomCreatureEditor: View {
                 let isWide = geometry.size.width > 900
                 HStack(spacing: 0) {
                     if isWide || !isShowingCard {
-                        CreatureDraftForm(draft: $draft)
-                            .frame(width: isWide ? geometry.size.width * 0.5 : geometry.size.width)
+                        VStack(spacing: 0) {
+                            replaceBar
+                            CreatureDraftForm(draft: $draft)
+                        }
+                        .frame(width: isWide ? geometry.size.width * 0.5 : geometry.size.width)
                     }
                     if isWide || isShowingCard {
                         BattleCard(creature: preview).padding()
                     }
                 }
                 .toolbar {
-                    ToolbarItem {
-                        // Replaces the draft only; Cancel still keeps the creature as it was.
-                        PasteButton(supportedContentTypes: StatBlockPasteboard.acceptedTypes) { providers in
-                            replace(from: providers)
-                        }
-                        .help("Replace with a stat block copied from Pluck")
-                    }
                     if !isWide {
                         ToolbarItem {
                             Toggle(isOn: $isShowingCard) { Label("Card", systemImage: "rectangle.portrait") }
@@ -62,6 +58,19 @@ struct CustomCreatureEditor: View {
     }
 
     private var preview: Creature { draft.creature(from: original.creature) }
+
+    /// Replaces the draft only; Cancel still keeps the creature as it was. In the page rather than the
+    /// toolbar, since iOS ignores a paste button it can't see in full.
+    private var replaceBar: some View {
+        HStack {
+            PasteButton(supportedContentTypes: StatBlockPasteboard.acceptedTypes) { replace(from: $0) }
+                .labelStyle(.titleAndIcon)
+            Text("Replace with a stat block copied from Pluck").font(.caption).foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+    }
 
     private func replace(from providers: [NSItemProvider]) {
         Task {
