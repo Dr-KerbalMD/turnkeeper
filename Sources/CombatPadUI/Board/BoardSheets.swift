@@ -82,14 +82,18 @@ private struct ListenForAllSheet: View {
                 .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
             if voice.isAvailable {
                 Button(voice.listeningFor == nil ? "Start Listening" : "Done", systemImage: "mic.fill") {
-                    voice.listeningFor == nil ? voice.listen(for: listenerID, names: names) : finish()
+                    if voice.listeningFor == nil {
+                        voice.listen(for: listenerID, names: names)
+                    } else {
+                        Task { await finish() }
+                    }
                 }
                 .buttonStyle(.borderedProminent)
             } else {
                 Text("Speech recognition on this device isn't available or wasn't allowed.").foregroundStyle(.secondary)
             }
             Button("Cancel") {
-                voice.stop()
+                voice.cancel()
                 dismiss()
             }
         }
@@ -100,8 +104,8 @@ private struct ListenForAllSheet: View {
     private var pcs: [Combatant] { controller.state.combatants.filter { $0.kind == .playerCharacter } }
     private var names: [String] { pcs.map(\.name) }
 
-    private func finish() {
-        let heard = SpokenNumberParser.assignments(from: voice.stop(), names: names)
+    private func finish() async {
+        let heard = SpokenNumberParser.assignments(from: await voice.finish(), names: names)
         controller.change { state in
             for pc in pcs { if let value = heard[pc.name] { state.setInitiative(value, for: pc.id) } }
         }

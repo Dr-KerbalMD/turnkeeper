@@ -93,12 +93,13 @@ struct MagnetTile: View {
     }
 
     private func stopListening() {
-        let transcript = voice.stop()
-        if let value = SpokenNumberParser.initiative(from: transcript) {
-            controller.change { $0.setInitiative(value, for: combatant.id) }
-        } else {
-            shakes += 1
-            sheet = .initiative(combatant.id)
+        Task {
+            if let value = SpokenNumberParser.initiative(from: await voice.finish()) {
+                controller.change { $0.setInitiative(value, for: combatant.id) }
+            } else {
+                shakes += 1
+                sheet = .initiative(combatant.id)
+            }
         }
     }
 }

@@ -62,8 +62,10 @@ private struct BoardContent: View {
         if press.phase == .down, voice.listeningFor == nil {
             voice.listen(for: id)
         } else if press.phase == .up, voice.listeningFor == id {
-            if let value = SpokenNumberParser.initiative(from: voice.stop()) {
-                controller.change { $0.setInitiative(value, for: id) }
+            Task {
+                if let value = SpokenNumberParser.initiative(from: await voice.finish()) {
+                    controller.change { $0.setInitiative(value, for: id) }
+                }
             }
         }
         return .handled

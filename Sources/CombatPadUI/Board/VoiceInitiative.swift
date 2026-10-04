@@ -3,6 +3,10 @@ import Observation
 import Speech
 
 /// Push-to-talk speech recognition for initiative numbers, on the device only.
+///
+/// The Speech and audio frameworks call back on their own queues. Those callbacks are built in `nonisolated`
+/// helpers below: a closure written inside this main-actor class would be main-actor isolated, and Swift 6
+/// traps when the framework calls it from another queue.
 @Observable
 @MainActor
 final class VoiceInitiative {
@@ -17,16 +21,13 @@ final class VoiceInitiative {
     @ObservationIgnored private let engine = AVAudioEngine()
     @ObservationIgnored private var request: SFSpeechAudioBufferRecognitionRequest?
     @ObservationIgnored private var task: SFSpeechRecognitionTask?
+    @ObservationIgnored private var isFinal = false
 
-    private init() {
-        isAvailable = recognizer?.supportsOnDeviceRecognition == true
-    }
+    private init() {}
 
-    /// Asks for microphone and speech permission once; voice entry stays off if either is refused.
+    /// Asks for speech and microphone permission; voice entry stays off if either is refused.
     func requestPermission() async {
-        let speech = await withCheckedContinuation { continuation in
-            SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) }
-        }
+        let speech = await Self.speechAuthorization()
         let microphone = await AVAudioApplication.requestRecordPermission()
         isAvailable = speech == .authorized && microphone && recognizer?.supportsOnDeviceRecognition == true
     }
@@ -35,37 +36,46 @@ final class VoiceInitiative {
     func listen(for id: UUID, names: [String] = []) {
         guard isAvailable, let recognizer, listeningFor == nil else { return }
         transcript = ""
+        isFinal = false
         let request = SFSpeechAudioBufferRecognitionRequest()
         request.requiresOnDeviceRecognition = true
         request.shouldReportPartialResults = true
         request.contextualStrings = (1...60).map(String.init) + names
-        self.request = request
         do {
             try startAudio(feeding: request)
         } catch {
             return
         }
+        self.request = request
         listeningFor = id
-        task = recognizer.recognitionTask(with: request) { [weak self] result, _ in
-            guard let text = result?.bestTranscription.formattedString else { return }
-            Task { @MainActor in self?.transcript = text }
-        }
+        task = recognizer.recognitionTask(with: request, resultHandler: Self.resultHandler(for: self))
     }
 
-    /// Stops listening and returns what was heard.
-    @discardableResult
-    func stop() -> String {
-        engine.stop()
-        engine.inputNode.removeTap(onBus: 0)
+    /// Stops listening and returns what was heard, after waiting up to half a second for the final result.
+    func finish() async -> String {
+        guard listeningFor != nil else { return transcript }
+        stopAudio()
         request?.endAudio()
-        task?.finish()
+        for _ in 0..<10 where !isFinal {
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+        let heard = transcript
+        cancel()
+        return heard
+    }
+
+    /// Stops listening and discards what was heard.
+    func cancel() {
+        stopAudio()
+        task?.cancel()
         request = nil
         task = nil
         listeningFor = nil
-        #if os(iOS)
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        #endif
-        return transcript
+    }
+
+    private func receive(_ text: String, isFinal final: Bool) {
+        transcript = text
+        isFinal = isFinal || final
     }
 
     private func startAudio(feeding request: SFSpeechAudioBufferRecognitionRequest) throws {
@@ -75,10 +85,50 @@ final class VoiceInitiative {
         try session.setActive(true, options: .notifyOthersOnDeactivation)
         #endif
         let input = engine.inputNode
-        input.installTap(onBus: 0, bufferSize: 1024, format: input.outputFormat(forBus: 0)) { buffer, _ in
-            request.append(buffer)
-        }
+        let format = input.outputFormat(forBus: 0)
+        guard format.channelCount > 0 else { throw VoiceError.noMicrophone }
+        input.installTap(onBus: 0, bufferSize: 1024, format: format, block: Self.tapBlock(feeding: request))
         engine.prepare()
         try engine.start()
     }
+
+    private func stopAudio() {
+        if engine.isRunning { engine.stop() }
+        engine.inputNode.removeTap(onBus: 0)
+        #if os(iOS)
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        #endif
+    }
+
+    // MARK: Callbacks that run on the frameworks' queues
+
+    private nonisolated static func speechAuthorization() async -> SFSpeechRecognizerAuthorizationStatus {
+        await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { status in continuation.resume(returning: status) }
+        }
+    }
+
+    private nonisolated static func tapBlock(
+        feeding request: SFSpeechAudioBufferRecognitionRequest
+    ) -> AVAudioNodeTapBlock {
+        { buffer, _ in request.append(buffer) }
+    }
+
+    private nonisolated static func resultHandler(
+        for voice: VoiceInitiative
+    ) -> (SFSpeechRecognitionResult?, Error?) -> Void {
+        { [weak voice] result, error in
+            guard let result else {
+                if error != nil { Task { @MainActor in voice?.receive(voice?.transcript ?? "", isFinal: true) } }
+                return
+            }
+            let text = result.bestTranscription.formattedString
+            let isFinal = result.isFinal
+            Task { @MainActor in voice?.receive(text, isFinal: isFinal) }
+        }
+    }
+}
+
+enum VoiceError: Error {
+    case noMicrophone
 }
