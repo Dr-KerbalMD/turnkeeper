@@ -8,20 +8,6 @@ public enum SpokenNumberParser {
         numbers(in: words(transcript)).last?.value
     }
 
-    /// Pairs of names and numbers from "Valeros 18, Ezren 12", matched to the given names. Words before
-    /// each number are matched to the closest name; unmatched pairs are left out.
-    public static func assignments(from transcript: String, names: [String]) -> [String: Double] {
-        let words = words(transcript)
-        var result: [String: Double] = [:]
-        var nameStart = 0
-        for number in numbers(in: words) {
-            let spoken = words[nameStart..<number.range.lowerBound].joined(separator: " ")
-            if let name = closestName(to: spoken, in: names) { result[name] = number.value }
-            nameStart = number.range.upperBound
-        }
-        return result
-    }
-
     private static let units = [
         "zero": 0, "oh": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
         "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
@@ -34,7 +20,7 @@ public enum SpokenNumberParser {
 
     private struct SpokenNumber {
         var value: Double
-        /// The words the number used, so the words before it can be read as a name.
+        /// The words the number used.
         var range: Range<Int>
     }
 
@@ -81,32 +67,5 @@ public enum SpokenNumberParser {
         if rest.starts(with: ["and", "a", "half"]) { return (0.5, index + 3) }
         if rest.starts(with: ["point", "five"]) || rest.starts(with: ["point", "5"]) { return (0.5, index + 2) }
         return (0, index)
-    }
-
-    private static func closestName(to spoken: String, in names: [String]) -> String? {
-        let spokenWords = Set(spoken.split(separator: " ").map(String.init))
-        if let exact = names.first(where: { name in
-            name.lowercased().split(separator: " ").contains { spokenWords.contains(String($0)) }
-        }) {
-            return exact
-        }
-        let candidates = names.map { ($0, editDistance($0.lowercased(), spoken)) }
-        guard let best = candidates.min(by: { $0.1 < $1.1 }), best.1 <= max(2, best.0.count / 3) else { return nil }
-        return best.0
-    }
-
-    private static func editDistance(_ first: String, _ second: String) -> Int {
-        let left = Array(first)
-        let right = Array(second)
-        var previous = Array(0...right.count)
-        for (row, leftCharacter) in left.enumerated() {
-            var current = [row + 1]
-            for (column, rightCharacter) in right.enumerated() {
-                let substitution = previous[column] + (leftCharacter == rightCharacter ? 0 : 1)
-                current.append(min(substitution, previous[column + 1] + 1, current[column] + 1))
-            }
-            previous = current
-        }
-        return previous[right.count]
     }
 }

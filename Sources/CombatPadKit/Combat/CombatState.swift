@@ -101,13 +101,14 @@ public struct CombatState: Codable, Sendable, Hashable {
         order.insert(id, at: min(max(index, 0), order.count))
     }
 
-    /// Brings a benched combatant into the fight at its initiative, after others with the same count.
-    public mutating func bringIn(_ id: UUID, initiative: Double) {
+    /// Brings a benched combatant into the fight: at its initiative, after others with the same count, or at
+    /// the end of the order until the GM enters one.
+    public mutating func bringIn(_ id: UUID, initiative: Double? = nil) {
         guard self[id]?.place == .bench else { return }
         self[id]?.place = .ladder
         self[id]?.initiative = initiative
-        let index = ladder.firstIndex { ($0.initiative ?? -100) < initiative } ?? order.count
-        order.insert(id, at: index)
+        let index = initiative.flatMap { value in ladder.firstIndex { ($0.initiative ?? -100) < value } }
+        order.insert(id, at: index ?? order.count)
     }
 
     /// Takes a combatant out of the order to Delay. Delaying on its own turn passes the turn on.

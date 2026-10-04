@@ -29,12 +29,4 @@ struct SpokenNumberParserTests {
         #expect(SpokenNumberParser.initiative(from: "hmm what") == nil)
         #expect(SpokenNumberParser.initiative(from: "") == nil)
     }
-
-    @Test("Listen for all pairs names with numbers, fuzzily")
-    func assignments() {
-        let names = ["Valeros", "Ezren", "Kyra"]
-        let heard = SpokenNumberParser.assignments(from: "Valeros 18, Ezrin twelve, Kira twenty one", names: names)
-        #expect(heard == ["Valeros": 18, "Ezren": 12, "Kyra": 21])
-        #expect(SpokenNumberParser.assignments(from: "Bob 5", names: names).isEmpty)
-    }
 }

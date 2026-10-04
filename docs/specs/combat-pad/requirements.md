@@ -47,11 +47,15 @@ ladder, and the right half is the notes side, which shows the battle card of the
 ## R4 Combat
 - R4.1 Starting combat asks for the party and the variant. The scenario's last-used variant is the
   default.
-- R4.2 Combat begins with a Setup phase. Creatures roll initiative automatically, and PCs enter theirs
-  by keypad or by voice.
-- R4.3 In Setup only, pressing and holding a strip listens for a spoken initiative number. "Listen for
-  all" accepts names with numbers. After Begin combat, nothing listens and strips are dragged to
-  reorder.
+- R4.2 Combat begins with a Setup phase. Nobody's initiative is rolled for them: the GM enters every total,
+  creatures included, by keypad or by voice. Creatures show their initiative modifiers (Perception,
+  Stealth and other skills, template and conditions applied) to do the math with. Benched creatures that
+  join later get their number entered the same way.
+- R4.2a Begin Combat warns, naming them, when anyone on the ladder has no initiative; Go Back outlines
+  them, Begin Anyway puts them last.
+- R4.3 In Setup only, each strip has a microphone button that listens while held; letting go sets the
+  spoken total. Only numbers are recognized, never names. While listening, the creature's modifiers are
+  shown large. After Begin combat, nothing listens and strips are dragged to reorder.
 - R4.4 Tiles show the name, initiative, HP and conditions. Tiles are colored like magnets: red for
   enemies, blue for PCs, green for NPCs, gray for hazards.
 - R4.5 Creature HP tracks damage, healing and temporary HP. PCs track no HP.

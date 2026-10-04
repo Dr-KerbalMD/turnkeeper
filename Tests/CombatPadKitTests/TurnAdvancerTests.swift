@@ -176,6 +176,12 @@ struct TurnAdvancerTests {
         state.combatants.append(wolf)
         state.bringIn(wolf.id, initiative: 10)
         #expect(state.order == [ids[0], ids[1], wolf.id, ids[2]])
+        var bear = Combatant(kind: .creature, name: "Bear")
+        bear.place = .bench
+        state.combatants.append(bear)
+        state.bringIn(bear.id)
+        #expect(state.order.last == bear.id)
+        #expect(state[bear.id]?.initiative == nil)
     }
 
     @Test("Damage comes off temporary HP first; healing can't go below 0 damage")
