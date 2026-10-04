@@ -11,11 +11,12 @@ public struct Library: Codable, Sendable, Hashable {
     public var customCreatures: [CustomCreature] = []
     public var customArt: [CustomArt] = []
     public var handouts: [Handout] = []
+    public var creatureNotes: [CreatureNote] = []
 
     public init() {}
 
     private enum CodingKeys: String, CodingKey {
-        case campaigns, parties, scenarios, encounters, sessions, customCreatures, customArt, handouts
+        case campaigns, parties, scenarios, encounters, sessions, customCreatures, customArt, handouts, creatureNotes
     }
 
     /// Reads each kind of record leniently: a kind missing from an older library reads as empty, and a
@@ -30,6 +31,7 @@ public struct Library: Codable, Sendable, Hashable {
         customCreatures = try container.lossyArray(forKey: .customCreatures)
         customArt = try container.lossyArray(forKey: .customArt)
         handouts = try container.lossyArray(forKey: .handouts)
+        creatureNotes = try container.lossyArray(forKey: .creatureNotes)
     }
 
     // MARK: Queries (deleted records left out)
@@ -73,6 +75,12 @@ public struct Library: Codable, Sendable, Hashable {
             .union(handouts.filter { !$0.isDeleted && $0.hasImage }.map(\.fileName))
     }
 
+    /// The note about a creature in a scenario, or an empty one ready to write.
+    public func creatureNote(scenarioID: UUID, subject: String) -> CreatureNote {
+        creatureNotes.first { $0.scenarioID == scenarioID && $0.subject == subject && !$0.isDeleted }
+            ?? CreatureNote(scenarioID: scenarioID, subject: subject)
+    }
+
     public func handouts(in scenarioID: UUID) -> [Handout] {
         handouts.filter { $0.scenarioID == scenarioID && !$0.isDeleted }.sorted { $0.name < $1.name }
     }
@@ -102,6 +110,7 @@ public struct Library: Codable, Sendable, Hashable {
     }
 
     public mutating func save(_ handout: Handout) { upsert(handout, into: \.handouts) }
+    public mutating func save(_ note: CreatureNote) { upsert(note, into: \.creatureNotes) }
     public mutating func deleteHandout(_ id: UUID) { mark(\.handouts, ChangeClock.now()) { $0.id == id } }
 
     public mutating func deleteCustomArt(for subject: String) {
@@ -117,6 +126,7 @@ public struct Library: Codable, Sendable, Hashable {
         mark(\.scenarios, now) { scenarioIDs.contains($0.id) }
         mark(\.encounters, now) { scenarioIDs.contains($0.scenarioID) }
         mark(\.handouts, now) { scenarioIDs.contains($0.scenarioID) }
+        mark(\.creatureNotes, now) { scenarioIDs.contains($0.scenarioID) }
         mark(\.sessions, now) { $0.campaignID == id }
         mark(\.customCreatures, now) { $0.campaignID == id }
     }
@@ -126,6 +136,7 @@ public struct Library: Codable, Sendable, Hashable {
         mark(\.scenarios, now) { $0.id == id }
         mark(\.encounters, now) { $0.scenarioID == id }
         mark(\.handouts, now) { $0.scenarioID == id }
+        mark(\.creatureNotes, now) { $0.scenarioID == id }
     }
 
     public mutating func deleteParty(_ id: UUID) { mark(\.parties, ChangeClock.now()) { $0.id == id } }

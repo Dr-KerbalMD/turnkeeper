@@ -59,6 +59,11 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R3.5d Each scenario can have handouts: a name and one image (pasted, chosen or dropped), listed under its
   encounters. Show Players shows the image full screen with its name as a caption, on the second screen
   when there is one.
+- R3.5e Notes come in two kinds, the same text in planning and on the board: creature notes, one per
+  creature per scenario (on each encounter row, and under the card on that creature's turn), and the
+  encounter's notes. On the board the card, creature notes and encounter notes are a split resized by
+  dragging grips; a notes pane dragged small collapses to its header, a tap reopens it, a double-tap on a
+  grip resets the split, and the split is remembered on each device.
 - R3.6 The encounter budget shows the XP total and threat for the party's level and size.
 - R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
 - R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or

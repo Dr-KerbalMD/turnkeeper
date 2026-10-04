@@ -108,7 +108,6 @@ public struct CombatSession: LibraryRecord, Hashable {
     public var variantLabel: String
     public var name: String
     public var state: CombatState
-    public var scratchNotes = ""
     /// The party the fight was started with, so a reset can rebuild it.
     public var partyID: UUID?
     /// When the fight ended. Nil while it can still be resumed.

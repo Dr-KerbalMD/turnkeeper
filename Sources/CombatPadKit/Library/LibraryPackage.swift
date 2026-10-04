@@ -68,6 +68,7 @@ public struct LibraryPackage: Codable, Sendable {
             .union(subset.customCreatures.map(\.key))
         subset.customArt = library.customArt.filter { subjects.contains($0.subject) }
         subset.handouts = library.handouts.filter { scenarioIDs.contains($0.scenarioID) }
+        subset.creatureNotes = library.creatureNotes.filter { scenarioIDs.contains($0.scenarioID) }
         return LibraryPackage(library: subset, bestiaryRevision: bestiaryRevision)
     }
 

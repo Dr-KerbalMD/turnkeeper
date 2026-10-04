@@ -99,6 +99,9 @@ Ported from the pf2e system, with tests.
 - **System paste buttons.** Pasting uses SwiftUI's `PasteButton`, which reads the pasteboard without iOS's
   Allow Paste prompt. Where a toolbar may be crowded, it sits in the page instead: iOS ignores a paste
   button it can't see in full.
+- **Notes.** `CreatureNote` records (scenario, creature key, text) merge one note at a time, so editing
+  one mid-fight never makes a conflict copy of a scenario. Encounter notes are `Encounter.notes`, edited in
+  both places; the old per-session scratch notes are gone (old sessions still load).
 - **Lenient loading.** `Library` decodes each kind of record as a lossy array, so older libraries and
   unreadable records don't stop the rest from loading. Record fields added later decode with defaults.
 - **Variants.** An encounter keeps one `EncounterVariant` (slots and events) per scenario variant label.
@@ -119,6 +122,9 @@ Ported from the pf2e system, with tests.
   template adds an untyped ±2, conditions add their typed penalties, and the first damage instance of a
   Strike or ability takes the template's damage change.
   `PathfinderBattleCard`, `StarfinderBattleCard` and `HazardBattleCard` render them.
+- **Card and notes split.** `SplitLayout` (in the Kit, tested) keeps the three panes as fractions of the
+  height, with minimums, collapsing and a hidden creature-notes pane whose share is kept. `PaneStack` draws
+  it with drag grips; the layout is saved per device in user defaults, not synced.
 - **Fonts.** Roboto Condensed and Roboto, plus the pf2e action glyph font, converted from the pf2e
   system's woff2 files.
 
