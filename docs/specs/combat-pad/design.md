@@ -74,12 +74,19 @@ Ported from the pf2e system, with tests.
 - **Storage.** A Codable `Library` value holds campaigns, parties, scenarios, encounters and saved combat
   sessions. It is saved as `library.json` in Application Support on each device. Value records make undo,
   merging and testing simple, and avoid SwiftData's limits with enums that carry values.
+- **Change stamps.** `ChangeClock.now()` never repeats or goes back within a run, so two quick edits never
+  share a `modifiedAt` and the merger always sees that both sides changed.
 - **Records.** Every record has `id`, `modifiedAt`, `deletedAt` (a tombstone; records are never removed)
   and `sharedVersion`, the `modifiedAt` of the version last shared with the other device.
 - **Custom creatures.** `CustomCreature` records hold a full `Creature` under the key `custom.<id>`;
   `AppModel.entry`/`creature` look them up before the bestiary. `CreatureDraft` is the editor's text form
   of a creature, and `StatBlockText` reads and writes the printed forms (skills, speeds, resistances,
   damage, spell ranks, rules text with check and damage tokens).
+- **Stat blocks from Pluck.** `PluckStatBlock` mirrors Pluck's pasteboard JSON
+  (`io.github.scooper4711.pluck.statblock`, `{ "format": 1, "blocks": [...] }`) and also reads Pluck's plain
+  text. `StatBlockConverter` reads each labeled entry with the `StatBlockText` parsers into a `Creature`;
+  anything it can't read is kept as ability text and reported. `StatBlockImport` plans the import: one
+  custom creature per block, placed in the variant whose label names the block's subtier.
 - **Lenient loading.** `Library` decodes each kind of record as a lossy array, so older libraries and
   unreadable records don't stop the rest from loading. Record fields added later decode with defaults.
 - **Variants.** An encounter keeps one `EncounterVariant` (slots and events) per scenario variant label.

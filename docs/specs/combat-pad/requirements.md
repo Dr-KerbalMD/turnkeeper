@@ -46,6 +46,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
   (cards, templates, conditions, budget, initiative). They are made or edited in a form with a live battle
   card; lists are typed as printed ("Acrobatics +5", "2d8+11 bludgeoning plus 1d6 fire", "DC 22 basic
   Reflex"), and DCs and damage in ability text still adjust with templates and conditions.
+- R3.5b Stat blocks copied or dragged from Pluck (or pasted as plain text) become custom creatures in the
+  encounter. A block for a subtier goes into the variant with that subtier; a summary lists what was added
+  and anything kept as text, with Review… to open the editor.
 - R3.6 The encounter budget shows the XP total and threat for the party's level and size.
 - R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
 - R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or
