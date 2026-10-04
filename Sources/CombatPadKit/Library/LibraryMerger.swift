@@ -27,6 +27,7 @@ public enum LibraryMerger {
         merge(incoming.scenarios, into: &local.scenarios, summary: &summary, copy: conflictCopy)
         merge(incoming.encounters, into: &local.encounters, summary: &summary, copy: conflictCopy)
         merge(incoming.sessions, into: &local.sessions, summary: &summary)
+        merge(incoming.customCreatures, into: &local.customCreatures, summary: &summary)
         return summary
     }
 

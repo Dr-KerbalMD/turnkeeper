@@ -76,6 +76,12 @@ Ported from the pf2e system, with tests.
   merging and testing simple, and avoid SwiftData's limits with enums that carry values.
 - **Records.** Every record has `id`, `modifiedAt`, `deletedAt` (a tombstone; records are never removed)
   and `sharedVersion`, the `modifiedAt` of the version last shared with the other device.
+- **Custom creatures.** `CustomCreature` records hold a full `Creature` under the key `custom.<id>`;
+  `AppModel.entry`/`creature` look them up before the bestiary. `CreatureDraft` is the editor's text form
+  of a creature, and `StatBlockText` reads and writes the printed forms (skills, speeds, resistances,
+  damage, spell ranks, rules text with check and damage tokens).
+- **Lenient loading.** `Library` decodes each kind of record as a lossy array, so older libraries and
+  unreadable records don't stop the rest from loading. Record fields added later decode with defaults.
 - **Variants.** An encounter keeps one `EncounterVariant` (slots and events) per scenario variant label.
   `CombatSetup` turns a variant and a party into the opening `CombatState`.
 - **Merging.** `LibraryMerger` compares each record with the other device's copy. If one side is unchanged

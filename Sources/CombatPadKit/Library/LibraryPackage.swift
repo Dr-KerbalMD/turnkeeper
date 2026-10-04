@@ -32,6 +32,7 @@ public struct LibraryPackage: Codable, Sendable {
         let scenarioIDs = Set(subset.scenarios.map(\.id))
         subset.encounters = library.encounters.filter { scenarioIDs.contains($0.scenarioID) }
         subset.sessions = library.sessions.filter { $0.campaignID == id }
+        subset.customCreatures = library.customCreatures.filter { $0.campaignID == id }
         return LibraryPackage(library: subset, bestiaryRevision: bestiaryRevision)
     }
 

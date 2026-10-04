@@ -42,6 +42,10 @@ ladder, and the right half is the notes side, which shows the battle card of the
   events. A variant can be copied from another one.
 - R3.5 A slot has a creature, count, template (elite, normal or weak), side, whether it starts on
   the bench, and the conditions and temporary HP its creatures start the fight with.
+- R3.5a Custom creatures and complex hazards belong to a campaign and work everywhere bestiary creatures do
+  (cards, templates, conditions, budget, initiative). They are made or edited in a form with a live battle
+  card; lists are typed as printed ("Acrobatics +5", "2d8+11 bludgeoning plus 1d6 fire", "DC 22 basic
+  Reflex"), and DCs and damage in ability text still adjust with templates and conditions.
 - R3.6 The encounter budget shows the XP total and threat for the party's level and size.
 - R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
 - R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or

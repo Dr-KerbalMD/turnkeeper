@@ -64,12 +64,8 @@ public struct EncounterVariant: Codable, Sendable, Hashable {
 /// One line of an encounter: a number of the same creature, or a custom NPC.
 public struct EncounterSlot: Codable, Sendable, Hashable, Identifiable {
     public var id = UUID()
-    /// A bestiary key, or empty for a custom NPC.
+    /// A bestiary key, or a custom creature's `custom.<id>` key.
     public var creatureKey: String
-    /// The name for a custom NPC, or a rename such as "Captain Vex" for a bestiary creature.
-    public var customName = ""
-    public var customHitPoints = 0
-    public var customLevel = 0
     public var count = 1
     public var template = CreatureTemplate.normal
     public var side = Side.enemy
@@ -84,7 +80,7 @@ public struct EncounterSlot: Codable, Sendable, Hashable, Identifiable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, creatureKey, customName, customHitPoints, customLevel, count, template, side, startsOnBench
+        case id, creatureKey, count, template, side, startsOnBench
         case conditions, temporaryHitPoints
     }
 
@@ -93,9 +89,6 @@ public struct EncounterSlot: Codable, Sendable, Hashable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
         creatureKey = try container.decode(String.self, forKey: .creatureKey)
-        customName = try container.decodeIfPresent(String.self, forKey: .customName) ?? ""
-        customHitPoints = try container.decodeIfPresent(Int.self, forKey: .customHitPoints) ?? 0
-        customLevel = try container.decodeIfPresent(Int.self, forKey: .customLevel) ?? 0
         count = try container.decodeIfPresent(Int.self, forKey: .count) ?? 1
         template = try container.decodeIfPresent(CreatureTemplate.self, forKey: .template) ?? .normal
         side = try container.decodeIfPresent(Side.self, forKey: .side) ?? .enemy
@@ -104,16 +97,7 @@ public struct EncounterSlot: Codable, Sendable, Hashable, Identifiable {
         temporaryHitPoints = try container.decodeIfPresent(Int.self, forKey: .temporaryHitPoints) ?? 0
     }
 
-    public static func customNPC(name: String, level: Int, hitPoints: Int) -> EncounterSlot {
-        var slot = EncounterSlot(creatureKey: "")
-        slot.customName = name
-        slot.customLevel = level
-        slot.customHitPoints = hitPoints
-        slot.side = .ally
-        return slot
-    }
-
-    public var isCustom: Bool { creatureKey.isEmpty }
+    public var isCustom: Bool { CustomCreature.isCustomKey(creatureKey) }
 }
 
 /// A fight, saved so it can be continued later or on the other device.

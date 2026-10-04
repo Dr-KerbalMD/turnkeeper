@@ -98,6 +98,29 @@ struct LibraryTests {
         #expect(throws: LibraryError.newerFormat(99)) { try LibraryPackage.decode(data) }
     }
 
+    @Test("Custom creatures travel with their campaign and are found by key")
+    func customCreatures() throws {
+        var (library, _) = plannedLibrary()
+        let campaign = library.campaigns[0]
+        let custom = CustomCreature(campaignID: campaign.id, game: .pathfinder, name: "Gwibble")
+        library.save(custom)
+        #expect(library.customCreature(key: custom.key)?.creature.name == "Gwibble")
+        #expect(CustomCreature.isCustomKey(custom.key))
+        let package = LibraryPackage.campaign(campaign.id, from: library, bestiaryRevision: "")
+        #expect(package.library.customCreatures.map(\.id) == [custom.id])
+        library.deleteCampaign(campaign.id)
+        #expect(library.customCreature(key: custom.key) == nil)
+    }
+
+    @Test("A library missing newer kinds of records, or with an unreadable record, still loads")
+    func lenientLoading() throws {
+        let saved = #"{"campaigns":[{"id":"5A1C3A2E-0000-4000-8000-000000000003","name":"Old","game":"pf2e","#
+            + #""modifiedAt":0},{"broken":true}],"parties":[]}"#
+        let library = try JSONDecoder().decode(Library.self, from: Data(saved.utf8))
+        #expect(library.campaigns.map(\.name) == ["Old"])
+        #expect(library.customCreatures.isEmpty && library.sessions.isEmpty)
+    }
+
     @Test("Copying a variant gives new slot IDs")
     func copyVariant() {
         var encounter = Encounter(scenarioID: UUID(), name: "B")

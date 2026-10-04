@@ -78,7 +78,9 @@ struct CombatSetupTests {
         elite.template = .elite
         var goblins = EncounterSlot(creatureKey: "goblin")
         goblins.count = 2
-        variant.slots = [elite, goblins, .customNPC(name: "Guide", level: 3, hitPoints: 30)]
+        var guide = EncounterSlot(creatureKey: "boss")
+        guide.side = .ally
+        variant.slots = [elite, goblins, guide]
         let budget = EncounterBudget(partyLevel: 1, partySize: 4)
         // Elite level-1 boss is level 2 (+1: 60 XP); goblins at -1 are party level -2 (20 XP each).
         #expect(budget.experience(of: variant) { bestiary[$0] } == 100)

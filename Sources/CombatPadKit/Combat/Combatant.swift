@@ -4,10 +4,8 @@ import Foundation
 public enum CombatantKind: String, Codable, Sendable {
     /// Blue. Players track their own HP, so only conditions and initiative are kept.
     case playerCharacter
-    /// Red, or green when an ally.
+    /// Red, or green when an ally. Bestiary and custom creatures alike.
     case creature
-    /// Green. A quick ad-hoc entry with a name and optional HP.
-    case customNPC
     /// Gray. A complex hazard from the bestiary.
     case hazard
 }
@@ -33,7 +31,7 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
     public var kind: CombatantKind
     public var side: Side
     public var name: String
-    /// The bestiary key for creatures and hazards; empty for PCs and custom NPCs.
+    /// The creature's key, from the bestiary or `custom.<id>`; empty for PCs.
     public var creatureKey: String
     /// The encounter slot this combatant came from, so planned turn events can find it.
     public var slotID: UUID?
@@ -41,8 +39,6 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
     /// Damage is tracked rather than current HP, so changing the template keeps the damage taken.
     public var damageTaken: Int
     public var temporaryHitPoints: Int
-    /// Maximum HP for custom NPCs; creatures take theirs from the bestiary.
-    public var customMaxHitPoints: Int
     /// The rolled initiative. Ties can be broken with halves, such as 17.5.
     public var initiative: Double?
     public var place: PadPlace
@@ -59,7 +55,6 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
         template = .normal
         damageTaken = 0
         temporaryHitPoints = 0
-        customMaxHitPoints = 0
         initiative = nil
         place = .ladder
         conditions = []
@@ -73,7 +68,6 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
         switch kind {
         case .playerCharacter: return .blue
         case .hazard: return .gray
-        case .customNPC: return side == .enemy ? .red : .green
         case .creature: return side == .enemy ? .red : .green
         }
     }

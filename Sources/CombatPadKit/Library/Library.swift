@@ -8,8 +8,25 @@ public struct Library: Codable, Sendable, Hashable {
     public var scenarios: [Scenario] = []
     public var encounters: [Encounter] = []
     public var sessions: [CombatSession] = []
+    public var customCreatures: [CustomCreature] = []
 
     public init() {}
+
+    private enum CodingKeys: String, CodingKey {
+        case campaigns, parties, scenarios, encounters, sessions, customCreatures
+    }
+
+    /// Reads each kind of record leniently: a kind missing from an older library reads as empty, and a
+    /// record that can't be read is skipped rather than losing the whole library.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        campaigns = try container.lossyArray(forKey: .campaigns)
+        parties = try container.lossyArray(forKey: .parties)
+        scenarios = try container.lossyArray(forKey: .scenarios)
+        encounters = try container.lossyArray(forKey: .encounters)
+        sessions = try container.lossyArray(forKey: .sessions)
+        customCreatures = try container.lossyArray(forKey: .customCreatures)
+    }
 
     // MARK: Queries (deleted records left out)
 
@@ -36,6 +53,16 @@ public struct Library: Codable, Sendable, Hashable {
             .max { $0.modifiedAt < $1.modifiedAt }
     }
 
+    /// The custom creature with a key, if it hasn't been deleted.
+    public func customCreature(key: String) -> CustomCreature? {
+        customCreatures.first { $0.key == key && !$0.isDeleted }
+    }
+
+    public func customCreatures(in campaignID: UUID) -> [CustomCreature] {
+        customCreatures.filter { $0.campaignID == campaignID && !$0.isDeleted }
+            .sorted { $0.creature.name < $1.creature.name }
+    }
+
     public func sessions(in campaignID: UUID) -> [CombatSession] {
         sessions.filter { $0.campaignID == campaignID && !$0.isDeleted }.sorted { $0.modifiedAt > $1.modifiedAt }
     }
@@ -47,6 +74,7 @@ public struct Library: Codable, Sendable, Hashable {
     public mutating func save(_ scenario: Scenario) { upsert(scenario, into: \.scenarios) }
     public mutating func save(_ encounter: Encounter) { upsert(encounter, into: \.encounters) }
     public mutating func save(_ session: CombatSession) { upsert(session, into: \.sessions) }
+    public mutating func save(_ custom: CustomCreature) { upsert(custom, into: \.customCreatures) }
 
     /// Marks a campaign and everything in it deleted.
     public mutating func deleteCampaign(_ id: UUID) {
@@ -57,6 +85,7 @@ public struct Library: Codable, Sendable, Hashable {
         mark(\.scenarios, now) { scenarioIDs.contains($0.id) }
         mark(\.encounters, now) { scenarioIDs.contains($0.scenarioID) }
         mark(\.sessions, now) { $0.campaignID == id }
+        mark(\.customCreatures, now) { $0.campaignID == id }
     }
 
     public mutating func deleteScenario(_ id: UUID) {
@@ -68,6 +97,7 @@ public struct Library: Codable, Sendable, Hashable {
     public mutating func deleteParty(_ id: UUID) { mark(\.parties, Date()) { $0.id == id } }
     public mutating func deleteEncounter(_ id: UUID) { mark(\.encounters, Date()) { $0.id == id } }
     public mutating func deleteSession(_ id: UUID) { mark(\.sessions, Date()) { $0.id == id } }
+    public mutating func deleteCustomCreature(_ id: UUID) { mark(\.customCreatures, Date()) { $0.id == id } }
 
     private mutating func upsert<Record: LibraryRecord>(
         _ record: Record, into path: WritableKeyPath<Library, [Record]>
@@ -89,5 +119,21 @@ public struct Library: Codable, Sendable, Hashable {
             self[keyPath: path][index].deletedAt = time
             self[keyPath: path][index].modifiedAt = time
         }
+    }
+}
+
+/// Wraps a value that might fail to decode, so one bad record doesn't fail the array around it.
+private struct Lossy<Value: Decodable>: Decodable {
+    let value: Value?
+
+    init(from decoder: Decoder) throws {
+        value = try? decoder.singleValueContainer().decode(Value.self)
+    }
+}
+
+extension KeyedDecodingContainer {
+    /// An array that may be missing (read as empty) and whose unreadable elements are skipped.
+    func lossyArray<Element: Decodable>(forKey key: Key) throws -> [Element] {
+        (try decodeIfPresent([Lossy<Element>].self, forKey: key) ?? []).compactMap(\.value)
     }
 }

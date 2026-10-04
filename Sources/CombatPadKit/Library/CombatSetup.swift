@@ -33,18 +33,16 @@ public enum CombatSetup {
     }
 
     private static func baseName(_ slot: EncounterSlot, lookup: (String) -> BestiaryIndexEntry?) -> String {
-        if !slot.customName.isEmpty { return slot.customName }
-        return lookup(slot.creatureKey)?.name ?? "Unknown creature"
+        lookup(slot.creatureKey)?.name ?? "Unknown creature"
     }
 
     private static func combatant(
         for slot: EncounterSlot, named name: String, entry: BestiaryIndexEntry?
     ) -> Combatant {
-        let kind: CombatantKind = slot.isCustom ? .customNPC : (entry?.kind == .hazard ? .hazard : .creature)
+        let kind: CombatantKind = entry?.kind == .hazard ? .hazard : .creature
         var combatant = Combatant(kind: kind, name: name, side: slot.side, creatureKey: slot.creatureKey)
         combatant.slotID = slot.id
         combatant.template = slot.template
-        combatant.customMaxHitPoints = slot.customHitPoints
         combatant.place = slot.startsOnBench ? .bench : .ladder
         combatant.temporaryHitPoints = slot.temporaryHitPoints
         // Each creature gets its own copies, so removing one creature's condition leaves the others'.
@@ -69,7 +67,7 @@ public extension EncounterBudget {
     /// they're expected to join; allies don't.
     func experience(of variant: EncounterVariant, lookup: (String) -> BestiaryIndexEntry?) -> Int {
         variant.slots.filter { $0.side == .enemy }.reduce(0) { total, slot in
-            let baseLevel = slot.isCustom ? slot.customLevel : (lookup(slot.creatureKey)?.level ?? partyLevel)
+            let baseLevel = lookup(slot.creatureKey)?.level ?? partyLevel
             return total + experience(forLevel: slot.template.level(base: baseLevel)) * max(slot.count, 1)
         }
     }
