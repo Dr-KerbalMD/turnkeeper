@@ -87,8 +87,7 @@ struct NearbySyncSheet: View {
         do {
             let host = try NearbyHost(name: Self.deviceName, code: code) { incoming in
                 await MainActor.run {
-                    let reply = LibraryPackage(library: model.library,
-                                               bestiaryRevision: model.bestiary.index.sourceRevision)
+                    let reply = model.fullPackage()
                     model.importPackage(incoming)
                     status = model.statusMessage ?? "Synced."
                     return reply
@@ -105,7 +104,7 @@ struct NearbySyncSheet: View {
         guard let peer = selectedPeer else { return }
         isSyncing = true
         defer { isSyncing = false }
-        let package = LibraryPackage(library: model.library, bestiaryRevision: model.bestiary.index.sourceRevision)
+        let package = model.fullPackage()
         do {
             let reply = try await NearbyClient.sync(with: peer.endpoint, code: enteredCode, package: package)
             model.importPackage(reply)

@@ -14,8 +14,9 @@ final class PlayerDisplay {
 
     var entry: BestiaryIndexEntry?
     var hasSecondScreen = false
-    /// The bestiary, so the second screen can load art without the app model.
+    /// The bestiary and art store, so the second screen can load art without the app model.
     var bestiary = BestiaryStore()
+    var artStore: ArtStore?
 
     private init() {}
 }
@@ -29,7 +30,7 @@ struct PlayerScreen: View {
             Color.black.ignoresSafeArea()
             if let entry = display.entry {
                 CardBackView(entry: entry)
-                    .environment(AppModel(bestiary: display.bestiary))
+                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore))
                     .transition(.opacity)
             }
         }

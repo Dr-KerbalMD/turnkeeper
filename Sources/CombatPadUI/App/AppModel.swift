@@ -30,13 +30,17 @@ final class AppModel {
     /// What the last paste or drop of stat blocks added, shown until dismissed.
     var statBlockImport: StatBlockImport?
 
+    /// Where pasted artwork is kept; nil when there's nowhere to keep it.
+    @ObservationIgnored let artStore: ArtStore?
     @ObservationIgnored private let file: LibraryFile?
     @ObservationIgnored private var saveTask: Task<Void, Never>?
 
-    init(library: Library = Library(), bestiary: BestiaryStore = BestiaryStore(), file: LibraryFile? = nil) {
+    init(library: Library = Library(), bestiary: BestiaryStore = BestiaryStore(), file: LibraryFile? = nil,
+         artStore: ArtStore? = nil) {
         self.library = library
         self.bestiary = bestiary
         self.file = file
+        self.artStore = artStore
         selectedCampaignID = library.activeCampaigns.first?.id
     }
 
@@ -50,7 +54,10 @@ final class AppModel {
         }
         do {
             let file = try LibraryFile.standard()
-            return AppModel(library: try file.load(), bestiary: bestiary ?? BestiaryStore(), file: file)
+            let library = try file.load()
+            let artStore = try? ArtStore.standard()
+            artStore?.sweep(keeping: library.liveArtFileNames)
+            return AppModel(library: library, bestiary: bestiary ?? BestiaryStore(), file: file, artStore: artStore)
         } catch {
             let model = AppModel(bestiary: bestiary ?? BestiaryStore())
             model.errorMessage = error.localizedDescription
@@ -68,12 +75,20 @@ final class AppModel {
         library.sessions.first { $0.id == activeSessionID }
     }
 
-    /// A creature's summary, from the campaign's custom creatures or the bestiary.
+    /// A creature's summary, from the campaign's custom creatures or the bestiary, with any pasted art.
     func entry(_ key: String) -> BestiaryIndexEntry? {
-        if CustomCreature.isCustomKey(key) {
-            return library.customCreature(key: key).map { BestiaryIndexEntry(creature: $0.creature) }
-        }
-        return bestiary.entry(key)
+        let found = CustomCreature.isCustomKey(key)
+            ? library.customCreature(key: key).map { BestiaryIndexEntry(creature: $0.creature) }
+            : bestiary.entry(key)
+        guard var entry = found, let art = library.customArt(for: key) else { return found }
+        entry.art = entry.art.replacing(with: art)
+        return entry
+    }
+
+    /// The file behind an art path: pasted art from the art store, anything else from the bundled bestiary.
+    func artURL(for path: String) -> URL? {
+        guard path.hasPrefix(CustomArt.pathPrefix) else { return bestiary.url(for: path) }
+        return artStore?.url(for: String(path.dropFirst(CustomArt.pathPrefix.count)))
     }
 
     /// A creature's full stat block, from the campaign's custom creatures or the bestiary.

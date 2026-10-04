@@ -5,7 +5,17 @@ import Foundation
 extension AppModel {
     /// The campaign as a `.combatpad` package.
     func exportCampaign(_ id: UUID) throws -> Data {
-        try LibraryPackage.campaign(id, from: library, bestiaryRevision: bestiary.index.sourceRevision).encoded()
+        try withImages(LibraryPackage.campaign(id, from: library, bestiaryRevision: bestiary.index.sourceRevision))
+            .encoded()
+    }
+
+    /// The whole library for nearby sync, with its pasted images.
+    func fullPackage() -> LibraryPackage {
+        withImages(LibraryPackage(library: library, bestiaryRevision: bestiary.index.sourceRevision))
+    }
+
+    private func withImages(_ package: LibraryPackage) -> LibraryPackage {
+        artStore.map(package.addingImages(from:)) ?? package
     }
 
     /// The file name an export should use, such as "PFS Season 7.combatpad".
@@ -26,6 +36,11 @@ extension AppModel {
     }
 
     func importPackage(_ package: LibraryPackage) {
+        do {
+            if let artStore { try package.writeImages(to: artStore) }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
         var merged = library
         let summary = LibraryMerger.merge(package.library, into: &merged)
         library = merged

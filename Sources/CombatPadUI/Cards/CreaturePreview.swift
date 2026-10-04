@@ -28,6 +28,8 @@ struct CreaturePreview: View {
                 }
             }
             .navigationTitle(model.entry(key)?.name ?? "")
+            .acceptsArtwork(for: key, model: model)
+            .toolbar { ArtworkControls(key: key) }
             .toolbar {
                 ToolbarItem {
                     Picker("Template", selection: $template) {

@@ -110,7 +110,13 @@ private struct SlotRow: View {
             ConditionEditor(title: model.entry(slot.creatureKey)?.name ?? "",
                             conditions: slot.conditions) { edit in change { edit(&$0.conditions) } }
         }
+        .acceptsArtwork(for: slot.creatureKey, model: model)
         .contextMenu {
+            if model.hasPastedArtwork(slot.creatureKey) {
+                Button("Remove Pasted Artwork", systemImage: "photo.badge.minus") {
+                    model.removeArtwork(for: slot.creatureKey)
+                }
+            }
             if slot.isCustom {
                 Button("Edit Creature…", systemImage: "pencil") { isEditingCreature = true }
                 Button("Delete Custom Creature…", systemImage: "trash", role: .destructive) {

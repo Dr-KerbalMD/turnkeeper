@@ -7,7 +7,8 @@ import Foundation
 enum DemoLibrary {
     @MainActor
     static func model(mode: String, bestiary: BestiaryStore) -> AppModel {
-        let model = AppModel(bestiary: bestiary)
+        let artFolder = FileManager.default.temporaryDirectory.appendingPathComponent("CombatPadDemoArt")
+        let model = AppModel(bestiary: bestiary, artStore: ArtStore(directory: artFolder))
         if mode == "starfinder" { return starfinder(model: model, bestiary: bestiary) }
         let campaign = model.addCampaign(name: "Demo: PFS Season 7", game: .pathfinder)
         let party = Party(campaignID: campaign.id, name: "Friday table", level: 3,

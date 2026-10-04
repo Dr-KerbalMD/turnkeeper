@@ -40,7 +40,7 @@ private struct FullArt: View {
             }
         }
         .task(id: path) {
-            guard let url = model.bestiary.url(for: path) else { return }
+            guard let url = model.artURL(for: path) else { return }
             image = await ArtLoader.shared.image(at: url, maxPixels: 0)
         }
     }

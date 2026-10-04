@@ -67,6 +67,36 @@ final class PlanningUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Gwibble"].waitForExistence(timeout: 5))
     }
 
+    /// A copied image pasted on a creature's card becomes its art, and can be removed again.
+    func testPastingArtworkOnTheCard() throws {
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 64, height: 64))
+        UIPasteboard.general.image = renderer.image { context in
+            UIColor.systemTeal.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 64, height: 64))
+        }
+        app.launchArguments = ["--demo", "planner"]
+        app.launch()
+        XCTAssertTrue(app.navigationBars["A: Ambush on the Docks"].waitForExistence(timeout: 10))
+        let card = app.buttons["Card"].firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        card.tap()
+        let paste = app.navigationBars.buttons["Paste"]
+        XCTAssertTrue(paste.waitForExistence(timeout: 5))
+        paste.tap()
+        let artwork = app.navigationBars.buttons["Artwork"]
+        let remove = app.buttons["Remove Pasted Artwork"]
+        XCTAssertTrue(waitUntil {
+            artwork.tap()
+            if remove.waitForExistence(timeout: 1) { return true }
+            app.tap()
+            return false
+        })
+        remove.tap()
+        artwork.tap()
+        XCTAssertTrue(app.buttons["Choose Image…"].waitForExistence(timeout: 3))
+        XCTAssertFalse(remove.exists)
+    }
+
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {

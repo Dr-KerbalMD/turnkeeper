@@ -45,7 +45,7 @@ struct ArtImage: View {
     }
 
     private func load() async -> CGImage? {
-        guard let url = model.bestiary.url(for: path) else { return nil }
+        guard let url = model.artURL(for: path) else { return nil }
         let pixels = Int(size * displayScale)
         return await ArtLoader.shared.image(at: url, maxPixels: pixels)
     }
