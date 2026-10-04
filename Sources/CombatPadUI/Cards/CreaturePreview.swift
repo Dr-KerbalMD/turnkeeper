@@ -7,10 +7,13 @@ struct CreaturePreview: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var template: CreatureTemplate
+    /// Conditions shown on the card, such as a planned creature's starting conditions.
+    let conditions: [AppliedCondition]
 
     /// - Parameter template: the template the card opens with, such as the encounter slot's.
-    init(key: String, template: CreatureTemplate = .normal) {
+    init(key: String, template: CreatureTemplate = .normal, conditions: [AppliedCondition] = []) {
         self.key = key
+        self.conditions = conditions
         _template = State(initialValue: template)
     }
 
@@ -18,7 +21,7 @@ struct CreaturePreview: View {
         NavigationStack {
             Group {
                 if let creature = model.bestiary.creature(key) {
-                    BattleCard(creature: creature, template: template)
+                    BattleCard(creature: creature, template: template, conditions: conditions)
                         .padding()
                 } else {
                     ContentUnavailableView("Not in the bestiary", systemImage: "questionmark")

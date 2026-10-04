@@ -40,8 +40,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   version. Scenarios can be collapsed in the list; the choice is remembered on each device.
 - R3.4 Each encounter has one variant per scheme label. Each variant has its own creatures, bench and
   events. A variant can be copied from another one.
-- R3.5 A slot has a creature, count, template (elite, normal or weak), side, and whether it starts on
-  the bench.
+- R3.5 A slot has a creature, count, template (elite, normal or weak), side, whether it starts on
+  the bench, and the conditions and temporary HP its creatures start the fight with.
 - R3.6 The encounter budget shows the XP total and threat for the party's level and size.
 - R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
 - R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or

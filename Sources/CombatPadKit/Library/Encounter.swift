@@ -74,9 +74,34 @@ public struct EncounterSlot: Codable, Sendable, Hashable, Identifiable {
     public var template = CreatureTemplate.normal
     public var side = Side.enemy
     public var startsOnBench = false
+    /// Conditions every creature from this slot starts the fight with, such as enfeebled 1.
+    public var conditions: [AppliedCondition] = []
+    /// Temporary HP every creature from this slot starts with.
+    public var temporaryHitPoints = 0
 
     public init(creatureKey: String) {
         self.creatureKey = creatureKey
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, creatureKey, customName, customHitPoints, customLevel, count, template, side, startsOnBench
+        case conditions, temporaryHitPoints
+    }
+
+    /// Fields added after the first release may be missing from saved libraries; they read as their defaults.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        creatureKey = try container.decode(String.self, forKey: .creatureKey)
+        customName = try container.decodeIfPresent(String.self, forKey: .customName) ?? ""
+        customHitPoints = try container.decodeIfPresent(Int.self, forKey: .customHitPoints) ?? 0
+        customLevel = try container.decodeIfPresent(Int.self, forKey: .customLevel) ?? 0
+        count = try container.decodeIfPresent(Int.self, forKey: .count) ?? 1
+        template = try container.decodeIfPresent(CreatureTemplate.self, forKey: .template) ?? .normal
+        side = try container.decodeIfPresent(Side.self, forKey: .side) ?? .enemy
+        startsOnBench = try container.decodeIfPresent(Bool.self, forKey: .startsOnBench) ?? false
+        conditions = try container.decodeIfPresent([AppliedCondition].self, forKey: .conditions) ?? []
+        temporaryHitPoints = try container.decodeIfPresent(Int.self, forKey: .temporaryHitPoints) ?? 0
     }
 
     public static func customNPC(name: String, level: Int, hitPoints: Int) -> EncounterSlot {

@@ -36,6 +36,27 @@ struct CombatSetupTests {
         #expect(state.phase == .setup)
     }
 
+    @Test("Planned conditions and temporary HP start the fight, as separate copies for each creature")
+    func startingState() {
+        var slot = EncounterSlot(creatureKey: "goblin")
+        slot.count = 2
+        slot.conditions = [AppliedCondition(slug: "enfeebled", value: 1)]
+        slot.temporaryHitPoints = 5
+        var variant = EncounterVariant(label: "Base")
+        variant.slots = [slot]
+        let state = CombatSetup.state(for: variant, party: nil) { bestiary[$0] }
+        #expect(state.combatants.allSatisfy { $0.temporaryHitPoints == 5 })
+        #expect(state.combatants.map { $0.condition("enfeebled")?.value } == [1, 1])
+        #expect(state.combatants[0].conditions[0].id != state.combatants[1].conditions[0].id)
+    }
+
+    @Test("Slots saved before starting conditions existed still decode")
+    func oldSlots() throws {
+        let saved = #"{"id":"5A1C3A2E-0000-4000-8000-000000000002","creatureKey":"goblin","count":2}"#
+        let slot = try JSONDecoder().decode(EncounterSlot.self, from: Data(saved.utf8))
+        #expect(slot.count == 2 && slot.conditions.isEmpty && slot.temporaryHitPoints == 0)
+    }
+
     @Test("Away players wait on the bench and aren't counted in the budget")
     func awayPlayers() throws {
         var away = PartyMember(name: "Merisiel")

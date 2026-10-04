@@ -46,6 +46,13 @@ public enum CombatSetup {
         combatant.template = slot.template
         combatant.customMaxHitPoints = slot.customHitPoints
         combatant.place = slot.startsOnBench ? .bench : .ladder
+        combatant.temporaryHitPoints = slot.temporaryHitPoints
+        // Each creature gets its own copies, so removing one creature's condition leaves the others'.
+        combatant.conditions = slot.conditions.map { condition in
+            var copy = condition
+            copy.id = UUID()
+            return copy
+        }
         return combatant
     }
 

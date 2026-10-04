@@ -50,6 +50,7 @@ private struct SlotRow: View {
     let change: (@escaping (inout EncounterSlot) -> Void) -> Void
     @Environment(AppModel.self) private var model
     @State private var isShowingCard = false
+    @State private var isEditingConditions = false
 
     var body: some View {
         let entry = model.entry(slot.creatureKey)
@@ -95,9 +96,37 @@ private struct SlotRow: View {
                 .fixedSize()
                 Toggle("Starts on bench", isOn: field(\.startsOnBench))
             }
+            startingState
         }
         .padding(.vertical, 4)
-        .sheet(isPresented: $isShowingCard) { CreaturePreview(key: slot.creatureKey, template: slot.template) }
+        .sheet(isPresented: $isShowingCard) {
+            CreaturePreview(key: slot.creatureKey, template: slot.template, conditions: slot.conditions)
+        }
+        .sheet(isPresented: $isEditingConditions) {
+            ConditionEditor(title: model.entry(slot.creatureKey)?.name ?? slot.customName,
+                            conditions: slot.conditions) { edit in change { edit(&$0.conditions) } }
+        }
+    }
+
+    /// Conditions and temporary HP the creatures start the fight with.
+    private var startingState: some View {
+        HStack {
+            Button {
+                isEditingConditions = true
+            } label: {
+                Label(slot.conditions.isEmpty ? "Starting Conditions…" : startingConditionsText,
+                      systemImage: "staroflife")
+            }
+            .buttonStyle(.borderless)
+            Spacer()
+            Stepper("Temp HP \(slot.temporaryHitPoints)", value: field(\.temporaryHitPoints), in: 0...500, step: 5)
+                .fixedSize()
+        }
+        .font(.callout)
+    }
+
+    private var startingConditionsText: String {
+        "Starts " + slot.conditions.map(ConditionLabel.short).joined(separator: ", ").lowercased()
     }
 
     private func field<Value>(_ path: WritableKeyPath<EncounterSlot, Value>) -> Binding<Value> {

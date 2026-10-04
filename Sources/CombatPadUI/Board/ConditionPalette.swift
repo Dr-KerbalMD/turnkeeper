@@ -1,11 +1,31 @@
 import CombatPadKit
 import SwiftUI
 
-/// The condition magnets: tap to add, tap again to raise a valued one; current conditions can be lowered
-/// or removed. Persistent damage and custom reminders ask for their details.
+/// The condition palette for a combatant on the board. Each change is one undoable step.
 struct ConditionPalette: View {
     let controller: BoardController
     let id: UUID
+
+    var body: some View {
+        let combatant = controller.state[id]
+        ConditionEditor(title: combatant?.name ?? "", conditions: combatant?.conditions ?? []) { edit in
+            controller.change { state in
+                guard var combatant = state[id] else { return }
+                edit(&combatant.conditions)
+                state[id] = combatant
+            }
+        }
+    }
+}
+
+/// The condition magnets: tap to add, tap again to raise a valued one; current conditions can be lowered
+/// or removed. Persistent damage and custom reminders ask for their details. Used on the board and for a
+/// planned creature's starting conditions.
+struct ConditionEditor: View {
+    let title: String
+    let conditions: [AppliedCondition]
+    /// Applies an edit to wherever the conditions are kept.
+    let change: (@escaping (inout [AppliedCondition]) -> Void) -> Void
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var persistentFormula = "1d6"
@@ -13,12 +33,10 @@ struct ConditionPalette: View {
     @State private var reminderText = ""
     @State private var reminderMoment = TurnMoment.startOfTurn
 
-    private var combatant: Combatant? { controller.state[id] }
-
     var body: some View {
         NavigationStack {
             List {
-                Section("On \(combatant?.name ?? "")") { current }
+                Section("On \(title)") { current }
                 Section("Add") {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))], spacing: 8) {
                         ForEach(available) { definition in
@@ -27,31 +45,8 @@ struct ConditionPalette: View {
                         }
                     }
                 }
-                Section("Persistent damage") {
-                    HStack {
-                        TextField("Formula", text: $persistentFormula)
-                        TextField("Type", text: $persistentType)
-                        Button("Add") {
-                            let damage = DamagePart(formula: persistentFormula, type: persistentType,
-                                                    isPersistent: true)
-                            controller.change { $0.addCondition(.persistent(damage), to: id) }
-                        }
-                        .buttonStyle(.borderless)
-                    }
-                }
-                Section("Reminder") {
-                    TextField("Sustain wall of fire", text: $reminderText)
-                    Picker("When", selection: $reminderMoment) {
-                        Text("Start of turn").tag(TurnMoment.startOfTurn)
-                        Text("End of turn").tag(TurnMoment.endOfTurn)
-                    }
-                    .pickerStyle(.segmented)
-                    Button("Add Reminder") {
-                        controller.change { $0.addCondition(.reminder(reminderText, at: reminderMoment), to: id) }
-                        reminderText = ""
-                    }
-                    .disabled(reminderText.isEmpty)
-                }
+                persistentSection
+                reminderSection
             }
             .navigationTitle("Conditions")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
@@ -61,24 +56,55 @@ struct ConditionPalette: View {
 
     @ViewBuilder
     private var current: some View {
-        ForEach(combatant?.conditions ?? []) { condition in
+        ForEach(conditions) { condition in
             HStack {
                 Text(ConditionLabel.short(condition))
                 Spacer()
                 if let value = condition.value {
                     Stepper("Value", value: Binding(get: { value }, set: { newValue in
-                        controller.change { $0.setConditionValue(newValue, conditionID: condition.id, on: id) }
+                        change { $0.setValue(newValue, of: condition.id) }
                     }), in: 0...10)
                     .labelsHidden()
                 }
                 Button("Remove", systemImage: "xmark.circle.fill", role: .destructive) {
-                    controller.change { $0.removeCondition(condition.id, from: id) }
+                    change { $0.removeAll { $0.id == condition.id } }
                 }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
             }
         }
-        if combatant?.conditions.isEmpty ?? true { Text("None").foregroundStyle(.secondary) }
+        if conditions.isEmpty { Text("None").foregroundStyle(.secondary) }
+    }
+
+    private var persistentSection: some View {
+        Section("Persistent damage") {
+            HStack {
+                TextField("Formula", text: $persistentFormula)
+                TextField("Type", text: $persistentType)
+                Button("Add") {
+                    let damage = DamagePart(formula: persistentFormula, type: persistentType, isPersistent: true)
+                    change { $0.add(.persistent(damage)) }
+                }
+                .buttonStyle(.borderless)
+            }
+        }
+    }
+
+    private var reminderSection: some View {
+        Section("Reminder") {
+            TextField("Sustain wall of fire", text: $reminderText)
+            Picker("When", selection: $reminderMoment) {
+                Text("Start of turn").tag(TurnMoment.startOfTurn)
+                Text("End of turn").tag(TurnMoment.endOfTurn)
+            }
+            .pickerStyle(.segmented)
+            Button("Add Reminder") {
+                let reminder = AppliedCondition.reminder(reminderText, at: reminderMoment)
+                change { $0.add(reminder) }
+                reminderText = ""
+            }
+            .disabled(reminderText.isEmpty)
+        }
     }
 
     /// The game's conditions, without the attitude ones that rarely matter in a fight and the persistent
@@ -89,15 +115,13 @@ struct ConditionPalette: View {
         return model.bestiary.conditions.filter { $0.games.contains(model.game) && !skipped.contains($0.slug) }
     }
 
-    /// Adds the condition at value 1, or raises it by 1 if the combatant already has it.
+    /// Adds the condition at value 1, or raises it by 1 if it's already there.
     private func add(_ definition: ConditionDefinition) {
-        controller.change { state in
-            let existing = state[id]?.condition(definition.slug)
-            if let existing, let value = existing.value {
-                state.setConditionValue(value + 1, conditionID: existing.id, on: id)
-            } else if existing == nil {
-                let condition = AppliedCondition(slug: definition.slug, value: definition.isValued ? 1 : nil)
-                state.addCondition(condition, to: id)
+        change { conditions in
+            if let existing = conditions.first(where: { $0.slug == definition.slug }) {
+                if let value = existing.value { conditions.setValue(value + 1, of: existing.id) }
+            } else {
+                conditions.append(AppliedCondition(slug: definition.slug, value: definition.isValued ? 1 : nil))
             }
         }
     }

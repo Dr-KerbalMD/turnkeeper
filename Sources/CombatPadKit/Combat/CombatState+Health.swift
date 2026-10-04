@@ -27,25 +27,14 @@ public extension CombatState {
     /// Adds a condition, or raises the value of one the combatant already has.
     mutating func addCondition(_ condition: AppliedCondition, to id: UUID) {
         guard var combatant = self[id] else { return }
-        let isSeparate = [ConditionSlug.persistentDamage, ConditionSlug.customReminder].contains(condition.slug)
-        if !isSeparate, let index = combatant.conditions.firstIndex(where: { $0.slug == condition.slug }) {
-            let current = combatant.conditions[index].value ?? 0
-            combatant.conditions[index].value = condition.value.map { max($0, current) }
-        } else {
-            combatant.conditions.append(condition)
-        }
+        combatant.conditions.add(condition)
         self[id] = combatant
     }
 
     /// Sets a valued condition's number; zero or less removes it.
     mutating func setConditionValue(_ value: Int, conditionID: UUID, on id: UUID) {
-        guard var combatant = self[id], let index = combatant.conditions.firstIndex(where: { $0.id == conditionID })
-        else { return }
-        if value <= 0 {
-            combatant.conditions.remove(at: index)
-        } else {
-            combatant.conditions[index].value = value
-        }
+        guard var combatant = self[id] else { return }
+        combatant.conditions.setValue(value, of: conditionID)
         self[id] = combatant
     }
 
@@ -71,5 +60,26 @@ public extension CombatState {
 
     mutating func addEvent(_ event: EncounterEvent) {
         events.append(event)
+    }
+}
+
+/// Condition lists, shared by combatants and by planned encounter slots.
+public extension Array where Element == AppliedCondition {
+    /// Adds a condition, or raises the value of one already there. Persistent damage and reminders are
+    /// separate instances, so they are always added.
+    mutating func add(_ condition: AppliedCondition) {
+        let isSeparate = [ConditionSlug.persistentDamage, ConditionSlug.customReminder].contains(condition.slug)
+        if !isSeparate, let index = firstIndex(where: { $0.slug == condition.slug }) {
+            let current = self[index].value ?? 0
+            self[index].value = condition.value.map { Swift.max($0, current) }
+        } else {
+            append(condition)
+        }
+    }
+
+    /// Sets a valued condition's number; zero or less removes it.
+    mutating func setValue(_ value: Int, of conditionID: UUID) {
+        guard let index = firstIndex(where: { $0.id == conditionID }) else { return }
+        if value <= 0 { remove(at: index) } else { self[index].value = value }
     }
 }
