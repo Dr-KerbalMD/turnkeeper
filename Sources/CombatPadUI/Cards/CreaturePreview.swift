@@ -6,7 +6,13 @@ struct CreaturePreview: View {
     let key: String
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
-    @State private var template = CreatureTemplate.normal
+    @State private var template: CreatureTemplate
+
+    /// - Parameter template: the template the card opens with, such as the encounter slot's.
+    init(key: String, template: CreatureTemplate = .normal) {
+        self.key = key
+        _template = State(initialValue: template)
+    }
 
     var body: some View {
         NavigationStack {
@@ -44,6 +50,11 @@ struct PlayerViewSheet: View {
     var body: some View {
         CardBackView(entry: entry)
             .onTapGesture { dismiss() }
-            .frame(minWidth: 500, minHeight: 720)
+            #if os(iOS)
+            .statusBarHidden()
+            .persistentSystemOverlays(.hidden)
+            #else
+            .frame(minWidth: 640, idealWidth: 760, minHeight: 900, idealHeight: 1100)
+            #endif
     }
 }

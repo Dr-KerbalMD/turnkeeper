@@ -17,10 +17,9 @@ struct SlotsSection: View {
             }
             .onDelete { offsets in updateVariant { $0.slots.remove(atOffsets: offsets) } }
             .onMove { source, target in updateVariant { $0.slots.move(fromOffsets: source, toOffset: target) } }
-            HStack {
-                Button("Add Creature…", systemImage: "plus") { isBrowsing = true }
-                Button("Add Custom NPC…", systemImage: "person.badge.plus") { isAddingNPC = true }
-            }
+            // One button per row: in a form, a tap anywhere in a row triggers every plain button in it.
+            Button("Add Creature…", systemImage: "plus") { isBrowsing = true }
+            Button("Add Custom NPC…", systemImage: "person.badge.plus") { isAddingNPC = true }
         }
     }
 
@@ -45,18 +44,32 @@ private struct SlotRow: View {
     let party: Party?
     let change: ((inout EncounterSlot) -> Void) -> Void
     @Environment(AppModel.self) private var model
+    @State private var isShowingCard = false
 
     var body: some View {
         let entry = model.entry(slot.creatureKey)
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
-                ArtImage(path: entry?.art.thumbnail ?? "", size: 44, shape: .circle, alignment: .top)
-                VStack(alignment: .leading) {
-                    Text(slot.customName.isEmpty ? (entry?.name ?? "Unknown creature") : slot.customName)
-                        .font(.headline)
-                    Text(details(entry)).font(.caption).foregroundStyle(.secondary)
+                Button { isShowingCard = true } label: {
+                    HStack(spacing: 12) {
+                        ArtImage(path: entry?.art.thumbnail ?? "", size: 44, shape: .circle, alignment: .top)
+                        VStack(alignment: .leading) {
+                            Text(slot.customName.isEmpty ? (entry?.name ?? "Unknown creature") : slot.customName)
+                                .font(.headline)
+                            Text(details(entry)).font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
                 }
+                .buttonStyle(.borderless)
+                .foregroundStyle(.primary)
+                .disabled(slot.isCustom)
+                .help("Show the battle card")
                 Spacer()
+                if !slot.isCustom {
+                    Button("Card", systemImage: "rectangle.portrait") { isShowingCard = true }
+                        .labelStyle(.iconOnly)
+                        .buttonStyle(.borderless)
+                }
                 Stepper("× \(slot.count)", value: field(\.count), in: 1...20)
                     .fixedSize()
             }
@@ -79,6 +92,7 @@ private struct SlotRow: View {
             }
         }
         .padding(.vertical, 4)
+        .sheet(isPresented: $isShowingCard) { CreaturePreview(key: slot.creatureKey, template: slot.template) }
     }
 
     private func field<Value>(_ path: WritableKeyPath<EncounterSlot, Value>) -> Binding<Value> {

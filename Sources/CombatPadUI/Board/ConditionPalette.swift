@@ -36,6 +36,7 @@ struct ConditionPalette: View {
                                                     isPersistent: true)
                             controller.change { $0.addCondition(.persistent(damage), to: id) }
                         }
+                        .buttonStyle(.borderless)
                     }
                 }
                 Section("Reminder") {

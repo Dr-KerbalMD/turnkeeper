@@ -93,7 +93,7 @@ struct ShowPlayersButton: View {
             show()
         }
         .disabled(entry == nil)
-        .sheet(isPresented: $isPresentingHere) {
+        .playerPresentation(isPresented: $isPresentingHere) {
             if let entry { PlayerViewSheet(entry: entry) }
         }
     }
@@ -101,5 +101,20 @@ struct ShowPlayersButton: View {
     private func show() {
         PlayerDisplay.shared.entry = entry
         if !PlayerDisplay.shared.hasSecondScreen { isPresentingHere = true }
+    }
+}
+
+extension View {
+    /// The player view takes the whole screen on the iPad, so it can be held up to the table. The Mac shows it
+    /// as a sheet; the Players window is the full-size option there.
+    @ViewBuilder
+    func playerPresentation<Content: View>(
+        isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Content
+    ) -> some View {
+        #if os(iOS)
+        fullScreenCover(isPresented: isPresented, content: content)
+        #else
+        sheet(isPresented: isPresented, content: content)
+        #endif
     }
 }
