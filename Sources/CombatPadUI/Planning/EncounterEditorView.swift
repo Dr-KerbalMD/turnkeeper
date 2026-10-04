@@ -16,8 +16,8 @@ struct EncounterEditorView: View {
         let current = model.encounter(encounter.id) ?? encounter
         Form {
             Section {
-                TextField("Name", text: textBinding(\.name))
-                TextField("Location", text: textBinding(\.location), prompt: Text("A3. Docks"))
+                TextField("Name", text: textBinding(\.name)).titleEntry()
+                TextField("Location", text: textBinding(\.location), prompt: Text("A3. Docks")).titleEntry()
                 TextField("Notes", text: textBinding(\.notes), axis: .vertical).lineLimit(2...10)
             }
             Section {

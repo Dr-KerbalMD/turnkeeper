@@ -9,12 +9,12 @@ struct PartyEditorView: View {
     var body: some View {
         Form {
             Section {
-                TextField("Name", text: binding(\.name))
+                TextField("Name", text: binding(\.name)).nameEntry()
                 Stepper("Level \(party.level)", value: binding(\.level), in: -1...25)
             }
             Section("Members") {
                 ForEach(party.members) { member in
-                    TextField("Name", text: memberName(member.id))
+                    TextField("Name", text: memberName(member.id)).nameEntry()
                 }
                 .onDelete { offsets in update { $0.members.remove(atOffsets: offsets) } }
                 .onMove { source, target in update { $0.members.move(fromOffsets: source, toOffset: target) } }

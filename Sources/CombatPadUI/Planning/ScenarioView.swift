@@ -10,7 +10,7 @@ struct ScenarioView: View {
     var body: some View {
         Form {
             Section {
-                TextField("Name", text: binding(\.name))
+                TextField("Name", text: binding(\.name)).titleEntry()
                 TextField("Levels", text: binding(\.levelRange), prompt: Text("1–4"))
                 TextField("Variants, comma separated", text: labelsBinding)
                 TextField("Notes", text: binding(\.notes), axis: .vertical).lineLimit(3...8)
@@ -108,6 +108,7 @@ private struct ScenarioGrid: View {
                     Text(budget.threat(forExperience: experience).rawValue.capitalized).font(.caption)
                 }
             }
+            .buttonStyle(.borderless)
             .help("Run \(encounter.name) at \(label)")
         } else {
             Text(variant.slots.isEmpty ? "—" : "\(variant.slots.reduce(0) { $0 + $1.count }) creatures")

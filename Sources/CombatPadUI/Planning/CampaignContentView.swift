@@ -30,8 +30,29 @@ struct CampaignContentView: View {
             }
             SavedFightsSection(campaignID: campaign.id)
         }
-        .navigationTitle(campaign.name)
+        .renamableTitle(campaign.name, rename: rename)
         .sheet(isPresented: $isAddingScenario) { NewScenarioSheet(campaign: campaign) }
+    }
+
+    private func rename(_ name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, var current = model.library.campaigns.first(where: { $0.id == campaign.id })
+        else { return }
+        current.name = trimmed
+        model.library.save(current)
+    }
+}
+
+private extension View {
+    /// On the iPad the title can be tapped to rename; on the Mac, Rename… is in the sidebar's menu.
+    @ViewBuilder
+    func renamableTitle(_ title: String, rename: @escaping (String) -> Void) -> some View {
+        #if os(iOS)
+        navigationTitle(Binding(get: { title }, set: rename))
+            .toolbarRole(.editor)
+        #else
+        navigationTitle(title)
+        #endif
     }
 }
 
@@ -104,7 +125,7 @@ private struct NewScenarioSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Name", text: $name, prompt: Text("#7-03: The Sunken Vault"))
+                TextField("Name", text: $name, prompt: Text("#7-03: The Sunken Vault")).titleEntry()
                 Picker("Difficulty variants", selection: $scheme) {
                     Text("Pathfinder Society (challenge points)").tag(VariantScheme.pathfinderSociety)
                     Text("Starfinder Society (easier/base/harder)").tag(VariantScheme.starfinderSociety)

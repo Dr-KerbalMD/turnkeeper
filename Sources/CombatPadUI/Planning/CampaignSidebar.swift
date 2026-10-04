@@ -9,6 +9,7 @@ struct CampaignSidebar: View {
     @State private var isImporting = false
     @State private var isSyncing = false
     @State private var exportDocument: LibraryDocument?
+    @State private var renaming: Campaign?
 
     var body: some View {
         @Bindable var model = model
@@ -27,7 +28,8 @@ struct CampaignSidebar: View {
                 Button("Sync with Nearby Device", systemImage: "arrow.triangle.2.circlepath") { isSyncing = true }
             }
         }
-        .sheet(isPresented: $isAdding) { NewCampaignSheet() }
+        .sheet(isPresented: $isAdding) { CampaignSheet(campaign: nil) }
+        .sheet(item: $renaming) { campaign in CampaignSheet(campaign: campaign) }
         .sheet(isPresented: $isSyncing) { NearbySyncSheet() }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.combatPadLibrary, .json]) { result in
             if case let .success(url) = result { model.importLibraryFile(url) }
@@ -39,6 +41,7 @@ struct CampaignSidebar: View {
 
     @ViewBuilder
     private func menu(for campaign: Campaign) -> some View {
+        Button("Rename…", systemImage: "pencil") { renaming = campaign }
         Button("Export…", systemImage: "square.and.arrow.up") { export(campaign) }
         Button("Delete", systemImage: "trash", role: .destructive) { model.deleteCampaign(campaign.id) }
     }
@@ -57,8 +60,10 @@ struct CampaignSidebar: View {
     }
 }
 
-/// Asks for a new campaign's name and game.
-private struct NewCampaignSheet: View {
+/// Asks for a campaign's name and game, for a new campaign or to rename one.
+private struct CampaignSheet: View {
+    /// The campaign being renamed, or nil to add one.
+    let campaign: Campaign?
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -68,6 +73,7 @@ private struct NewCampaignSheet: View {
         NavigationStack {
             Form {
                 TextField("Name", text: $name, prompt: Text("PFS Season 7"))
+                    .nameEntry()
                 Picker("Game", selection: $game) {
                     Text("Pathfinder").tag(Game.pathfinder)
                     Text("Starfinder").tag(Game.starfinder)
@@ -75,18 +81,33 @@ private struct NewCampaignSheet: View {
                 .pickerStyle(.segmented)
             }
             .formStyle(.grouped)
-            .navigationTitle("New Campaign")
+            .navigationTitle(campaign == nil ? "New Campaign" : "Rename Campaign")
+            .onAppear {
+                name = campaign?.name ?? ""
+                game = campaign?.game ?? .pathfinder
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        model.addCampaign(name: name.isEmpty ? "New campaign" : name, game: game)
-                        dismiss()
-                    }
+                    Button(campaign == nil ? "Add" : "Save", action: save)
+                        .disabled(trimmedName.isEmpty)
                 }
             }
         }
         .frame(minWidth: 360, minHeight: 200)
+    }
+
+    private var trimmedName: String { name.trimmingCharacters(in: .whitespaces) }
+
+    private func save() {
+        if var campaign {
+            campaign.name = trimmedName
+            campaign.game = game
+            model.library.save(campaign)
+        } else {
+            model.addCampaign(name: trimmedName, game: game)
+        }
+        dismiss()
     }
 }
 

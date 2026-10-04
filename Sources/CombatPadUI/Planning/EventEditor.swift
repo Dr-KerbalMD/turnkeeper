@@ -32,7 +32,7 @@ struct EventEditor: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Label", text: $event.label, prompt: Text("Reinforcements arrive"))
+                TextField("Label", text: $event.label, prompt: Text("Reinforcements arrive")).titleEntry()
                 TextField("What happens", text: $event.text, axis: .vertical).lineLimit(2...6)
                 triggerSection
                 timingSection

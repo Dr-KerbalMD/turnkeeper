@@ -23,11 +23,15 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R2.4 The import writes a report covering counts per pack, creatures without art, unmatched PDF art,
   and enrichers it couldn't parse.
 - R2.5 The browser searches by name and trait, and filters by level, game, source, rarity, size and
-  kind.
+  kind. With a party chosen, the level filter starts at party level −4 to +4.
+- R2.6 A creature's battle card can be opened from the browser and from its row in an encounter, with the
+  slot's template applied.
 
 ## R3 Planning
 - R3.1 A campaign has a game (Pathfinder or Starfinder), which sets the look and the default bestiary.
 - R3.2 Parties are built separately from encounters. A PC has only a name.
+- R3.2a Campaigns can be renamed and switched between Pathfinder and Starfinder; a new one needs a name.
+- R3.2b Name fields capitalize each word and skip autocorrect, so fantasy names stay as typed.
 - R3.3 A scenario holds ordered encounters and a variant scheme: challenge-point brackets for PFS,
   Easier/Base/Harder for SFS, or a single variant.
 - R3.4 Each encounter has one variant per scheme label. Each variant has its own creatures, bench and
@@ -62,7 +66,7 @@ ladder, and the right half is the notes side, which shows the battle card of the
   is blocked until every reminder has been dismissed.
 - R4.11 Every turn advance can be undone.
 - R4.12 The battle card follows the current turn. Tapping a tile pins that card.
-- R4.13 Art can be shown full screen. If an external display is connected, the art goes there.
+- R4.13 Art can be shown full screen; on the iPad the player view covers the whole screen. If an external display is connected, the art goes there.
 - R4.14 The player view shows the creature's Battle Card back, taken from the user's Battle Cards
   PDFs. A creature without a card gets a back drawn in the same style around its portrait.
 
