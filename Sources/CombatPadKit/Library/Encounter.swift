@@ -100,6 +100,10 @@ public struct CombatSession: LibraryRecord, Hashable {
     public var name: String
     public var state: CombatState
     public var scratchNotes = ""
+    /// The party the fight was started with, so a reset can rebuild it.
+    public var partyID: UUID?
+    /// When the fight ended. Nil while it can still be resumed.
+    public var finishedAt: Date?
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
@@ -109,8 +113,14 @@ public struct CombatSession: LibraryRecord, Hashable {
         encounterID = context.encounterID
         variantLabel = context.variantLabel
         name = context.name
+        partyID = context.partyID
         self.state = state
     }
+
+    public var isFinished: Bool { finishedAt != nil }
+
+    /// Unfinished, and either begun or with someone's initiative entered: closing it would lose real state.
+    public var isInProgress: Bool { !isFinished && state.hasStarted }
 }
 
 /// Where a combat session comes from.
@@ -119,6 +129,7 @@ public struct SessionContext: Sendable {
     public var encounterID: UUID
     public var variantLabel: String
     public var name: String
+    public var partyID: UUID?
 
     public init(campaignID: UUID, encounterID: UUID, variantLabel: String, name: String) {
         self.campaignID = campaignID

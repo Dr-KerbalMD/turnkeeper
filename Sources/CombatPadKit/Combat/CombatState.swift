@@ -42,6 +42,28 @@ public struct CombatState: Codable, Sendable, Hashable {
     public var delaying: [Combatant] { combatants.filter { $0.place == .delaying } }
     public var current: Combatant? { currentID.flatMap { self[$0] } }
 
+    // MARK: Progress
+
+    /// Combat has begun, or at least one initiative has been entered.
+    public var hasStarted: Bool {
+        phase == .active || combatants.contains { $0.initiative != nil }
+    }
+
+    /// Combatants on the ladder still without an initiative, in ladder order. The bench doesn't count.
+    public var combatantsWithoutInitiative: [Combatant] {
+        ladder.filter { $0.initiative == nil }
+    }
+
+    /// Whether every enemy that has joined the fight is at 0 HP. Benched enemies haven't joined, hazards are
+    /// disabled rather than killed, and allies and PCs don't count. False when there are no such enemies.
+    public func allEnemiesDown(maxHitPoints: (Combatant) -> Int) -> Bool {
+        let enemies = combatants.filter { combatant in
+            combatant.side == .enemy && combatant.place != .bench
+                && combatant.kind != .hazard && combatant.kind != .playerCharacter
+        }
+        return !enemies.isEmpty && enemies.allSatisfy { maxHitPoints($0) - $0.damageTaken <= 0 }
+    }
+
     // MARK: Setup
 
     /// Sets a rolled initiative. During setup the ladder re-sorts at once.

@@ -29,6 +29,13 @@ public struct Library: Codable, Sendable, Hashable {
             .sorted { ($0.sortIndex, $0.name) < ($1.sortIndex, $1.name) }
     }
 
+    /// The fight for an encounter at a difficulty that hasn't ended, newest first if there are several.
+    public func unfinishedSession(encounterID: UUID, variantLabel: String) -> CombatSession? {
+        sessions.filter { $0.encounterID == encounterID && $0.variantLabel == variantLabel }
+            .filter { !$0.isDeleted && !$0.isFinished }
+            .max { $0.modifiedAt < $1.modifiedAt }
+    }
+
     public func sessions(in campaignID: UUID) -> [CombatSession] {
         sessions.filter { $0.campaignID == campaignID && !$0.isDeleted }.sorted { $0.modifiedAt > $1.modifiedAt }
     }
