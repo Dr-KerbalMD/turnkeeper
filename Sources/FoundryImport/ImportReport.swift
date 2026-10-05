@@ -6,6 +6,8 @@ public struct ImportReport: Sendable {
     public var creatureCount = 0
     /// Spells, items, conditions, traits and abilities the cards link to.
     public var glossaryCount = 0
+    /// Names a player character's card can link by.
+    public var glossaryNameCount = 0
     /// Enricher name → how often it could not be converted.
     public var unparsedEnrichers: [String: Int] = [:]
     /// Names of PDF images that matched no creature, for `art-overrides.json`.
@@ -32,7 +34,8 @@ public struct ImportReport: Sendable {
 
     private func packTable(_ creatures: [Creature]) -> [String] {
         var lines = [
-            "\(creatureCount) creatures and complex hazards, \(glossaryCount) linked glossary entries.", "",
+            "\(creatureCount) creatures and complex hazards, \(glossaryCount) glossary entries, "
+                + "\(glossaryNameCount) names for player character cards.", "",
             "| Pack | Creatures | Hazards | Portrait | Token | Card back |",
             "|---|---:|---:|---:|---:|---:|"
         ]

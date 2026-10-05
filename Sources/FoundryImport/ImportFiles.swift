@@ -80,6 +80,7 @@ struct ImportedBestiary {
     var creatures: [Creature]
     var conditions: [ConditionDefinition]
     var glossary: [GlossaryEntry]
+    var glossaryIndex: GlossaryIndex
 }
 
 /// Writes the bestiary files. Keys are sorted and arrays ordered, so the same input gives the same bytes.
@@ -97,6 +98,7 @@ struct BestiaryWriter {
         try encode(index, to: bestiaryDirectory.appendingPathComponent("index.json"))
         try encode(bestiary.conditions, to: bestiaryDirectory.appendingPathComponent("conditions.json"))
         try encode(bestiary.glossary, to: bestiaryDirectory.appendingPathComponent("glossary.json"))
+        try encode(bestiary.glossaryIndex, to: bestiaryDirectory.appendingPathComponent("glossary-index.json"))
         let byPack = Dictionary(grouping: creatures) { BestiaryIndexEntry(creature: $0).packFile }
         for (pack, members) in byPack {
             try encode(members, to: packsDirectory.appendingPathComponent("\(pack).json"))

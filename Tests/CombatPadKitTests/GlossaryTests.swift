@@ -45,6 +45,20 @@ struct GlossaryTests {
         #expect(store.glossaryEntry("missing") == nil)
     }
 
+    @Test("The bestiary looks up player character names in the glossary index")
+    func storeLoadsGlossaryIndex() throws {
+        let directory = try bestiaryDirectory(glossary: [])
+        defer { try? FileManager.default.removeItem(at: directory) }
+        var index = GlossaryIndex()
+        index.add(game: .pathfinder, kind: .spell, name: "Guidance", id: "pf2e.spells-srd.g")
+        try JSONEncoder().encode(index)
+            .write(to: directory.appendingPathComponent("Bestiary/glossary-index.json"))
+        let store = try BestiaryStore(generatedDirectory: directory)
+        #expect(store.glossaryID(game: .pathfinder, kind: .spell, name: "guidance") == "pf2e.spells-srd.g")
+        #expect(store.glossaryID(game: .pathfinder, kind: .spell, name: "Fireball") == nil)
+        #expect(BestiaryStore().glossaryID(game: .pathfinder, kind: .spell, name: "Guidance") == nil)
+    }
+
     @Test("A bestiary without a glossary has no entries")
     func storeWithoutGlossary() throws {
         let directory = try bestiaryDirectory(glossary: nil)

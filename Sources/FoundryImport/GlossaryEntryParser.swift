@@ -47,7 +47,7 @@ struct GlossaryEntryParser {
         document[path: "system.location.heightenedLevel"].optionalInt ?? document[path: "system.level.value"].int
     }
 
-    private static let itemTypes: Set<String> = [
+    static let itemTypes: Set<String> = [
         "weapon", "armor", "shield", "equipment", "consumable", "treasure", "backpack", "ammo", "kit"
     ]
 

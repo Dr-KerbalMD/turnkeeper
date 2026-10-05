@@ -36,6 +36,7 @@ public struct BestiaryImporter {
             compendium: try CompendiumIndex(scanner: scanner),
             traits: TraitGlossary(repository: configuration.repository, localizer: localizer)
         )
+        var glossaryIndex = try PlayerCompendium.link(scanner: scanner, links: links)
         var text = RulesTextConverter(localizer: localizer, links: links)
         var report = ImportReport()
         var creatures = try readCreatures(scanner: scanner, text: &text, report: &report)
@@ -43,11 +44,15 @@ public struct BestiaryImporter {
         var glossaryParser = GlossaryEntryParser(text: text)
         let glossary = GlossaryBuilder.entries(parser: &glossaryParser)
         report.glossaryCount = glossary.count
+        PlayerCompendium.addTraits(of: glossary, to: &glossaryIndex)
+        report.glossaryNameCount = glossaryIndex.count
         try assignArt(to: &creatures, report: &report)
         let unparsed = glossaryParser.text.unparsedEnrichers
         report.unparsedEnrichers = Dictionary(unparsed.map { ($0, 1) }, uniquingKeysWith: +)
         let writer = BestiaryWriter(outputDirectory: configuration.outputDirectory)
-        let bestiary = ImportedBestiary(creatures: creatures, conditions: conditions, glossary: glossary)
+        let bestiary = ImportedBestiary(
+            creatures: creatures, conditions: conditions, glossary: glossary, glossaryIndex: glossaryIndex
+        )
         try writer.write(bestiary, revision: revision())
         try writer.writeReport(report.markdown(creatures: creatures))
         return report

@@ -10,6 +10,7 @@ public final class BestiaryStore: @unchecked Sendable {
     private let entriesByKey: [String: BestiaryIndexEntry]
     private var packs: [String: [String: Creature]] = [:]
     private var glossary: [String: GlossaryEntry]?
+    private var glossaryIndex: GlossaryIndex?
     private let lock = NSLock()
 
     /// Loads `Bestiary/index.json` and `Bestiary/conditions.json` from a `Generated` folder.
@@ -70,6 +71,15 @@ public final class BestiaryStore: @unchecked Sendable {
         return glossary?[id]
     }
 
+    /// The glossary ID for a player character's spell, ability, item or trait, by name, loading
+    /// `Bestiary/glossary-index.json` on first use.
+    public func glossaryID(game: Game, kind: GlossaryIndex.Kind, name: String) -> String? {
+        lock.lock()
+        defer { lock.unlock() }
+        if glossaryIndex == nil { glossaryIndex = loadGlossaryIndex() }
+        return glossaryIndex?.id(game: game, kind: kind, name: name)
+    }
+
     public func condition(_ slug: String) -> ConditionDefinition? {
         conditions.first { $0.slug == slug }
     }
@@ -84,6 +94,12 @@ public final class BestiaryStore: @unchecked Sendable {
         guard let data = try? Data(contentsOf: url),
               let entries = try? JSONDecoder().decode([GlossaryEntry].self, from: data) else { return [:] }
         return Dictionary(entries.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+    }
+
+    private func loadGlossaryIndex() -> GlossaryIndex {
+        let url = directory.appendingPathComponent("Bestiary/glossary-index.json")
+        guard let data = try? Data(contentsOf: url) else { return GlossaryIndex() }
+        return (try? JSONDecoder().decode(GlossaryIndex.self, from: data)) ?? GlossaryIndex()
     }
 
     private func loadPack(_ name: String) -> [String: Creature] {
