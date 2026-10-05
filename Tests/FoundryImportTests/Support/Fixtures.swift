@@ -53,6 +53,17 @@ enum Fixtures {
         RulesTextConverter(localizer: Localizer(roots: []), links: links)
     }
 
+    /// `linked-creature.json`, parsed with links into the fixture repository, and its resolver.
+    static func linkedCreature() throws -> (Creature, LinkResolver) {
+        let links = try links()
+        var parser = CreatureParser(text: linkingConverter(links))
+        guard let creature = parser.creature(from: try document("linked-creature"), game: .pathfinder,
+                                             pack: "test-pack") else {
+            throw FixtureError.notACreature("linked-creature")
+        }
+        return (creature, links)
+    }
+
     enum FixtureError: Error {
         case missing(String)
         case notACreature(String)

@@ -24,15 +24,16 @@ struct TraitGlossary {
                   localizers: [.pathfinder: localizer, .starfinder: starfinder])
     }
 
-    /// The slug that has a description: the trait itself, or the trait without its trailing values.
+    /// The slug that has a description: the trait itself, or the trait without its trailing values. A
+    /// slug that shares its description with a shorter one, as `reach-0` does with `reach`, uses the shorter.
     func describedSlug(_ slug: String, game: Game) -> String? {
-        var words = slug.split(separator: "-").map(String.init)
-        while !words.isEmpty {
-            let candidate = words.joined(separator: "-")
-            if description(ofExactly: candidate, game: game) != nil { return candidate }
-            words.removeLast()
+        let words = slug.split(separator: "-").map(String.init)
+        let candidates = (1...max(words.count, 1)).reversed().map { words.prefix($0).joined(separator: "-") }
+        guard let index = candidates.firstIndex(where: { description(ofExactly: $0, game: game) != nil }) else {
+            return nil
         }
-        return nil
+        let text = description(ofExactly: candidates[index], game: game)
+        return candidates[index...].last { description(ofExactly: $0, game: game) == text }
     }
 
     /// The description HTML of a trait that `describedSlug` returned.

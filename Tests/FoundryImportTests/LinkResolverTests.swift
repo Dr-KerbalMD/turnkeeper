@@ -33,6 +33,7 @@ struct LinkResolverTests {
         let links = try Fixtures.links()
         #expect(links.link(trait: "agile", game: .pathfinder) == "trait.pf2e.agile")
         #expect(links.link(trait: "reach-10", game: .pathfinder) == "trait.pf2e.reach")
+        #expect(links.link(trait: "reach-0", game: .pathfinder) == "trait.pf2e.reach")
         #expect(links.link(trait: "cold-iron", game: .pathfinder) == "trait.pf2e.cold-iron")
         #expect(links.link(trait: "range increment 30 feet", game: .pathfinder) == nil)
         #expect(links.link(trait: "unknown", game: .pathfinder) == nil)
