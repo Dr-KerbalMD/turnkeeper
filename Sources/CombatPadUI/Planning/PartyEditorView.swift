@@ -1,10 +1,12 @@
 import CombatPadKit
 import SwiftUI
 
-/// A party's name, level and members. Players track their own HP, so members are just names.
+/// A party's name, level and members. Players track their own HP, so a member is a name and level, linked
+/// to a Demiplane character for a battle card if the GM likes.
 struct PartyEditorView: View {
     let party: Party
     @Environment(AppModel.self) private var model
+    @State private var demiplaneTarget: DemiplaneTarget?
 
     var body: some View {
         Form {
@@ -30,11 +32,17 @@ struct PartyEditorView: View {
                             update { $0.members.removeAll { $0.id == member.id } }
                         }
                     }
+                    MemberLinkRow(member: member, partyID: party.id) {
+                        demiplaneTarget = DemiplaneTarget(memberID: member.id)
+                    }
                 }
                 .onDelete { offsets in update { $0.members.remove(atOffsets: offsets) } }
                 .onMove { source, target in update { $0.members.move(fromOffsets: source, toOffset: target) } }
                 Button("Add Member", systemImage: "plus") {
                     update { $0.members.append(PartyMember(name: "Player \($0.members.count + 1)")) }
+                }
+                Button("Add from Demiplane…", systemImage: "person.crop.rectangle.badge.plus") {
+                    demiplaneTarget = DemiplaneTarget(memberID: nil)
                 }
             }
             Section {
@@ -45,6 +53,9 @@ struct PartyEditorView: View {
         }
         .formStyle(.grouped)
         .navigationTitle(party.name)
+        .sheet(item: $demiplaneTarget) { target in
+            DemiplaneImportSheet(partyID: party.id, memberID: target.memberID)
+        }
     }
 
     private func update(_ change: (inout Party) -> Void) {

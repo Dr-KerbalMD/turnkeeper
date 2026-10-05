@@ -13,8 +13,10 @@ enum DemoLibrary {
         let model = AppModel(bestiary: bestiary, artStore: ArtStore(directory: artFolder))
         if mode == "starfinder" { return starfinder(model: model, bestiary: bestiary) }
         let campaign = model.addCampaign(name: "Demo: PFS Season 7", game: .pathfinder)
+        // Valeros is linked to a character sheet; the others are quick PCs.
         let party = Party(campaignID: campaign.id, name: "Friday table", level: 3,
-                          members: ["Valeros", "Ezren", "Kyra", "Merisiel"].map(PartyMember.init))
+                          members: [DemoCharacters.valeros(bestiary: bestiary)]
+                              + ["Ezren", "Kyra", "Merisiel"].map(PartyMember.init))
         model.library.save(party)
         model.addScenario(to: campaign.id, name: "#7-99: The Goblin Docks", labels: ["10–12 CP", "16–18 CP"])
         guard let scenario = model.library.scenarios(in: campaign.id).first else { return model }
