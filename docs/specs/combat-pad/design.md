@@ -23,6 +23,8 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 3. **Rules text.** HTML and Foundry enrichers become `RulesText` runs. `@Check` and `@Damage` stay
    structured so templates and conditions can adjust them. `@UUID` becomes its label, `@Localize` is
    resolved from the lang JSON, and `@Template` becomes prose.
+   A `@UUID` to an Item in a compendium pack becomes a `{{link:<id>|<label>}}` run instead, where the glossary
+   ID is `<system>.<pack>.<_id>` (links by name are resolved to the `_id`). Effect items stay dropped.
 4. **Conditions.** The condition packs go to `conditions.json`. sf2e gets the pf2e conditions plus its
    own.
 5. **Foundry art.** Every module's `flags.compendiumArtMappings.{pf2e,sf2e}` file maps
@@ -50,7 +52,18 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    STARFINDER logo line). Art is scaled smoothly, since tokens are small.
    A creature with no art of a kind borrows it from a same-named creature of the same game in another
    pack (`ArtFallback`), preferring the one with the most art, then remastered; the report lists them.
-8. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
+8. **Glossary.** `CompendiumIndex` reads the Item packs of both systems (an Item pack is indexed on first
+   use) and records every glossary ID the import links to. Each creature gets a `LinkTable` from
+   `<kind>:<shown text>` to a glossary ID: spells and items by their compendium source (or, without one, their
+   embedded copy, `<creature key>.<item _id>`), Strike effects by the creature's own action or the ability
+   glossary, and traits as `trait.<game>.<slug>`. `GlossaryBuilder` then turns the linked documents into
+   `GlossaryEntry` values (name, category such as "Spell 3", traits and their links, rules text, with spell
+   cast, range, area, targets, defense and duration lines first), follows their links one more level, and
+   stops: everything a card links to, and everything those entries link to, is in the glossary. Trait text
+   comes from `traitDescriptions` in the system's `src/scripts/config/traits.ts`, else
+   `PF2E.TraitDescription<Slug>`, dropping a trailing `-value` (reach-10, deadly-d10); Starfinder prefers
+   `sf2e-overrides-en.json`.
+9. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
    `packs/<game>.<pack>.json` per pack, plus `conditions.json`, the art files, and
    `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
 
@@ -129,6 +142,13 @@ Ported from the pf2e system, with tests.
   template adds an untyped ±2, conditions add their typed penalties, and the first damage instance of a
   Strike or ability takes the template's damage change.
   `PathfinderBattleCard`, `StarfinderBattleCard` and `HazardBattleCard` render them.
+- **Glossary links.** `BestiaryStore.glossaryEntry(_:)` loads `glossary.json` on first use. Linked words are
+  `CardSegment.link` runs, drawn as `Text` links (`combatpad-glossary:<id>`) with a dotted underline in the
+  card's ink. `CardLineView` handles the link with an `OpenURLAction` and shows a `GlossaryPopover`
+  anchored to the line; the popover's own lines do the same one level deeper. The `glossaryDepth`
+  environment value stops links at two levels, and without a glossary in the environment (snapshots) links
+  are plain text. Text of the creature's own embedded entries (Strike effects) is adjusted for the template
+  and conditions; other entries are shown as written.
 - **Card and notes split.** `SplitLayout` (in the Kit, tested) keeps the three panes as fractions of the
   height, with minimums, collapsing and a hidden creature-notes pane whose share is kept. `PaneStack` draws
   it with drag grips; the layout is saved per device in user defaults, not synced.

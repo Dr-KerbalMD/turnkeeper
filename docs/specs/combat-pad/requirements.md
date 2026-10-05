@@ -129,5 +129,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R5.2 Starfinder cards follow the Alien Archive Battle Cards look, but with 2e content.
 - R5.3 Complex hazards get a hazard card in the same style.
 - R5.3a Every card shows its source book in small text at the bottom.
+- R5.3b Words on a card that the Foundry data links to another entry are tappable: spells, items, strike
+  effects, traits (on the trait line, Strikes and abilities), and links inside rules text, such as conditions,
+  actions and spells. A tap (or click) shows a popover with the entry's name, category, traits and text. Links
+  inside that popover open a second popover; links go two deep, and deeper ones read as plain text.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art (tokens, pawns and card backs)
   comes only from the user's own purchased PDFs, at import time, and is never committed.
