@@ -13,7 +13,7 @@ struct PathfinderBattleCard: View {
         Scrollable(scrolls: scrolls) {
             VStack(alignment: .leading, spacing: 4) {
                 header
-                TraitChips(traits: content.traits, game: .pathfinder)
+                TraitChips(traits: content.traits, links: content.links, game: .pathfinder, style: style)
                 lines(content.hazard)
                 lines(content.senses + content.statistics + content.interaction)
                 Rule()
@@ -56,7 +56,7 @@ struct PathfinderBattleCard: View {
 
     private var style: CardTextStyle {
         CardTextStyle(body: FontName.condensed, bold: FontName.condensedBold, italic: FontName.condensedItalic,
-                      size: textSize, ink: Color(hex: 0x231A12),
+                      size: textSize, ink: Color(hex: 0x231A12), paper: Color(hex: 0xF1E3C1),
                       worse: Color(hex: 0xB00020), better: Color(hex: 0x1B6E20))
     }
 }

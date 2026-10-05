@@ -40,6 +40,7 @@ struct GlossaryTests {
         ])
         defer { try? FileManager.default.removeItem(at: directory) }
         let store = try BestiaryStore(generatedDirectory: directory)
+        #expect(store.hasGlossary)
         #expect(store.glossaryEntry("pf2e.conditionitems.a")?.name == "Frightened")
         #expect(store.glossaryEntry("missing") == nil)
     }
@@ -48,8 +49,9 @@ struct GlossaryTests {
     func storeWithoutGlossary() throws {
         let directory = try bestiaryDirectory(glossary: nil)
         defer { try? FileManager.default.removeItem(at: directory) }
-        #expect(try BestiaryStore(generatedDirectory: directory).glossaryEntry("any") == nil)
-        #expect(BestiaryStore().glossaryEntry("any") == nil)
+        let store = try BestiaryStore(generatedDirectory: directory)
+        #expect(!store.hasGlossary && store.glossaryEntry("any") == nil)
+        #expect(!BestiaryStore().hasGlossary && BestiaryStore().glossaryEntry("any") == nil)
     }
 
     private func bestiaryDirectory(glossary: [GlossaryEntry]?) throws -> URL {

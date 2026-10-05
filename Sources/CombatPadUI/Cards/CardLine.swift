@@ -11,6 +11,13 @@ enum CardSegment: Hashable {
     /// Damage with its adjusted constant, such as "2d8+13 bludgeoning".
     case damage(AdjustedDamage)
     case actions(ActionCost)
+    /// A word that opens a glossary entry.
+    case link(String, target: String, emphasis: TextEmphasis)
+
+    /// The groups with `separator` text between them.
+    static func joined(_ groups: [[CardSegment]], separator: String = ", ") -> [CardSegment] {
+        groups.enumerated().flatMap { index, group in index == 0 ? group : [.text(separator)] + group }
+    }
 }
 
 /// A line of a battle card: segments that wrap as one paragraph, optionally indented.
@@ -63,19 +70,30 @@ func signed(_ value: Int) -> String {
     value >= 0 ? "+\(value)" : "−\(abs(value))"
 }
 
-/// Renders a line as one wrapping text, tinting changed values: red when worse, green when better.
+/// Renders a line as one wrapping text, tinting changed values: red when worse, green when better. Linked
+/// words open their glossary entry in a popover pointing at the line.
 struct CardLineView: View {
     let line: CardLine
     let style: CardTextStyle
+    @Environment(\.glossary) private var glossary
+    @State private var shownEntry: GlossaryEntry?
 
     var body: some View {
         segments
             .font(.pad(style.body, size: style.size))
             .foregroundStyle(style.ink)
+            .tint(style.ink)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.leading, line.isIndented ? style.size : 0)
             .frame(maxWidth: .infinity, alignment: .leading)
             .modifier(BreakdownModifier(breakdown: line.breakdown))
+            .environment(\.openURL, OpenURLAction { url in
+                shownEntry = glossary.entry(for: url)
+                return .handled
+            })
+            .popover(item: $shownEntry) { entry in
+                GlossaryPopover(entry: entry, style: style).environment(\.glossary, glossary.deeper)
+            }
     }
 
     private var segments: Text {
@@ -90,6 +108,24 @@ struct CardLineView: View {
         case let .value(value, isSigned): return tinted(isSigned ? signed(value.value) : "\(value.value)", value)
         case let .damage(damage): return Text("\(tinted(damage.formula, damage.bonus))\(typeSuffix(damage.part))")
         case let .actions(cost): return ActionGlyph.text(cost, size: style.size, color: style.ink)
+        case let .link(label, target, emphasis): return linked(label, target: target).font(font(emphasis))
+        }
+    }
+
+    /// A dotted-underlined link while links are open here, else plain text.
+    private func linked(_ label: String, target: String) -> Text {
+        guard glossary.linksOpen, let url = GlossaryContext.url(for: target) else { return Text(label) }
+        var string = AttributedString(label)
+        string.link = url
+        string.underlineStyle = Text.LineStyle(pattern: .dot, color: style.ink.opacity(0.7))
+        return Text(string)
+    }
+
+    private func font(_ emphasis: TextEmphasis) -> Font {
+        switch emphasis {
+        case .plain: return .pad(style.body, size: style.size)
+        case .bold: return .pad(style.bold, size: style.size)
+        case .italic: return .pad(style.italic, size: style.size)
         }
     }
 
@@ -111,6 +147,8 @@ struct CardTextStyle {
     var italic: String
     var size: CGFloat
     var ink: Color
+    /// The background of glossary popovers.
+    var paper: Color
     var worse: Color
     var better: Color
 }

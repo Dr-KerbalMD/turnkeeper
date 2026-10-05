@@ -1,35 +1,30 @@
 import CombatPadKit
 import SwiftUI
 
-/// The trait boxes under a card's title: rarity, size and other traits, colored as in the books.
+/// The trait boxes under a card's title: rarity, size and other traits, colored as in the books. A trait
+/// the creature links opens its glossary entry.
 struct TraitChips: View {
     let traits: TraitLine
+    let links: LinkTable
     let game: Game
+    let style: CardTextStyle
 
     var body: some View {
         FlowLayout(spacing: 3) {
             ForEach(chips, id: \.label) { chip in
-                Text(chip.label.uppercased())
-                    .font(.custom(FontName.condensedBold, size: 11))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(chip.color)
-                    .overlay { Rectangle().stroke(edge, lineWidth: game == .pathfinder ? 1 : 0.5) }
+                TraitChip(chip: chip, edge: edge, edgeWidth: game == .pathfinder ? 1 : 0.5, style: style)
             }
         }
-    }
-
-    private struct Chip {
-        var label: String
-        var color: Color
     }
 
     private var chips: [Chip] {
         var chips: [Chip] = []
         if let rarity = Self.rarityColors[traits.rarity] { chips.append(Chip(label: traits.rarity, color: rarity)) }
         chips.append(Chip(label: traits.size, color: Self.sizeColor))
-        chips += traits.traits.map { Chip(label: $0.replacingOccurrences(of: "-", with: " "), color: traitColor) }
+        chips += traits.traits.map { slug in
+            Chip(label: slug.replacingOccurrences(of: "-", with: " "), color: traitColor,
+                 target: links.target(.trait, slug) ?? "")
+        }
         return chips
     }
 
@@ -40,6 +35,45 @@ struct TraitChips: View {
     private static let rarityColors = [
         "uncommon": Color(hex: 0x98513D), "rare": Color(hex: 0x002664), "unique": Color(hex: 0x54166E)
     ]
+}
+
+/// One trait box: its label, color, and the glossary entry it opens, if any.
+private struct Chip {
+    var label: String
+    var color: Color
+    var target = ""
+}
+
+/// A trait box, a button when it leads to the glossary.
+private struct TraitChip: View {
+    let chip: Chip
+    let edge: Color
+    let edgeWidth: CGFloat
+    let style: CardTextStyle
+    @Environment(\.glossary) private var glossary
+    @State private var shownEntry: GlossaryEntry?
+
+    var body: some View {
+        if chip.target.isEmpty || !glossary.linksOpen {
+            label
+        } else {
+            Button { shownEntry = glossary.entry(chip.target) } label: { label }
+                .buttonStyle(.plain)
+                .popover(item: $shownEntry) { entry in
+                    GlossaryPopover(entry: entry, style: style).environment(\.glossary, glossary.deeper)
+                }
+        }
+    }
+
+    private var label: some View {
+        Text(chip.label.uppercased())
+            .font(.custom(FontName.condensedBold, size: 11))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(chip.color)
+            .overlay { Rectangle().stroke(edge, lineWidth: edgeWidth) }
+    }
 }
 
 /// Lays out views left to right, wrapping to new rows.
