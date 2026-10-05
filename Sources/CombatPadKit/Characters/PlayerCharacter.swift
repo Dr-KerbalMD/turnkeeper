@@ -55,7 +55,11 @@ public enum PlayerCharacter {
     public static let keyPrefix = "pc."
 
     public static func key(for member: PartyMember) -> String {
-        keyPrefix + member.id.uuidString
+        key(memberID: member.id)
+    }
+
+    public static func key(memberID: UUID) -> String {
+        keyPrefix + memberID.uuidString
     }
 
     public static func isKey(_ key: String) -> Bool {
