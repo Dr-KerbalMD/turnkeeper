@@ -12,7 +12,8 @@ let package = Package(
     ],
     targets: [
         .target(name: "CombatPadKit"),
-        .target(name: "CombatPadUI", dependencies: ["CombatPadKit"]),
+        .target(name: "CombatPadUI", dependencies: ["CombatPadKit", "CharacterImport"]),
+        .target(name: "CharacterImport", dependencies: ["CombatPadKit"]),
         .executableTarget(name: "CombatPad", dependencies: ["CombatPadUI"]),
         .target(name: "FoundryImport", dependencies: ["CombatPadKit"]),
         .executableTarget(name: "BestiaryImport", dependencies: ["FoundryImport"]),
@@ -20,6 +21,11 @@ let package = Package(
         .testTarget(
             name: "CombatPadKitTests",
             dependencies: ["CombatPadKit"]
+        ),
+        .testTarget(
+            name: "CharacterImportTests",
+            dependencies: ["CharacterImport"],
+            resources: [.copy("Fixtures")]
         ),
         .testTarget(
             name: "FoundryImportTests",
