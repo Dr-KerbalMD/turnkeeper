@@ -75,19 +75,28 @@ struct ArtCopier {
     }
 }
 
+/// Everything the import writes to `Generated/Bestiary`.
+struct ImportedBestiary {
+    var creatures: [Creature]
+    var conditions: [ConditionDefinition]
+    var glossary: [GlossaryEntry]
+}
+
 /// Writes the bestiary files. Keys are sorted and arrays ordered, so the same input gives the same bytes.
 struct BestiaryWriter {
     var outputDirectory: URL
 
     private var bestiaryDirectory: URL { outputDirectory.appendingPathComponent("Bestiary") }
 
-    func write(creatures: [Creature], conditions: [ConditionDefinition], revision: String) throws {
+    func write(_ bestiary: ImportedBestiary, revision: String) throws {
+        let creatures = bestiary.creatures
         let packsDirectory = bestiaryDirectory.appendingPathComponent("packs")
         try? FileManager.default.removeItem(at: packsDirectory)
         try FileManager.default.createDirectory(at: packsDirectory, withIntermediateDirectories: true)
         let index = BestiaryIndex(sourceRevision: revision, entries: creatures.map(BestiaryIndexEntry.init))
         try encode(index, to: bestiaryDirectory.appendingPathComponent("index.json"))
-        try encode(conditions, to: bestiaryDirectory.appendingPathComponent("conditions.json"))
+        try encode(bestiary.conditions, to: bestiaryDirectory.appendingPathComponent("conditions.json"))
+        try encode(bestiary.glossary, to: bestiaryDirectory.appendingPathComponent("glossary.json"))
         let byPack = Dictionary(grouping: creatures) { BestiaryIndexEntry(creature: $0).packFile }
         for (pack, members) in byPack {
             try encode(members, to: packsDirectory.appendingPathComponent("\(pack).json"))

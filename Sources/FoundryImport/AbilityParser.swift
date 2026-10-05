@@ -16,7 +16,7 @@ enum AbilityParser {
         return ability
     }
 
-    private static func cost(_ system: JSONValue) -> ActionCost {
+    static func cost(_ system: JSONValue) -> ActionCost {
         switch system[path: "actionType.value"].string {
         case "reaction": return .reaction
         case "free": return .free

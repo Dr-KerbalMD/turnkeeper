@@ -31,15 +31,24 @@ public struct BestiaryImporter {
     public func run() throws -> ImportReport {
         let languages = configuration.repository.appendingPathComponent("static/lang")
         let localizer = try Localizer(languageDirectory: languages)
-        var text = RulesTextConverter(localizer: localizer)
-        var report = ImportReport()
         let scanner = PackScanner(repository: configuration.repository)
+        let links = LinkResolver(
+            compendium: try CompendiumIndex(scanner: scanner),
+            traits: TraitGlossary(repository: configuration.repository, localizer: localizer)
+        )
+        var text = RulesTextConverter(localizer: localizer, links: links)
+        var report = ImportReport()
         var creatures = try readCreatures(scanner: scanner, text: &text, report: &report)
         let conditions = try ConditionImporter.conditions(scanner: scanner, text: &text)
+        var glossaryParser = GlossaryEntryParser(text: text)
+        let glossary = GlossaryBuilder.entries(parser: &glossaryParser)
+        report.glossaryCount = glossary.count
         try assignArt(to: &creatures, report: &report)
-        report.unparsedEnrichers = Dictionary(text.unparsedEnrichers.map { ($0, 1) }, uniquingKeysWith: +)
+        let unparsed = glossaryParser.text.unparsedEnrichers
+        report.unparsedEnrichers = Dictionary(unparsed.map { ($0, 1) }, uniquingKeysWith: +)
         let writer = BestiaryWriter(outputDirectory: configuration.outputDirectory)
-        try writer.write(creatures: creatures, conditions: conditions, revision: revision())
+        let bestiary = ImportedBestiary(creatures: creatures, conditions: conditions, glossary: glossary)
+        try writer.write(bestiary, revision: revision())
         try writer.writeReport(report.markdown(creatures: creatures))
         return report
     }

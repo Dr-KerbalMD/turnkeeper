@@ -4,6 +4,8 @@ import Foundation
 /// What the import found and what it couldn't handle, written to `Generated/import-report.md`.
 public struct ImportReport: Sendable {
     public var creatureCount = 0
+    /// Spells, items, conditions, traits and abilities the cards link to.
+    public var glossaryCount = 0
     /// Enricher name → how often it could not be converted.
     public var unparsedEnrichers: [String: Int] = [:]
     /// Names of PDF images that matched no creature, for `art-overrides.json`.
@@ -30,7 +32,7 @@ public struct ImportReport: Sendable {
 
     private func packTable(_ creatures: [Creature]) -> [String] {
         var lines = [
-            "\(creatureCount) creatures and complex hazards.", "",
+            "\(creatureCount) creatures and complex hazards, \(glossaryCount) linked glossary entries.", "",
             "| Pack | Creatures | Hazards | Portrait | Token | Card back |",
             "|---|---:|---:|---:|---:|---:|"
         ]
