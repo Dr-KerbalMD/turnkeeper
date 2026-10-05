@@ -10,6 +10,7 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 | `Sources/CombatPad` | Mac app entry point. |
 | `Sources/FoundryImport` | Library that parses Foundry documents, converts rules text and matches art. |
 | `Sources/BestiaryImport` | CLI around FoundryImport that writes `Generated/`. |
+| `Sources/CharacterImport` | Demiplane character import: links and QR codes, the sheet PDF reader, the client and the token. |
 | `ios/CombatPad.xcodeproj` | iPad app. It references the package as `..` and bundles `Generated/` as a folder reference. |
 | `scripts/extract_pdf_art.py`, `scripts/pdfart/` | PyMuPDF extractor for token, pawn and card art from the Paizo PDFs, run in the project `.venv`. |
 | `Generated/` | Import output, gitignored and bundled into both apps. |
@@ -63,6 +64,13 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    comes from `traitDescriptions` in the system's `src/scripts/config/traits.ts`, else
    `PF2E.TraitDescription<Slug>`, dropping a trailing `-value` (reach-10, deadly-d10); Starfinder prefers
    `sf2e-overrides-en.json`.
+   **Player compendium.** For PC cards, `PlayerCompendium` also links every document in the player-facing
+   Item packs of both systems (spells, feats, class features, actions, ancestry features, heritages and
+   equipment), so they and the traits they link to are in the glossary. It writes `glossary-index.json`:
+   `GlossaryIndex` keys `<game>:<kind>:<normalized name>` (kinds spell, ability, item and trait) to glossary
+   IDs. Names are normalized by `GlossaryIndex.normalize` (lowercase, apostrophes dropped, other punctuation
+   as spaces), so "Healing Potion, Moderate" and "Healing Potion (Moderate)" meet; on a clash the remastered
+   document wins.
 9. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
    `packs/<game>.<pack>.json` per pack, plus `conditions.json`, the art files, and
    `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
@@ -155,9 +163,29 @@ Ported from the pf2e system, with tests.
 - **Fonts.** Roboto Condensed and Roboto, plus the pf2e action glyph font, converted from the pf2e
   system's woff2 files.
 
+## Character import
+- **Sheet.** A PC's sheet is a `Creature` of kind `character`, with `PlayerDetails` (ancestry, heritage,
+  background, class, class DC, feats and class features), stored on its `PartyMember` with a
+  `CharacterLink` (source, character ID, game, revision) and an optional GM-typed max HP. On the board it
+  has the key `pc.<member id>`; `AppModel` resolves those keys from the party. Tiles still treat it as a PC.
+- **Demiplane.** The GraphQL API (`apiv4.demiplane.com/v1/graphql`, bearer token) gives the name, level,
+  avatar and game, but no computed statistics. Those come from the sheet PDF, a fillable form read field by
+  field with PDFKit (`DemiplaneSheetReader`). `POST app.demiplane.com/api/magic-missile` with
+  `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports it: 202 while it builds, then 200 with the PDF URL and a
+  revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`. Both, and a
+  fresh GraphQL token (`/api/auth/token`, then `/api/generate-graphql-token`), need the web session's
+  cookies.
+- **Session and token.** `DemiplaneSignInView` is a `WKWebView` on the default persistent data store; the
+  app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
+  shown, and an expired token is renewed from the session when there is one.
+- **Glossary links.** `CharacterGlossaryLinker` fills the sheet's `LinkTable` by name through
+  `BestiaryStore.glossaryID`; action text is replaced by the linked entry's rules text when there is one.
+
 ## Known limits
 - The iPad build uses a free personal team, so it must be reinstalled every 7 days.
 - PDF art is 192–330 px, so it looks soft when shown full screen.
 - Pasted art is newest-wins when both devices paste art for the same creature; there are no conflict copies.
 - Creatures in a `.combatpad` file are referenced by bestiary key, so both devices should run the same
   bestiary import.
+- Demiplane's sheet PDF has the wrong max HP, so PCs show only a max HP the GM types.
+- The Demiplane API is undocumented and may change without notice.
