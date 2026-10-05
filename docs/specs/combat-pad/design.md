@@ -24,7 +24,7 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    structured so templates and conditions can adjust them. `@UUID` becomes its label, `@Localize` is
    resolved from the lang JSON, and `@Template` becomes prose.
    A `@UUID` to an Item in a compendium pack becomes a `{{link:<id>|<label>}}` run instead, where the glossary
-   ID is `<system>.<pack>.<_id>` (links by name are resolved to the `_id`). Effect items stay dropped.
+   ID is `<system>.<pack>.<_id>` (links by name are resolved to the `_id`). Links into effect packs stay labels.
 4. **Conditions.** The condition packs go to `conditions.json`. sf2e gets the pf2e conditions plus its
    own.
 5. **Foundry art.** Every module's `flags.compendiumArtMappings.{pf2e,sf2e}` file maps

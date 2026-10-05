@@ -4,7 +4,10 @@ import Foundation
 /// One compendium pack folder in the pf2e repository.
 public struct PackLocation: Sendable {
     public var game: Game
+    /// The pack's folder name, such as `spells`.
     public var name: String
+    /// The name links use, such as `spells-srd` in `Compendium.pf2e.spells-srd.Item.…`.
+    public var compendiumName: String
     public var directory: URL
 }
 
@@ -28,6 +31,7 @@ public struct PackScanner {
             return PackLocation(
                 game: game,
                 name: folder,
+                compendiumName: pack["name"].string,
                 directory: repository.appendingPathComponent("packs/\(game.rawValue)/\(folder)")
             )
         }

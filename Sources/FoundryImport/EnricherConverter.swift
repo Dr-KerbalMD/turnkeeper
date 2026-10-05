@@ -5,11 +5,13 @@ import Foundation
 /// with plain text or `RulesText` tokens. HTML is left in place for `HTMLFlattener`.
 struct EnricherConverter {
     var localizer: Localizer
+    let links: LinkResolver
     /// Enricher names that could not be converted, for the import report.
     private(set) var unparsed: [String] = []
 
-    init(localizer: Localizer) {
+    init(localizer: Localizer, links: LinkResolver) {
         self.localizer = localizer
+        self.links = links
     }
 
     mutating func convert(_ html: String) -> String {
@@ -30,7 +32,7 @@ struct EnricherConverter {
     private mutating func replaceEnrichers(in html: String) -> String {
         var unparsedNames: [String] = []
         let result = EnricherScanner.replace(in: html) { match in
-            if let converted = Self.convert(match) { return converted }
+            if let converted = convert(match) { return converted }
             unparsedNames.append(match.name)
             return match.label ?? ""
         }
@@ -38,15 +40,24 @@ struct EnricherConverter {
         return result
     }
 
-    private static func convert(_ match: EnricherMatch) -> String? {
+    private func convert(_ match: EnricherMatch) -> String? {
         switch match.name {
-        case "UUID": return uuidName(match.argument).isEmpty ? "" : (match.label ?? uuidName(match.argument))
-        case "Check": return check(match).map { RulesRun.check($0).markup } ?? match.label ?? checkText(match.argument)
-        case "Damage": return damage(match.argument).map { RulesRun.damage($0).markup } ?? match.label
-        case "Template": return match.label ?? template(match.argument)
+        case "UUID": return link(match)
+        case "Check":
+            return Self.check(match).map { RulesRun.check($0).markup } ?? match.label ?? Self.checkText(match.argument)
+        case "Damage": return Self.damage(match.argument).map { RulesRun.damage($0).markup } ?? match.label
+        case "Template": return match.label ?? Self.template(match.argument)
         case "Embed", "Compendium": return match.label ?? ""
         default: return nil
         }
+    }
+
+    /// A link to a compendium Item becomes a link run; any other link becomes its label.
+    private func link(_ match: EnricherMatch) -> String {
+        let name = Self.uuidName(match.argument)
+        guard !name.isEmpty else { return "" }
+        guard let target = links.link(compendium: match.argument) else { return match.label ?? name }
+        return RulesRun.link(match.label ?? links.name(of: target) ?? name, target: target, .plain).markup
     }
 
     /// The linked document's name. Links to Foundry effect items are dropped; they only automate rules.
