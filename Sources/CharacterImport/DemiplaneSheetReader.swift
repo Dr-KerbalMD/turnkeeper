@@ -4,8 +4,10 @@ import Foundation
 /// Reads Demiplane's exported character sheet PDF, a fillable form holding the computed numbers, into a
 /// character `Creature` for the PC's battle card. The key is left empty; the party member supplies it.
 public enum DemiplaneSheetReader {
-    public static func sheet(fromPDF data: Data, game: Game) throws -> Creature {
-        sheet(from: try SheetFields(pdf: data), game: game)
+    /// The sheet for a game, or, without one, the game the sheet's own fields show.
+    public static func sheet(fromPDF data: Data, game: Game?) throws -> Creature {
+        let fields = try SheetFields(pdf: data)
+        return sheet(from: fields, game: game ?? (fields.isStarfinder ? .starfinder : .pathfinder))
     }
 
     static func sheet(from fields: SheetFields, game: Game) -> Creature {

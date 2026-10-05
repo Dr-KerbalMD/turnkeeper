@@ -170,7 +170,10 @@ Ported from the pf2e system, with tests.
   has the key `pc.<member id>`; `AppModel` resolves those keys from the party. Tiles still treat it as a PC.
 - **Demiplane.** The GraphQL API (`apiv4.demiplane.com/v1/graphql`, bearer token) gives the name, level,
   avatar and game, but no computed statistics. Those come from the sheet PDF, a fillable form read field by
-  field with PDFKit (`DemiplaneSheetReader`). `POST app.demiplane.com/api/magic-missile` with
+  field with PDFKit (`DemiplaneSheetReader`), one sheet at a time since PDFKit can deadlock reading form
+  fields on several threads. Starfinder sheets (`/nexus/starfinder2e/…`, against Pathfinder's
+  `/nexus/pathfinder-2e/…`) add Computers, Piloting, credits and a ranged weapon's range, magazine and
+  expend, and have no damage types; a sheet's game comes from the API, else from those fields. `POST app.demiplane.com/api/magic-missile` with
   `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports it: 202 while it builds, then 200 with the PDF URL and a
   revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`. Both, and a
   fresh GraphQL token (`/api/auth/token`, then `/api/generate-graphql-token`), need the web session's
@@ -179,7 +182,8 @@ Ported from the pf2e system, with tests.
   app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
   shown, and an expired token is renewed from the session when there is one.
 - **Glossary links.** `CharacterGlossaryLinker` fills the sheet's `LinkTable` by name through
-  `BestiaryStore.glossaryID`; action text is replaced by the linked entry's rules text when there is one.
+  `BestiaryStore.glossaryID`, falling back to Pathfinder names for Starfinder characters (Starfinder 2e
+  shares the Player Core ancestries and feats); action text is replaced by the linked entry's rules text when there is one.
 
 ## Known limits
 - The iPad build uses a free personal team, so it must be reinstalled every 7 days.

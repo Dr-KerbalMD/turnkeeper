@@ -16,7 +16,8 @@ public struct LinkedSheet: Sendable {
 }
 
 /// Links an imported sheet's spells, abilities, feats, items and traits to the glossary by name, for the
-/// character's game. A name without a match stays plain text. An ability whose entry has rules text shows
+/// character's game; Starfinder characters fall back to Pathfinder, whose Player Core ancestries and feats
+/// Starfinder 2e shares. A name without a match stays plain text. An ability whose entry has rules text shows
 /// that text instead of the sheet's.
 public struct CharacterGlossaryLinker {
     public let glossary: any GlossarySource
@@ -67,7 +68,7 @@ private struct NameLinker {
     mutating func add(_ kind: LinkTable.Kind, _ name: String, as indexKind: GlossaryIndex.Kind) -> String? {
         guard seen.insert("\(kind.rawValue):\(name)").inserted else { return links.target(kind, name) }
         total += 1
-        guard let id = glossary.glossaryID(game: game, kind: indexKind, name: name) else { return nil }
+        guard let id = lookUp(indexKind, name) else { return nil }
         linked += 1
         links.add(kind, name, target: id)
         return id
@@ -78,10 +79,15 @@ private struct NameLinker {
         let words = slug.split(separator: "-").map(String.init)
         for count in (1...max(words.count, 1)).reversed() {
             let name = words.prefix(count).joined(separator: " ")
-            if let id = glossary.glossaryID(game: game, kind: .trait, name: name) {
+            if let id = lookUp(.trait, name) {
                 links.add(.trait, slug, target: id)
                 return
             }
         }
+    }
+
+    private func lookUp(_ kind: GlossaryIndex.Kind, _ name: String) -> String? {
+        glossary.glossaryID(game: game, kind: kind, name: name)
+            ?? (game == .starfinder ? glossary.glossaryID(game: .pathfinder, kind: kind, name: name) : nil)
     }
 }

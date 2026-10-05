@@ -9,8 +9,13 @@ struct SheetFields {
         self.values = values
     }
 
+    /// PDFKit can deadlock loading form fields on several threads at once, so sheets are read one at a time.
+    private static let pdfLock = NSLock()
+
     /// Reads every form field of the PDF. Throws when the data isn't a PDF with form fields.
     init(pdf data: Data) throws {
+        Self.pdfLock.lock()
+        defer { Self.pdfLock.unlock() }
         guard let document = PDFDocument(data: data) else {
             throw CharacterImportError.notASheet(operation: "Reading the character sheet")
         }
@@ -24,6 +29,11 @@ struct SheetFields {
         }
         guard !values.isEmpty else { throw CharacterImportError.notASheet(operation: "Reading the character sheet") }
         self.values = values
+    }
+
+    /// Starfinder sheets have fields Pathfinder's lack: Computers, credits and UPB.
+    var isStarfinder: Bool {
+        ["computers", "credits", "upb"].contains { values[$0] != nil }
     }
 
     func string(_ name: String) -> String {

@@ -32,7 +32,7 @@ public enum CardSnapshot {
         guard key.hasPrefix("pdf=") else { return bestiary.creature(key) }
         let url = URL(fileURLWithPath: String(key.dropFirst(4)))
         guard let data = try? Data(contentsOf: url),
-              let sheet = try? DemiplaneSheetReader.sheet(fromPDF: data, game: .pathfinder) else { return nil }
+              let sheet = try? DemiplaneSheetReader.sheet(fromPDF: data, game: nil) else { return nil }
         return CharacterGlossaryLinker(glossary: bestiary).link(sheet).sheet
     }
 }

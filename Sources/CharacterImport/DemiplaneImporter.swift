@@ -22,14 +22,14 @@ public struct DemiplaneImporter: Sendable {
 
     public func importCharacter(id: String, game hint: Game?) async throws -> ImportedCharacter {
         let character = try await client.character(id: id)
-        let game = character.game ?? hint ?? .pathfinder
+        let game = character.game ?? hint
         let export = client.session == nil
-            ? SheetExport(url: DemiplaneClient.publicSheetURL(id: id, game: game), revision: "")
+            ? SheetExport(url: DemiplaneClient.publicSheetURL(id: id, game: game ?? .pathfinder), revision: "")
             : try await client.exportSheet(id: id)
         var sheet = try DemiplaneSheetReader.sheet(fromPDF: try await client.sheetPDF(at: export.url), game: game)
         if sheet.name.isEmpty { sheet.name = character.name }
         let linked = CharacterGlossaryLinker(glossary: glossary).link(sheet)
-        var link = CharacterLink(source: .demiplane, characterID: id, game: game, revision: export.revision)
+        var link = CharacterLink(source: .demiplane, characterID: id, game: sheet.game, revision: export.revision)
         link.linkedNames = linked.linkedNames
         link.totalNames = linked.totalNames
         return ImportedCharacter(sheet: linked.sheet, link: link, avatarURL: character.avatarURL)

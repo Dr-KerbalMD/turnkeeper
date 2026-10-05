@@ -74,7 +74,7 @@ public struct DemiplaneClient: Sendable {
 
     /// Where an already exported sheet lives, for importing without a session.
     public static func publicSheetURL(id: String, game: Game) -> URL {
-        let slug = game == .starfinder ? "starfinder-2e" : "pathfinder-2e"
+        let slug = game == .starfinder ? "starfinder2e" : "pathfinder-2e"  // Demiplane's own spellings.
         return URL(string: "https://content.demiplane.com/nexus/\(slug)/character/pdf/v2/user/\(id)/default.pdf")!
     }
 

@@ -8,6 +8,7 @@ extension DemiplaneSheetReader {
     }
 
     /// Strikes need a weapon name and damage dice. Demiplane also lists runes as weapons (damage "2+0").
+    /// Starfinder sheets have no damage type, and add a ranged weapon's range, magazine and expend.
     private static func strikes(_ fields: SheetFields, prefix: String, isRanged: Bool) -> [Strike] {
         fields.numbers(prefix: prefix).compactMap { index -> Strike? in
             let name = fields.string("\(prefix)\(index)")
@@ -15,10 +16,25 @@ extension DemiplaneSheetReader {
             guard !name.isEmpty, formula.contains("d") else { return nil }
             let types = [("bludg", "bludgeoning"), ("pierce", "piercing"), ("slash", "slashing")]
             let type = types.first { fields.isChecked("\(prefix)\($0.0)_\(index)") }?.1 ?? ""
+            let traits = fields.list("\(prefix)traits_notes_\(index)") + (isRanged ? rangedNotes(fields, index) : [])
             return Strike(name: name, isRanged: isRanged, attackBonus: fields.int("\(prefix)bonus_\(index)"),
-                          traits: TraitSlugs.slugs(fields.list("\(prefix)traits_notes_\(index)")),
-                          damage: [DamagePart(formula: formula, type: type)])
+                          traits: TraitSlugs.slugs(traits),
+                          damage: [DamagePart(formula: withoutZero(formula), type: type)])
         }
+    }
+
+    /// "range 60 ft.", "magazine 6" and "expend 1". Magazines and expends are numbered from 0.
+    private static func rangedNotes(_ fields: SheetFields, _ index: Int) -> [String] {
+        let range = fields.string("ranged_weapon_\(index)_range")
+        let magazine = fields.string("Mag_\(index - 1)")
+        let expend = fields.string("Exp_\(index - 1)")
+        return [range.isEmpty ? "" : "range \(range)", magazine.isEmpty ? "" : "magazine \(magazine)",
+                expend.isEmpty ? "" : "expend \(expend)"].filter { !$0.isEmpty }
+    }
+
+    /// "1d6+0" as "1d6".
+    private static func withoutZero(_ formula: String) -> String {
+        formula.hasSuffix("+0") ? String(formula.dropLast(2)) : formula
     }
 
     /// The Actions and Activities column.

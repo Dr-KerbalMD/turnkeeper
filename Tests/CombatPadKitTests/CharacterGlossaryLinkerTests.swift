@@ -15,14 +15,18 @@ struct CharacterGlossaryLinkerTests {
             add(.item, "Rapier", "item.rapier")
             add(.ability, "Toughness", "feat.toughness")
             add(.ability, "Exploit Vulnerability", "action.exploit", text: "You scour your memories.")
+            add(.item, "Rapier", "sf.rapier", game: .starfinder)
+            add(.item, "Rotating Pistol", "sf.pistol", game: .starfinder)
             add(.ability, "Bounce Back", "feat.bounce")
             for trait in ["agile", "thrown", "deadly", "versatile p"] {
                 add(.trait, trait, "trait.pf2e.\(trait.replacingOccurrences(of: " ", with: "-"))")
             }
         }
 
-        private mutating func add(_ kind: GlossaryIndex.Kind, _ name: String, _ id: String, text: RulesText = "") {
-            index.add(game: .pathfinder, kind: kind, name: name, id: id)
+        private mutating func add(
+            _ kind: GlossaryIndex.Kind, _ name: String, _ id: String, game: Game = .pathfinder, text: RulesText = ""
+        ) {
+            index.add(game: game, kind: kind, name: name, id: id)
             entries[id] = GlossaryEntry(id: id, name: name, category: "Test", text: text)
         }
 
@@ -89,11 +93,21 @@ struct CharacterGlossaryLinkerTests {
         #expect(links.target(.trait, "agile") == "trait.pf2e.agile")
     }
 
-    @Test("Names in another game's glossary don't match")
-    func otherGame() {
+    @Test("A Starfinder character prefers Starfinder names, then falls back to Pathfinder's")
+    func starfinderFallsBack() throws {
         var starfinder = sheet()
         starfinder.game = .starfinder
-        let result = CharacterGlossaryLinker(glossary: FakeGlossary()).link(starfinder)
-        #expect(result.linkedNames == 0 && result.sheet.links?.isEmpty == true)
+        let links = try #require(CharacterGlossaryLinker(glossary: FakeGlossary()).link(starfinder).sheet.links)
+        #expect(links.target(.item, "Rapier") == "sf.rapier")
+        #expect(links.target(.ability, "Toughness") == "feat.toughness")
+        #expect(links.target(.trait, "agile") == "trait.pf2e.agile")
+    }
+
+    @Test("A Pathfinder character never takes Starfinder names")
+    func pathfinderStaysPut() throws {
+        var pathfinder = sheet()
+        pathfinder.items = ["Rotating Pistol"]
+        let links = try #require(CharacterGlossaryLinker(glossary: FakeGlossary()).link(pathfinder).sheet.links)
+        #expect(links.target(.item, "Rotating Pistol") == nil && links.target(.item, "Rapier") == "item.rapier")
     }
 }

@@ -16,6 +16,9 @@ struct DemiplaneSheetReaderTests {
     func identity() throws {
         let sheet = try ignatius()
         #expect(sheet.name == "Dr Ignatius Constaline" && sheet.level == 15 && sheet.kind == .character)
+        let url = try #require(Bundle.module.url(forResource: "ignatius", withExtension: "pdf",
+                                                 subdirectory: "Fixtures"))
+        #expect(try DemiplaneSheetReader.sheet(fromPDF: Data(contentsOf: url), game: nil).game == .pathfinder)
         #expect(sheet.traits.traits == ["human"] && sheet.traits.size == "Medium")
         let player = try #require(sheet.player)
         #expect(player.ancestry == "Human" && player.heritage == "Versatile Human")
@@ -90,6 +93,25 @@ struct DemiplaneSheetReaderTests {
         let items = try ignatius().items
         #expect(items.first == "Bag of Holding, I")
         #expect(items.filter { $0 == "Healing Potion, Moderate" }.count == 1)
+    }
+
+    @Test("A Starfinder sheet: Computers and Piloting, untyped damage, and range, magazine and expend")
+    func starfinder() throws {
+        let url = try #require(Bundle.module.url(forResource: "eagan", withExtension: "pdf", subdirectory: "Fixtures"))
+        let sheet = try DemiplaneSheetReader.sheet(fromPDF: Data(contentsOf: url), game: nil)
+        #expect(sheet.game == .starfinder)
+        #expect(sheet.name == "Eagan Norr (v.2)" && sheet.level == 1 && sheet.player?.className == "Operative")
+        #expect(sheet.defenses.armorClass == 18 && sheet.player?.classDC == 17)
+        #expect(sheet.skills.contains(Skill(name: "Computers", modifier: 6)))
+        #expect(sheet.skills.contains(Skill(name: "Piloting", modifier: 7)))
+        let pistol = try #require(sheet.strikes.first { $0.isRanged })
+        #expect(pistol.name == "Rotating Pistol" && pistol.attackBonus == 9)
+        #expect(pistol.damage == [DamagePart(formula: "1d6", type: "")])
+        #expect(pistol.traits == ["agile", "analog", "concealable", "concussive", "range-60-ft", "magazine-6",
+                                  "expend-1"])
+        #expect(sheet.strikes.filter { !$0.isRanged }.map(\.name) == ["Shield Bash", "Baton"])
+        #expect(sheet.abilities.map(\.name) == ["Aim", "Sabotage", "Tactical Advance", "Mobile Aim"])
+        #expect(sheet.player?.feats.first == "Natural Ambition")
     }
 
     @Test("Data that isn't a fillable PDF is rejected")

@@ -87,7 +87,8 @@ struct DemiplaneClientTests {
         transport.respond(to: url.path, status: 403, body: Data())
         await expectError("notExported") { try await client(transport).sheetPDF(at: url) }
         #expect(url.absoluteString.contains("/nexus/pathfinder-2e/character/pdf/v2/user/abc/default.pdf"))
-        #expect(DemiplaneClient.publicSheetURL(id: "abc", game: .starfinder).path.contains("starfinder-2e"))
+        #expect(DemiplaneClient.publicSheetURL(id: "abc", game: .starfinder).path
+                    .contains("/nexus/starfinder2e/character/pdf/v2/user/abc/"))
     }
 
     @Test("A campaign's characters are found wherever their UUIDs sit, without repeats")
