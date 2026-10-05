@@ -199,6 +199,13 @@ final class BoardController {
     }
 
     /// Maximum HP with the template and drained applied; 0 when the creature is unknown.
+    /// AC with the template and conditions applied, such as 14 for off-guard; nil without a stat block or AC.
+    func armorClass(of combatant: Combatant) -> AdjustedValue? {
+        guard let creature = creature(for: combatant), creature.defenses.armorClass > 0 else { return nil }
+        return StatBlockPresenter(creature: creature, template: combatant.template,
+                                  conditions: combatant.conditions).armorClass
+    }
+
     func maxHitPoints(of combatant: Combatant) -> Int {
         guard let creature = creature(for: combatant) else { return 0 }
         return StatBlockPresenter(creature: creature, template: combatant.template,

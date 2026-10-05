@@ -23,7 +23,9 @@ struct MagnetTile: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(combatant.name).font(.headline).lineLimit(2).minimumScaleFactor(0.8)
-                    if combatant.template != .normal { TemplateBadge(template: combatant.template, color: .black) }
+                    if combatant.template != .normal {
+                        TemplateBadge(template: combatant.template, color: .black).fixedSize()
+                    }
                 }
                 if isSetup && combatant.initiative == nil, let hint = modifierHint {
                     Text(hint).font(.caption.bold()).opacity(0.85)
@@ -31,7 +33,11 @@ struct MagnetTile: View {
                 ConditionChips(combatant: combatant) { sheet = .conditions(combatant.id) }
             }
             Spacer(minLength: 4)
-            if combatant.tracksHitPoints { hitPoints }
+            if combatant.tracksHitPoints {
+                hitPoints
+            } else if let armorClass {
+                ArmorClassText(value: armorClass)
+            }
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 10)
@@ -95,14 +101,19 @@ struct MagnetTile: View {
         .help("Initiative")
     }
 
+    private var armorClass: AdjustedValue? { controller.armorClass(of: combatant) }
+
     private var hitPoints: some View {
         let maximum = max(controller.maxHitPoints(of: combatant), 1)
         let current = max(maximum - combatant.damageTaken, 0)
         return Button { sheet = .hitPoints(combatant.id) } label: {
             VStack(alignment: .trailing, spacing: 3) {
                 let temporary = combatant.temporaryHitPoints > 0 ? " +\(combatant.temporaryHitPoints)" : ""
-                Text("\(current)/\(maximum)\(temporary)")
-                    .font(.callout.monospacedDigit().bold())
+                HStack(spacing: 8) {
+                    if let armorClass { ArmorClassText(value: armorClass) }
+                    Text("\(current)/\(maximum)\(temporary)")
+                }
+                .font(.callout.monospacedDigit().bold())
                 ProgressView(value: Double(current), total: Double(maximum))
                     .tint(current * 4 <= maximum ? .red : .green)
                     .frame(width: 80)
@@ -130,6 +141,18 @@ enum InitiativeText {
     /// "17", or "17½" for a tie-breaking half.
     static func format(_ value: Double) -> String {
         value == value.rounded() ? String(Int(value)) : "\(Int(value.rounded(.down)))½"
+    }
+}
+
+/// "AC 16" on a strip, in yellow when the template or a condition changes it.
+private struct ArmorClassText: View {
+    let value: AdjustedValue
+
+    var body: some View {
+        (Text("AC ").font(.caption.bold()) + Text("\(value.value)"))
+            .font(.callout.monospacedDigit().bold())
+            .foregroundStyle(value.isChanged ? .yellow : .white)
+            .accessibilityLabel("Armor Class \(value.value)")
     }
 }
 

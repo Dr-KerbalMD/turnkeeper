@@ -95,7 +95,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   recognized, never names, on the device where it can (else Apple's recognizer). While listening, the
   creature's modifiers are shown large. After Begin combat, nothing listens and strips are dragged to
   reorder.
-- R4.4 Tiles show the name, initiative, HP and conditions. Tiles are colored like magnets: red for
+- R4.4 Tiles show the name, initiative, HP and conditions, and a creature's or hazard's AC with its template
+  and conditions applied (in yellow when they change it). Tiles are colored like magnets: red for
   enemies, blue for PCs, green for NPCs, gray for hazards.
 - R4.5 Creature HP tracks damage, healing and temporary HP. PCs track no HP.
 - R4.6 The template can be changed during combat. It recalculates the stats without changing the damage
