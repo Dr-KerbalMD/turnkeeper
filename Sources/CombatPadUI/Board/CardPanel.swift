@@ -43,7 +43,8 @@ struct CardPanel: View {
 
     /// Creature notes show for creatures and hazards, not PCs.
     private var visiblePanes: Set<Int> {
-        let hasCreature = !(controller.cardCombatant?.creatureKey.isEmpty ?? true) && scenarioID != nil
+        let isCreature = controller.cardCombatant.map { !$0.creatureKey.isEmpty && $0.kind != .playerCharacter }
+        let hasCreature = (isCreature ?? false) && scenarioID != nil
         return hasCreature ? SplitLayout.allPanes : [SplitLayout.card, SplitLayout.encounterNotes]
     }
 
@@ -98,7 +99,7 @@ struct CardPanel: View {
     }
 }
 
-/// For PCs and custom NPCs: the name and each condition's rules text.
+/// For quick PCs, without a linked sheet: the name and each condition's rules text.
 private struct PlayerCard: View {
     let combatant: Combatant
     @Environment(AppModel.self) private var model

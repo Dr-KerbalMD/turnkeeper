@@ -45,6 +45,11 @@ extension AppModel {
         library.parties.first { $0.id == id && !$0.isDeleted }
     }
 
+    /// A party member by ID, from any party; members are unique across parties.
+    func partyMember(_ id: UUID) -> PartyMember? {
+        library.parties.lazy.filter { !$0.isDeleted }.flatMap(\.members).first { $0.id == id }
+    }
+
     func scenario(_ id: UUID?) -> Scenario? {
         library.scenarios.first { $0.id == id && !$0.isDeleted }
     }

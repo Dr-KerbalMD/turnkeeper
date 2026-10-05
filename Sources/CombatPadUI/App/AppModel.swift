@@ -76,10 +76,11 @@ final class AppModel {
         library.sessions.first { $0.id == activeSessionID }
     }
 
-    /// A creature's summary, from the campaign's custom creatures or the bestiary, with any pasted art.
+    /// A creature's summary, from a linked PC, the campaign's custom creatures or the bestiary, with any
+    /// pasted art (a PC's portrait is its Demiplane avatar, stored as pasted art).
     func entry(_ key: String) -> BestiaryIndexEntry? {
-        let found = CustomCreature.isCustomKey(key)
-            ? library.customCreature(key: key).map { BestiaryIndexEntry(creature: $0.creature) }
+        let found = CustomCreature.isCustomKey(key) || PlayerCharacter.isKey(key)
+            ? creature(key).map(BestiaryIndexEntry.init)
             : bestiary.entry(key)
         guard var entry = found, let art = library.customArt(for: key) else { return found }
         entry.art = entry.art.replacing(with: art)
@@ -92,9 +93,12 @@ final class AppModel {
         return artStore?.url(for: String(path.dropFirst(CustomArt.pathPrefix.count)))
     }
 
-    /// A creature's full stat block, from the campaign's custom creatures or the bestiary.
+    /// A creature's full stat block, from a linked PC's sheet, the campaign's custom creatures or the bestiary.
     func creature(_ key: String) -> Creature? {
         if CustomCreature.isCustomKey(key) { return library.customCreature(key: key)?.creature }
+        if let memberID = PlayerCharacter.memberID(fromKey: key) {
+            return partyMember(memberID).flatMap(PlayerCharacter.creature(for:))
+        }
         return bestiary.creature(key)
     }
 
