@@ -1,7 +1,7 @@
 import Foundation
 
 /// Where a player character's names are looked up: the bundled bestiary's glossary.
-public protocol GlossarySource {
+public protocol GlossarySource: Sendable {
     func glossaryID(game: Game, kind: GlossaryIndex.Kind, name: String) -> String?
     func glossaryEntry(_ id: String) -> GlossaryEntry?
 }
