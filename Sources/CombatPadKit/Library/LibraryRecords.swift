@@ -102,6 +102,15 @@ public struct Scenario: LibraryRecord, Hashable {
         self.name = name
         self.variantLabels = variantLabels.isEmpty ? VariantScheme.single.labels : variantLabels
     }
+
+    /// The difficulty an encounter opens at, when the party's challenge points pick none: Base for a new
+    /// encounter (nothing planned yet), else the one last run, else Base, else the first.
+    public func startingVariantLabel(for encounter: Encounter) -> String {
+        let base = variantLabels.contains(VariantScheme.baseLabel) ? VariantScheme.baseLabel : variantLabels[0]
+        let isNew = encounter.variants.allSatisfy { $0.slots.isEmpty && $0.events.isEmpty }
+        guard !isNew, variantLabels.contains(lastVariantLabel) else { return base }
+        return lastVariantLabel
+    }
 }
 
 /// Preset difficulty schemes. The labels stay editable; these just fill them in.
@@ -110,6 +119,9 @@ public enum VariantScheme: String, CaseIterable, Sendable {
     case challengePointsHighTier
     case easierBaseHarder
     case single
+
+    /// The middle difficulty of Easier, Base and Harder.
+    public static let baseLabel = "Base"
 
     public var title: String {
         switch self {
