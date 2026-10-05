@@ -21,6 +21,7 @@ final class PlanningUITests: XCTestCase {
         XCTAssertTrue(addCreature.isHittable)
         addCreature.tap()
         XCTAssertTrue(app.navigationBars["Bestiary"].waitForExistence(timeout: 5))
+        searchNarrowsTheResults()
         app.buttons["Done"].tap()
         XCTAssertFalse(app.navigationBars["New Creature"].waitForExistence(timeout: 3))
         XCTAssertFalse(app.navigationBars["Bestiary"].exists)
@@ -129,6 +130,18 @@ final class PlanningUITests: XCTestCase {
         sleep(1)
         app.buttons.matching(identifier: "Remove from Encounter").firstMatch.tap()
         XCTAssertTrue(waitUntil { !warrior.exists }, "The Goblin Warrior row is still there after removing it")
+    }
+
+    /// The search field sits below the filters, right above the results, and narrows them.
+    private func searchNarrowsTheResults() {
+        let search = app.textFields["Name or trait"]
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        let found = app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] 'found'")).firstMatch
+        let before = found.label
+        XCTAssertGreaterThan(search.frame.minY, found.frame.minY, "The search field should follow the filters")
+        search.tap()
+        search.typeText("goblin warrior")
+        XCTAssertTrue(waitUntil { found.label != before }, "Still \(found.label) after searching")
     }
 
     private func waitUntil(timeout: TimeInterval = 5, _ condition: () -> Bool) -> Bool {

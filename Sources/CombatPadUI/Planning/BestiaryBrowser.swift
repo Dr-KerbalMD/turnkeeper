@@ -30,6 +30,7 @@ struct BestiaryBrowser: View {
             List {
                 Section { FilterControls(filter: $filter, partyLevel: partyLevel, sources: sources) }
                 Section("\(results.count) found") {
+                    BestiarySearchField(text: $filter.text)
                     ForEach(results.prefix(400)) { entry in
                         BestiaryRow(entry: entry, partyLevel: partyLevel, addedCount: added[entry.key] ?? 0) {
                             add(entry.key)
@@ -40,7 +41,6 @@ struct BestiaryBrowser: View {
                     }
                 }
             }
-            .searchable(text: $filter.text, prompt: "Name or trait")
             .navigationTitle("Bestiary")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
             .sheet(item: Binding(get: { previewKey.map(PreviewKey.init) }, set: { previewKey = $0?.id })) { key in
@@ -53,6 +53,31 @@ struct BestiaryBrowser: View {
             hasSetUpFilter = true
             filter.useLevels(around: partyLevel)
         }
+    }
+}
+
+/// "Name or trait", directly above the results and below the filters that narrow them.
+private struct BestiarySearchField: View {
+    @Binding var text: String
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        HStack {
+            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+            TextField("Name or trait", text: $text)
+                .textFieldStyle(.plain)
+                .autocorrectionDisabled()
+                .focused($isFocused)
+            if !text.isEmpty {
+                Button("Clear", systemImage: "xmark.circle.fill") { text = "" }
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        #if os(macOS)
+        .onAppear { isFocused = true }  // On the iPad, the keyboard would cover the results.
+        #endif
     }
 }
 

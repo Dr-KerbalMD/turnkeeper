@@ -23,7 +23,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R2.4 The import writes a report covering counts per pack, creatures without art, unmatched PDF art,
   and enrichers it couldn't parse.
 - R2.5 The browser searches by name and trait, and filters by level, game, source, rarity, size and
-  kind, and by source book. With a party chosen, the level filter starts at party level −4 to +4.
+  kind, and by source book. With a party chosen, the level filter starts at party level −4 to +4. The
+  "Name or trait" field sits below the filters, directly above the results.
 - R2.6 A creature's battle card can be opened from the browser and from its row in an encounter, with the
   slot's template applied.
 
