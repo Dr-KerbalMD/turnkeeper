@@ -31,7 +31,7 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
     public var kind: CombatantKind
     public var side: Side
     public var name: String
-    /// The creature's key, from the bestiary or `custom.<id>`; empty for PCs.
+    /// The creature's key, from the bestiary or `custom.<id>`; `pc.<member id>` for a linked PC, else empty.
     public var creatureKey: String
     /// The encounter slot this combatant came from, so planned turn events can find it.
     public var slotID: UUID?

@@ -9,6 +9,8 @@ public struct LinkTable: Codable, Sendable, Hashable {
         /// A Strike's extra effect, such as "Grab".
         case effect
         case trait
+        /// A player character's action, reaction, feat or class feature.
+        case ability
     }
 
     private var targets: [String: String]

@@ -30,7 +30,8 @@ public struct Campaign: LibraryRecord, Hashable {
     }
 }
 
-/// The player characters. Players track their own HP, so a member is just a name.
+/// The player characters. Players track their own HP, so a member is a name and level, with a character
+/// sheet when linked to one.
 public struct Party: LibraryRecord, Hashable {
     public var id = UUID()
     public var campaignID: UUID
@@ -62,13 +63,19 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
     public var isAway = false
     /// The character's own level, for challenge points. Nil means the party's level.
     public var level: Int?
+    /// The imported character sheet, for the PC's battle card. Nil for a quick PC.
+    public var sheet: Creature?
+    /// Where the sheet came from, so it can be refreshed.
+    public var link: CharacterLink?
+    /// Max HP typed by the GM, shown on the card only; imports never change it.
+    public var maxHitPoints: Int?
 
     public init(name: String) {
         self.name = name
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, isAway, level
+        case id, name, isAway, level, sheet, link, maxHitPoints
     }
 
     /// Libraries saved before players could be away have no `isAway`; they read as present.
@@ -78,6 +85,9 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
         name = try container.decode(String.self, forKey: .name)
         isAway = try container.decodeIfPresent(Bool.self, forKey: .isAway) ?? false
         level = try container.decodeIfPresent(Int.self, forKey: .level)
+        sheet = try container.decodeIfPresent(Creature.self, forKey: .sheet)
+        link = try container.decodeIfPresent(CharacterLink.self, forKey: .link)
+        maxHitPoints = try container.decodeIfPresent(Int.self, forKey: .maxHitPoints)
     }
 }
 

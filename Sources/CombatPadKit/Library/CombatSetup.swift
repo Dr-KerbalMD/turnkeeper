@@ -8,7 +8,8 @@ public enum CombatSetup {
         for variant: EncounterVariant, party: Party?, lookup: (String) -> BestiaryIndexEntry?
     ) -> CombatState {
         let pcs = (party?.members ?? []).map { member -> Combatant in
-            var pc = Combatant(kind: .playerCharacter, name: member.name)
+            let key = member.sheet == nil ? "" : PlayerCharacter.key(for: member)
+            var pc = Combatant(kind: .playerCharacter, name: member.name, creatureKey: key)
             if member.isAway { pc.place = .bench }  // A late arrival is brought in from the bench.
             return pc
         }
