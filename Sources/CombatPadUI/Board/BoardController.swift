@@ -18,6 +18,8 @@ final class BoardController {
     var chosenForInitiative: UUID?
     /// The GM chose Keep Going after every enemy fell; cleared once an enemy is up again.
     private var victoryAcknowledged = false
+    /// End-of-combat events shown before the fight closes; empty until the GM ends a fight that has some.
+    private(set) var endingEvents: [EncounterEvent] = []
     private var undoStack: [CombatState] = []
     private var redoStack: [CombatState] = []
     @ObservationIgnored private var generator = SystemRandomNumberGenerator()
@@ -41,6 +43,9 @@ final class BoardController {
 
     /// Whether to offer ending the fight: all enemies are down and the GM hasn't said to keep going.
     var showsVictory: Bool { isVictorious && !victoryAcknowledged && !isBlocked && !isFinished }
+
+    /// The sheet that ends a fight: Victory!, or the end-of-combat events once the GM ends it.
+    var showsEndSheet: Bool { showsVictory || !endingEvents.isEmpty }
 
     /// The combatant whose card shows: the pinned one, or whoever's turn it is.
     var cardCombatant: Combatant? {
@@ -79,10 +84,17 @@ final class BoardController {
 
     func keepGoing() {
         victoryAcknowledged = true
+        endingEvents = []
     }
 
-    /// Ends the fight and closes the board. The next Run starts a new one.
+    /// Ends the fight and closes the board. The next Run starts a new one. When the fight has end-of-combat
+    /// events, they show first, and ending again from there closes it.
     func endCombat() {
+        if endingEvents.isEmpty, !state.endOfCombatEvents.isEmpty {
+            endingEvents = state.endOfCombatEvents
+            return
+        }
+        endingEvents = []
         model.finishSession(sessionID)
         model.closeBoard()
     }

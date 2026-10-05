@@ -48,7 +48,13 @@ private struct BoardContent: View {
         .overlay { ListeningOverlay(controller: controller) }
         .sheet(item: $sheet) { sheet in BoardSheetContent(sheet: sheet, controller: controller) }
         .sheet(isPresented: reminderBinding) { ReminderStack(controller: controller) }
-        .sheet(isPresented: victoryBinding) { VictorySheet(controller: controller) }
+        .sheet(isPresented: endBinding) {
+            if controller.endingEvents.isEmpty {
+                VictorySheet(controller: controller)
+            } else {
+                EndOfCombatSheet(controller: controller)
+            }
+        }
         .boardKeyboardShortcuts(controller: controller)
         .task { if controller.state.phase == .setup { await VoiceInitiative.shared.requestPermission() } }
         .focusable()
@@ -72,8 +78,8 @@ private struct BoardContent: View {
         Binding(get: { controller.isBlocked }, set: { _ in })
     }
 
-    private var victoryBinding: Binding<Bool> {
-        Binding(get: { controller.showsVictory }, set: { _ in })
+    private var endBinding: Binding<Bool> {
+        Binding(get: { controller.showsEndSheet }, set: { _ in })
     }
 }
 
@@ -128,6 +134,35 @@ private struct VictorySheet: View {
             .buttonStyle(.borderedProminent)
             .keyboardShortcut(.defaultAction)
             Button("Keep Going") { controller.keepGoing() }
+        }
+        .padding(32)
+        .frame(minWidth: 380)
+        .interactiveDismissDisabled()
+    }
+}
+
+/// The events planned for the end of the fight, read out before it closes.
+private struct EndOfCombatSheet: View {
+    let controller: BoardController
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Label("At the End of Combat", systemImage: "flag.checkered").font(.title2.bold())
+            ForEach(controller.endingEvents) { event in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(event.label).font(.headline)
+                    if !event.text.isEmpty { Text(event.text) }
+                }
+            }
+            Button {
+                controller.endCombat()
+            } label: {
+                Text("End Combat").font(.headline).frame(maxWidth: .infinity, minHeight: 44)
+            }
+            .buttonStyle(.borderedProminent)
+            .keyboardShortcut(.defaultAction)
+            Button("Back to the Fight") { controller.keepGoing() }
+                .frame(maxWidth: .infinity)
         }
         .padding(32)
         .frame(minWidth: 380)

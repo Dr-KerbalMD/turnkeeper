@@ -36,6 +36,9 @@ public struct CombatState: Codable, Sendable, Hashable {
         }
     }
 
+    /// Enabled events to read out when the GM ends the fight.
+    public var endOfCombatEvents: [EncounterEvent] { events.filter { $0.isEnabled && $0.isAtEndOfCombat } }
+
     /// The combatants on the ladder, in turn order.
     public var ladder: [Combatant] { order.compactMap { self[$0] } }
     public var bench: [Combatant] { combatants.filter { $0.place == .bench } }

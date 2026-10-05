@@ -21,6 +21,7 @@ struct EventEditor: View {
         case endOfRound = "End of round"
         case turnStart = "Start of a creature's turn"
         case turnEnd = "End of a creature's turn"
+        case endOfCombat = "At the end of combat"
     }
 
     enum Timing: String, CaseIterable {
@@ -35,8 +36,10 @@ struct EventEditor: View {
                 TextField("Label", text: $event.label, prompt: Text("Reinforcements arrive")).titleEntry()
                 TextField("What happens", text: $event.text, axis: .vertical).lineLimit(2...6)
                 triggerSection
-                timingSection
-                benchSection
+                if kind != .endOfCombat {
+                    timingSection
+                    benchSection
+                }
             }
             .formStyle(.grouped)
             .navigationTitle("Event")
@@ -98,6 +101,7 @@ struct EventEditor: View {
         case .endOfRound: kind = .endOfRound
         case let .turnStart(id): (kind, slotID) = (.turnStart, id)
         case let .turnEnd(id): (kind, slotID) = (.turnEnd, id)
+        case .endOfCombat: kind = .endOfCombat
         }
         switch event.occurrence {
         case .everyRound: timing = .everyRound
@@ -111,13 +115,23 @@ struct EventEditor: View {
         let slot = slotID ?? slots.first?.id ?? UUID()
         let triggers: [TriggerKind: EventTrigger] = [
             .initiative: .initiative(count), .startOfRound: .startOfRound, .endOfRound: .endOfRound,
-            .turnStart: .turnStart(slotID: slot), .turnEnd: .turnEnd(slotID: slot)
+            .turnStart: .turnStart(slotID: slot), .turnEnd: .turnEnd(slotID: slot), .endOfCombat: .endOfCombat
         ]
         event.trigger = triggers[kind] ?? .startOfRound
-        event.occurrence = [Timing.everyRound: EventOccurrence.everyRound, .onlyRound: .onlyRound(round),
-                            .every: .every(interval: interval, start: round)][timing] ?? .everyRound
+        event.occurrence = occurrence
+        if kind == .endOfCombat { event.bringsInSlotIDs = [] }
         if event.label.isEmpty { event.label = "Event" }
         save(event)
         dismiss()
+    }
+
+    /// The rounds the event fires in; an end-of-combat event fires once, so it keeps the default.
+    private var occurrence: EventOccurrence {
+        guard kind != .endOfCombat else { return .everyRound }
+        switch timing {
+        case .everyRound: return .everyRound
+        case .onlyRound: return .onlyRound(round)
+        case .every: return .every(interval: interval, start: round)
+        }
     }
 }

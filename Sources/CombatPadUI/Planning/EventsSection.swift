@@ -57,7 +57,8 @@ struct EventsSection: View {
 enum EventDescription {
     @MainActor
     static func text(for event: EncounterEvent, slots: [EncounterSlot], model: AppModel) -> String {
-        var parts = [trigger(event.trigger, slots: slots, model: model), occurrence(event.occurrence)]
+        var parts = [trigger(event.trigger, slots: slots, model: model)]
+        if !event.isAtEndOfCombat { parts.append(occurrence(event.occurrence)) }
         if !event.bringsInSlotIDs.isEmpty { parts.append("brings in benched creatures") }
         return parts.joined(separator: " · ")
     }
@@ -70,6 +71,7 @@ enum EventDescription {
         case .endOfRound: return "End of round"
         case let .turnStart(slotID): return "Start of \(name(slotID, slots, model))'s turn"
         case let .turnEnd(slotID): return "End of \(name(slotID, slots, model))'s turn"
+        case .endOfCombat: return "At the end of combat"
         }
     }
 

@@ -9,6 +9,8 @@ public enum EventTrigger: Codable, Sendable, Hashable {
     /// At the start of the turn of a combatant from this encounter slot.
     case turnStart(slotID: UUID)
     case turnEnd(slotID: UUID)
+    /// When the GM ends the fight, such as treasure to hand out or a door that opens.
+    case endOfCombat
 }
 
 /// Which rounds an event fires in.
@@ -47,6 +49,9 @@ public struct EncounterEvent: Codable, Sendable, Hashable, Identifiable {
         bringsInSlotIDs = []
         isEnabled = true
     }
+
+    /// Whether the event fires once, when the fight ends, rather than in a round.
+    public var isAtEndOfCombat: Bool { trigger == .endOfCombat }
 
     public var initiativeCount: Int? {
         if case let .initiative(count) = trigger { return count }

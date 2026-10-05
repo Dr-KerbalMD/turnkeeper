@@ -76,7 +76,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
 - R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or
   end of a combatant's turn. An event can recur every round, happen only in round N, or every N rounds
-  starting at round M.
+  starting at round M. An event can instead come at the end of combat: ending the fight (from the top bar
+  or Victory!) first shows those events, then End Combat closes it.
 
 ## R4 Combat
 - R4.1 Starting combat asks for the party and the variant. The scenario's last-used variant is the

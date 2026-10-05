@@ -48,6 +48,22 @@ struct TurnAdvancerTests {
         #expect(advance.reminders.map(\.title) == ["Round ends", "Reinforcements"])
     }
 
+    @Test("End-of-combat events never fire in a round, and are listed for the end when enabled")
+    func endOfCombatEvent() {
+        let treasure = EncounterEvent(label: "Treasure", trigger: .endOfCombat)
+        var skipped = EncounterEvent(label: "Door opens", trigger: .endOfCombat)
+        skipped.isEnabled = false
+        var (state, _) = fight(events: [treasure, skipped])
+        var titles: [String] = []
+        for _ in 0..<6 {
+            let advance = TurnAdvancer.next(state)
+            titles += advance.reminders.map(\.title)
+            state = advance.state
+        }
+        #expect(!titles.contains("Treasure"))
+        #expect(state.endOfCombatEvents.map(\.label) == ["Treasure"])
+    }
+
     @Test("An event at initiative 15 fires once a round, between 17 and 12")
     func initiativeEvent() {
         let collapse = EncounterEvent(label: "Ceiling collapses", trigger: .initiative(15))
