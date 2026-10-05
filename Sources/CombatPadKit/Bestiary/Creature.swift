@@ -38,6 +38,9 @@ public struct Creature: Codable, Sendable, Identifiable, Hashable {
     /// Present only for hazards.
     public var hazard: HazardDetails?
     public var art: ArtReference
+    /// Glossary links for spells, items, Strike effects and traits. Nil for creatures saved before links
+    /// existed, and for custom creatures.
+    public var links: LinkTable?
 
     public var id: String { key }
 

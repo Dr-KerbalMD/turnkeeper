@@ -201,6 +201,7 @@ struct CardLineBuilder {
         case let .text(string, .plain): return [.text(string)]
         case let .text(string, .bold): return [.bold(string)]
         case let .text(string, .italic): return [.italic(string)]
+        case let .link(label, _, emphasis): return segments(for: .text(label, emphasis), isLimited: isLimited)
         case let .actions(cost): return [.actions(cost)]
         case let .check(check):
             let save = check.statistic == "flat" ? "flat check" : check.statistic.capitalized

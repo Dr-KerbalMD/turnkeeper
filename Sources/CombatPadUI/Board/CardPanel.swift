@@ -126,7 +126,8 @@ private struct PlayerCard: View {
     }
 
     private func plainText(_ text: RulesText) -> String {
-        text.markup.replacingOccurrences(of: "**", with: "").replacingOccurrences(of: "\n---", with: "")
+        StatBlockText.plainText(text).replacingOccurrences(of: "**", with: "")
+            .replacingOccurrences(of: "\n---", with: "")
     }
 }
 

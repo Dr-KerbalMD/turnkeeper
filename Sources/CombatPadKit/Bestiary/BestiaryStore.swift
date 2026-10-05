@@ -7,6 +7,7 @@ public final class BestiaryStore: @unchecked Sendable {
     public let conditions: [ConditionDefinition]
     private let entriesByKey: [String: BestiaryIndexEntry]
     private var packs: [String: [String: Creature]] = [:]
+    private var glossary: [String: GlossaryEntry]?
     private let lock = NSLock()
 
     /// Loads `Bestiary/index.json` and `Bestiary/conditions.json` from a `Generated` folder.
@@ -57,6 +58,14 @@ public final class BestiaryStore: @unchecked Sendable {
         return packs[entry.packFile]?[key]
     }
 
+    /// A linked spell, item, condition or trait, loading `Bestiary/glossary.json` on first use.
+    public func glossaryEntry(_ id: String) -> GlossaryEntry? {
+        lock.lock()
+        defer { lock.unlock() }
+        if glossary == nil { glossary = loadGlossary() }
+        return glossary?[id]
+    }
+
     public func condition(_ slug: String) -> ConditionDefinition? {
         conditions.first { $0.slug == slug }
     }
@@ -64,6 +73,13 @@ public final class BestiaryStore: @unchecked Sendable {
     /// A file inside `Generated`, such as a creature's art.
     public func url(for relativePath: String) -> URL? {
         relativePath.isEmpty ? nil : directory.appendingPathComponent(relativePath)
+    }
+
+    private func loadGlossary() -> [String: GlossaryEntry] {
+        let url = directory.appendingPathComponent("Bestiary/glossary.json")
+        guard let data = try? Data(contentsOf: url),
+              let entries = try? JSONDecoder().decode([GlossaryEntry].self, from: data) else { return [:] }
+        return Dictionary(entries.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
     }
 
     private func loadPack(_ name: String) -> [String: Creature] {

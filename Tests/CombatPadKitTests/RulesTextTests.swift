@@ -41,6 +41,39 @@ struct RulesTextTests {
         #expect(runs.map(\.markup).joined() == markup)
     }
 
+    @Test("Links keep their target, label and the emphasis around them")
+    func links() {
+        let text = RulesText("*{{link:pf2e.spells-srd.abc|detect magic}}* and {{link:trait.pf2e.fire|fire}}.")
+        #expect(text.paragraphs == [.runs([
+            .link("detect magic", target: "pf2e.spells-srd.abc", .italic),
+            .text(" and ", .plain),
+            .link("fire", target: "trait.pf2e.fire", .plain),
+            .text(".", .plain)
+        ])])
+    }
+
+    @Test("Links write back to the same markup")
+    func linkRoundTrip() {
+        let markup = "**{{link:a.b|Grab}}** then *{{link:c.d|Stunned 1}}*"
+        let runs = RulesText(markup).paragraphs.flatMap { paragraph -> [RulesRun] in
+            if case let .runs(runs) = paragraph { return runs }
+            return []
+        }
+        #expect(runs.map(\.markup).joined() == markup)
+    }
+
+    @Test("A link without a target or label stays as text")
+    func malformedLink() {
+        #expect(RulesText("{{link:|Grab}}").paragraphs == [.runs([.text("link:|Grab", .plain)])])
+        #expect(RulesText("{{link:a.b|}}").paragraphs == [.runs([.text("link:a.b|", .plain)])])
+        #expect(RulesText("{{link:a.b}}").paragraphs == [.runs([.text("link:a.b", .plain)])])
+    }
+
+    @Test("Links read as their label in plain text")
+    func linkPlainText() {
+        #expect(StatBlockText.plainText(RulesText("Becomes *{{link:a.b|frightened 1}}*.")) == "Becomes *frightened 1*.")
+    }
+
     @Test("A malformed token stays as text")
     func malformedToken() {
         #expect(RulesText("{{check:will}}").paragraphs == [.runs([.text("check:will", .plain)])])
