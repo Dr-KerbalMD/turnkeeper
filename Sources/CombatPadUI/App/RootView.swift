@@ -17,6 +17,7 @@ struct RootView: View {
             }
         }
         .environment(\.padTheme, PadTheme.forGame(model.game))
+        .environment(\.glossary, GlossaryContext(bestiary: model.bestiary))
         .alert("Combat Pad", isPresented: errorBinding) {
             Button("OK") { model.errorMessage = nil }
         } message: {

@@ -4,10 +4,12 @@ import Foundation
 /// The stat-block lines of a creature, grouped so each card style can arrange them its own way.
 struct CardContent {
     var name: String
-    /// "CREATURE 8" or "HAZARD 3".
+    /// "CREATURE 8", "HAZARD 3" or "PC 15".
     var levelLabel: String
     var template: CreatureTemplate
     var traits: TraitLine
+    /// Where the card's linked words lead.
+    var links: LinkTable
     /// The book, such as "Pathfinder Monster Core", for the small line at the bottom.
     var source: String
     var senses: [CardLine] = []
@@ -24,9 +26,10 @@ struct CardContent {
         let creature = presenter.creature
         let builder = CardLineBuilder(presenter: presenter)
         name = creature.name
-        levelLabel = "\(creature.kind == .hazard ? "HAZARD" : "CREATURE") \(presenter.level)"
+        levelLabel = "\(Self.kindLabel(creature.kind)) \(presenter.level)"
         template = presenter.template
         traits = creature.traits
+        links = creature.links ?? LinkTable()
         source = creature.source.title.isEmpty
             ? creature.source.pack.replacingOccurrences(of: "-", with: " ").capitalized
             : creature.source.title
@@ -40,15 +43,25 @@ struct CardContent {
         offensive = builder.abilityLines(in: .offensive)
         hazard = builder.hazardLines()
     }
+
+    private static func kindLabel(_ kind: CreatureKind) -> String {
+        switch kind {
+        case .creature: return "CREATURE"
+        case .hazard: return "HAZARD"
+        case .character: return "PC"
+        }
+    }
 }
 
 /// Builds card lines from a presenter.
 struct CardLineBuilder {
     let presenter: StatBlockPresenter
     private var creature: Creature { presenter.creature }
+    private var links: LinkTable { creature.links ?? LinkTable() }
+    private var rulesText: RulesTextLines { RulesTextLines(presenter: presenter) }
 
     func sensesLines() -> [CardLine] {
-        guard creature.kind == .creature else { return [] }
+        guard creature.kind != .hazard else { return [] }
         var perception: [CardSegment] = [.value(presenter.perception, signed: true)]
         let senses = creature.senses.senses + (creature.senses.details.isEmpty ? [] : [creature.senses.details])
         if !senses.isEmpty { perception.append(.text("; " + senses.joined(separator: ", "))) }
@@ -65,19 +78,21 @@ struct CardLineBuilder {
     }
 
     func statisticsLines() -> [CardLine] {
-        guard creature.kind == .creature else { return [] }
+        guard creature.kind != .hazard else { return [] }
         let attributes = creature.attributes
         let values = [("Str", attributes.strength), ("Dex", attributes.dexterity), ("Con", attributes.constitution),
                       ("Int", attributes.intelligence), ("Wis", attributes.wisdom), ("Cha", attributes.charisma)]
         var lines = [CardLine(joined(values.map { [.bold("\($0.0) "), .text(signed($0.1))] }))]
-        if !creature.items.isEmpty { lines.append(.labeled("Items", [.text(creature.items.joined(separator: ", "))])) }
-        return lines
+        if !creature.items.isEmpty {
+            lines.append(.labeled("Items", joined(creature.items.map { [linked(.item, $0, label: $0)] })))
+        }
+        return lines + playerLines()
     }
 
     func defenseLines() -> [CardLine] {
         var line: [CardSegment] = [.bold("AC "), .value(presenter.armorClass, signed: false)]
         line += parenthesized(creature.defenses.armorClassDetails)
-        if creature.kind == .creature || creature.defenses.fortitude != 0 {
+        if creature.kind != .hazard || creature.defenses.fortitude != 0 {
             line += [.text("; "), .bold("Fort "), .value(presenter.fortitude, signed: true),
                      .text(", "), .bold("Ref "), .value(presenter.reflex, signed: true),
                      .text(", "), .bold("Will "), .value(presenter.will, signed: true)]
@@ -88,6 +103,8 @@ struct CardLineBuilder {
 
     func hitPointSegments() -> [CardSegment] {
         let defenses = creature.defenses
+        // A PC's max HP shows only when the GM typed one.
+        if creature.kind == .character && defenses.hitPoints == 0 { return [] }
         let hardness: [CardSegment] = defenses.hardness > 0 ? [.bold("Hardness "), .text("\(defenses.hardness), ")] : []
         return hardness + [.bold("HP "), .value(presenter.maxHitPoints, signed: false)]
             + parenthesized(defenses.hitPointDetails)
@@ -140,9 +157,10 @@ struct CardLineBuilder {
 
     private func strikeLine(_ strike: Strike) -> CardLine {
         var segments: [CardSegment] = [.bold(strike.isRanged ? "Ranged " : "Melee "), .actions(.one), .text(" "),
-                                       .italic(strike.name.lowercased()), .text(" "),
+                                       linked(.item, strike.name, label: strike.name.lowercased(), emphasis: .italic),
+                                       .text(" "),
                                        .value(presenter.attack(strike), signed: true)]
-        segments += parenthesized(strike.traits.map(traitLabel).joined(separator: ", "))
+        if !strike.traits.isEmpty { segments += [.text(" (")] + traitSegments(strike.traits) + [.text(")")] }
         if !strike.areaNote.isEmpty { segments.append(.text(" [\(strike.areaNote)]")) }
         let damage = presenter.damage(strike)
         if !damage.isEmpty {
@@ -150,7 +168,10 @@ struct CardLineBuilder {
             segments.append(.bold("Damage "))
             segments += joined(damage.map { [.damage($0)] }, separator: " plus ")
         }
-        if !strike.effects.isEmpty { segments.append(.text(" plus \(strike.effects.joined(separator: " and "))")) }
+        if !strike.effects.isEmpty {
+            segments.append(.text(" plus "))
+            segments += joined(strike.effects.map { [linked(.effect, $0, label: $0)] }, separator: " and ")
+        }
         return CardLine(segments)
     }
 
@@ -158,57 +179,37 @@ struct CardLineBuilder {
         var segments: [CardSegment] = [.bold(entry.name + " ")]
         if entry.difficultyClass > 0 { segments += [.text("DC "), .value(presenter.spellDC(entry), signed: false)] }
         if entry.attack != 0 { segments += [.text(", attack "), .value(presenter.spellAttack(entry), signed: true)] }
-        for rank in entry.ranks {
-            segments.append(.text("; "))
+        // Without a DC or attack (as on some PC sheets), the first rank follows the name directly.
+        let hasStatistics = entry.difficultyClass > 0 || entry.attack != 0
+        for (index, rank) in entry.ranks.enumerated() {
+            if index > 0 || hasStatistics { segments.append(.text("; ")) }
             segments.append(.bold(rankLabel(rank) + " "))
             segments += joined(rank.spells.map { spell in
-                [.italic(spell.name)] + (spell.note.isEmpty ? [] : [.text(" (\(spell.note))")])
+                [linked(.spell, spell.name, label: spell.name, emphasis: .italic)]
+                    + (spell.note.isEmpty ? [] : [.text(" (\(spell.note))")])
             })
         }
         return CardLine(segments)
     }
 
     private func abilityLines(_ ability: Ability) -> [CardLine] {
-        var header: [CardSegment] = [.bold(ability.name)]
+        var header: [CardSegment] = [linked(.ability, ability.name, label: ability.name, emphasis: .bold)]
         if ability.cost != .none { header += [.text(" "), .actions(ability.cost)] }
-        if !ability.traits.isEmpty { header.append(.text(" (\(ability.traits.joined(separator: ", ")))")) }
-        let paragraphs = paragraphLines(ability.text, isLimited: ability.isLimited)
+        if !ability.traits.isEmpty { header += [.text(" (")] + traitSegments(ability.traits) + [.text(")")] }
+        let paragraphs = rulesText.lines(ability.text, isLimited: ability.isLimited)
         guard let first = paragraphs.first else { return [CardLine(header)] }
         return [CardLine(header + [.text(" ")] + first.segments)] + paragraphs.dropFirst()
     }
 
     private func textLines(_ label: String, _ text: RulesText) -> [CardLine] {
-        let paragraphs = paragraphLines(text, isLimited: false)
+        let paragraphs = rulesText.lines(text, isLimited: false)
         guard let first = paragraphs.first else { return [] }
         return [CardLine([.bold(label + " ")] + first.segments)] + paragraphs.dropFirst()
     }
 
-    /// Rules text paragraphs as indented lines; horizontal rules become breaks between lines.
-    private func paragraphLines(_ text: RulesText, isLimited: Bool) -> [CardLine] {
-        text.paragraphs.compactMap { paragraph in
-            guard case let .runs(runs) = paragraph else { return nil }
-            return CardLine(runs.flatMap { segments(for: $0, isLimited: isLimited) }, isIndented: true)
-        }
-    }
-
     private func inline(_ text: RulesText, isLimited: Bool) -> [CardSegment] {
-        let segments = paragraphLines(text, isLimited: isLimited).flatMap(\.segments)
+        let segments = rulesText.lines(text, isLimited: isLimited).flatMap(\.segments)
         return segments.isEmpty ? [] : [.text(" ")] + segments
-    }
-
-    private func segments(for run: RulesRun, isLimited: Bool) -> [CardSegment] {
-        switch run {
-        case let .text(string, .plain): return [.text(string)]
-        case let .text(string, .bold): return [.bold(string)]
-        case let .text(string, .italic): return [.italic(string)]
-        case let .actions(cost): return [.actions(cost)]
-        case let .check(check):
-            let save = check.statistic == "flat" ? "flat check" : check.statistic.capitalized
-            return [.text("DC "), .value(presenter.check(check), signed: false),
-                    .text(" \(check.isBasic ? "basic " : "")\(save)")]
-        case let .damage(parts):
-            return joined(presenter.damage(parts, isLimited: isLimited).map { [.damage($0)] }, separator: " plus ")
-        }
     }
 
     private func rankLabel(_ rank: SpellRank) -> String {
@@ -232,6 +233,22 @@ struct CardLineBuilder {
         .joined(separator: ", ")
     }
 
+    /// A word that leads to the glossary when the creature links it, else plain text.
+    func linked(
+        _ kind: LinkTable.Kind, _ key: String, label: String, emphasis: TextEmphasis = .plain
+    ) -> CardSegment {
+        if let target = links.target(kind, key) { return .link(label, target: target, emphasis: emphasis) }
+        switch emphasis {
+        case .plain: return .text(label)
+        case .bold: return .bold(label)
+        case .italic: return .italic(label)
+        }
+    }
+
+    private func traitSegments(_ traits: [String]) -> [CardSegment] {
+        joined(traits.map { [linked(.trait, $0, label: traitLabel($0))] })
+    }
+
     /// "versatile-p" reads "versatile P" and "deadly-d10" "deadly d10", as in the books.
     private func traitLabel(_ slug: String) -> String {
         let words = slug.split(separator: "-").map(String.init)
@@ -244,8 +261,8 @@ struct CardLineBuilder {
         text.isEmpty ? [] : [.text(" (\(text))")]
     }
 
-    private func joined(_ groups: [[CardSegment]], separator: String = ", ") -> [CardSegment] {
-        groups.enumerated().flatMap { index, group in index == 0 ? group : [.text(separator)] + group }
+    func joined(_ groups: [[CardSegment]], separator: String = ", ") -> [CardSegment] {
+        CardSegment.joined(groups, separator: separator)
     }
 }
 

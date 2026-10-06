@@ -1,0 +1,9 @@
+{
+  "packs": [
+    { "name": "spells-srd", "path": "packs/pf2e/spells", "type": "Item" },
+    { "name": "feats-srd", "path": "packs/pf2e/feats", "type": "Item" },
+    { "name": "conditionitems", "path": "packs/pf2e/conditions", "type": "Item" },
+    { "name": "bestiary-ability-glossary-srd", "path": "packs/pf2e/bestiary-ability-glossary-srd", "type": "Item" },
+    { "name": "spell-effects", "path": "packs/pf2e/spell-effects", "type": "Item" }
+  ]
+}

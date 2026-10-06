@@ -16,6 +16,11 @@ public struct Localizer: Sendable {
         roots = try files.map(JSONValue.init(contentsOf:))
     }
 
+    /// A localizer that looks in `roots` before these files.
+    public func preferring(_ roots: [JSONValue]) -> Localizer {
+        Localizer(roots: roots + self.roots)
+    }
+
     public func text(for key: String) -> String? {
         for root in roots {
             let value = root[path: key]

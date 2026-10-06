@@ -17,7 +17,7 @@ struct StarfinderBattleCard: View {
             Scrollable(scrolls: scrolls) {
                 VStack(alignment: .leading, spacing: 4) {
                     titleBar
-                    TraitChips(traits: content.traits, game: .starfinder)
+                    TraitChips(traits: content.traits, links: content.links, game: .starfinder, style: style)
                     lines(content.hazard)
                     lines(content.senses)
                     section("DEFENSE", trailing: content.hitPoints, content.defense + content.defensive)
@@ -74,7 +74,8 @@ struct StarfinderBattleCard: View {
 
     private var style: CardTextStyle {
         CardTextStyle(body: FontName.body, bold: FontName.bodyBold, italic: FontName.bodyItalic, size: textSize * 0.92,
-                      ink: Color(hex: 0xEAF7FB), worse: Color(hex: 0xFF6B6B), better: Color(hex: 0x7CFC9A))
+                      ink: Color(hex: 0xEAF7FB), paper: Color(hex: 0x0D3C47),
+                      worse: Color(hex: 0xFF6B6B), better: Color(hex: 0x7CFC9A))
     }
 }
 

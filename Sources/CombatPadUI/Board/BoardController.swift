@@ -149,7 +149,7 @@ final class BoardController {
     /// For the optional Roll button: d20 plus the creature's initiative modifier. The GM normally rolls.
     func rollInitiative(for combatant: Combatant?) -> Double {
         guard let combatant else { return 10 }
-        let modifier = creature(for: combatant).map {
+        let modifier = stripCreature(for: combatant).map {
             StatBlockPresenter(creature: $0, template: combatant.template).initiative.value
         } ?? 0
         return CombatSetup.rollInitiative(modifier: modifier, using: &generator)
@@ -163,7 +163,7 @@ final class BoardController {
     /// Initiative modifiers to do the math with: Perception first, then Stealth, then the other skills, with
     /// the template and conditions applied. Empty for PCs.
     func initiativeSkills(for combatant: Combatant) -> [InitiativeSkill] {
-        guard let creature = creature(for: combatant) else { return [] }
+        guard let creature = stripCreature(for: combatant) else { return [] }
         let presenter = StatBlockPresenter(creature: creature, template: combatant.template,
                                            conditions: combatant.conditions)
         var skills: [InitiativeSkill] = []
@@ -198,16 +198,22 @@ final class BoardController {
         model.entry(combatant.creatureKey)
     }
 
+    /// The stat block behind a strip's numbers: AC, HP, initiative modifiers and art. PCs have none, even
+    /// with a linked sheet, since players track their own (R6.5); their sheet shows only on the card.
+    func stripCreature(for combatant: Combatant) -> Creature? {
+        combatant.kind == .playerCharacter ? nil : creature(for: combatant)
+    }
+
     /// Maximum HP with the template and drained applied; 0 when the creature is unknown.
     /// AC with the template and conditions applied, such as 14 for off-guard; nil without a stat block or AC.
     func armorClass(of combatant: Combatant) -> AdjustedValue? {
-        guard let creature = creature(for: combatant), creature.defenses.armorClass > 0 else { return nil }
+        guard let creature = stripCreature(for: combatant), creature.defenses.armorClass > 0 else { return nil }
         return StatBlockPresenter(creature: creature, template: combatant.template,
                                   conditions: combatant.conditions).armorClass
     }
 
     func maxHitPoints(of combatant: Combatant) -> Int {
-        guard let creature = creature(for: combatant) else { return 0 }
+        guard let creature = stripCreature(for: combatant) else { return 0 }
         return StatBlockPresenter(creature: creature, template: combatant.template,
                                   conditions: combatant.conditions).maxHitPoints.value
     }

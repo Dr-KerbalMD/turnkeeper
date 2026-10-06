@@ -32,6 +32,8 @@ public struct CreatureParser {
         creature.initiativeStatistic = Self.initiativeStatistic(system, kind: kind)
         creature.abilities = abilities(items)
         if kind == .hazard { creature.hazard = hazardDetails(system) }
+        let links = CreatureLinker(links: text.links).table(for: creature, items: items)
+        creature.links = links.isEmpty ? nil : links
         return creature
     }
 

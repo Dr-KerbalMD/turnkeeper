@@ -7,10 +7,11 @@ public enum Game: String, Codable, Sendable, CaseIterable {
 }
 
 /// What sort of bestiary entry this is. Only complex hazards are imported, since simple ones never
-/// take a turn.
+/// take a turn. Player characters come from an imported character sheet, never from the bestiary.
 public enum CreatureKind: String, Codable, Sendable {
     case creature
     case hazard
+    case character
 }
 
 /// A creature or complex hazard as its stat block shows it, before templates or conditions.
@@ -37,7 +38,12 @@ public struct Creature: Codable, Sendable, Identifiable, Hashable {
     public var initiativeStatistic: String
     /// Present only for hazards.
     public var hazard: HazardDetails?
+    /// Present only for player characters.
+    public var player: PlayerDetails?
     public var art: ArtReference
+    /// Glossary links for spells, items, Strike effects and traits. Nil for creatures saved before links
+    /// existed, and for custom creatures.
+    public var links: LinkTable?
 
     public var id: String { key }
 

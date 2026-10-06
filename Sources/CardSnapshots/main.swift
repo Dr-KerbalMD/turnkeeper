@@ -4,7 +4,8 @@ import Foundation
 
 /// `CardSnapshots OUTPUT_FOLDER KEY[:elite|:weak][:condition=value]...`
 ///
-/// Writes a PNG of each creature's battle card, for comparing with the printed Battle Cards.
+/// Writes a PNG of each creature's battle card, for comparing with the printed Battle Cards. A key of
+/// `pdf=<path>` renders a player character from a Demiplane sheet PDF.
 let arguments = CommandLine.arguments.dropFirst()
 guard let output = arguments.first.map({ URL(fileURLWithPath: $0) }) else {
     print("Usage: CardSnapshots OUTPUT_FOLDER KEY[:elite|:weak][:slug=value]...")
@@ -23,7 +24,8 @@ for argument in arguments.dropFirst() {
         print("Rendering \(parts[0]) failed: not in the bestiary.")
         continue
     }
-    let file = output.appendingPathComponent(argument.replacingOccurrences(of: ":", with: "_") + ".png")
+    let name = argument.replacingOccurrences(of: ":", with: "_").replacingOccurrences(of: "/", with: "_")
+    let file = output.appendingPathComponent(name + ".png")
     try data.write(to: file)
     print("Wrote \(file.path)")
 }

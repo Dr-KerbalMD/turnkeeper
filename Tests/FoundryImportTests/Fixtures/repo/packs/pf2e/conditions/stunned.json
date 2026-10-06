@@ -1,0 +1,9 @@
+{
+  "_id": "dfCMdR4wnpbYNTix",
+  "name": "Stunned",
+  "type": "condition",
+  "system": {
+    "description": { "value": "<p>You've become senseless. You can't act.</p>" },
+    "traits": { "value": [] }
+  }
+}

@@ -29,6 +29,41 @@ enum Fixtures {
         return RulesTextConverter(localizer: Localizer(roots: [glossary]))
     }
 
+    /// A small copy of the pf2e repository: a few spells, conditions and glossary abilities, the language
+    /// files and `traits.ts`.
+    static func repository() throws -> URL {
+        guard let url = Bundle.module.url(forResource: "repo", withExtension: nil, subdirectory: "Fixtures") else {
+            throw FixtureError.missing("repo")
+        }
+        return url
+    }
+
+    /// A link resolver over the fixture repository.
+    static func links() throws -> LinkResolver {
+        let repository = try repository()
+        let localizer = try Localizer(languageDirectory: repository.appendingPathComponent("static/lang"))
+        return LinkResolver(
+            compendium: try CompendiumIndex(scanner: PackScanner(repository: repository)),
+            traits: TraitGlossary(repository: repository, localizer: localizer)
+        )
+    }
+
+    /// A converter that links into the fixture repository.
+    static func linkingConverter(_ links: LinkResolver) -> RulesTextConverter {
+        RulesTextConverter(localizer: Localizer(roots: []), links: links)
+    }
+
+    /// `linked-creature.json`, parsed with links into the fixture repository, and its resolver.
+    static func linkedCreature() throws -> (Creature, LinkResolver) {
+        let links = try links()
+        var parser = CreatureParser(text: linkingConverter(links))
+        guard let creature = parser.creature(from: try document("linked-creature"), game: .pathfinder,
+                                             pack: "test-pack") else {
+            throw FixtureError.notACreature("linked-creature")
+        }
+        return (creature, links)
+    }
+
     enum FixtureError: Error {
         case missing(String)
         case notACreature(String)

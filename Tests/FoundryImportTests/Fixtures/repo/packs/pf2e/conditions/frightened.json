@@ -1,0 +1,9 @@
+{
+  "_id": "TBSHQspnbcqxsmjL",
+  "name": "Frightened",
+  "type": "condition",
+  "system": {
+    "description": { "value": "<p>You're gripped by fear. While frightened, you can't willingly move closer; if it's high enough, you're @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{stunned}.</p>" },
+    "traits": { "value": [] }
+  }
+}

@@ -10,7 +10,7 @@ in the style of the Paizo Combat Pad. See `docs/specs/combat-pad/` for the requi
   The PDF step runs in a project venv (`.venv`, from `requirements.txt`), created on first use.
   `art-sources.json` sets Foundry module priority and PDF overrides; `art-overrides.json` (optional)
   maps a creature name to the name its art has in a PDF. Check `Generated/import-report.md` afterwards.
-- `make run` builds and opens the Mac app; `make install` copies it to /Applications.
+- `make run` builds and opens the Mac app; `make install` moves it to /Applications (the build copy is removed so Finder launches the installed one).
 - `make ipad-simulator` runs the iPad app in a simulator.
 - `make ipad-install` installs on a connected iPad. Put your team in `ios/Local.xcconfig`
   (`DEVELOPMENT_TEAM = …`). A free team's signature lasts 7 days, so reinstall weekly.

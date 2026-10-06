@@ -69,11 +69,18 @@ enum StatisticsParser {
     ]
 
     static func inventory(_ items: [JSONValue]) -> [String] {
-        items.filter { inventoryTypes.contains($0["type"].string) }.map { item in
-            let name = item["name"].string.lowercased()
-            let quantity = item[path: "system.quantity"].int
-            return quantity > 1 ? "\(name) (\(quantity))" : name
-        }
+        inventoryItems(items).map(inventoryLabel)
+    }
+
+    static func inventoryItems(_ items: [JSONValue]) -> [JSONValue] {
+        items.filter { inventoryTypes.contains($0["type"].string) }
+    }
+
+    /// "javelin (4)", as the Items line shows it.
+    static func inventoryLabel(_ item: JSONValue) -> String {
+        let name = item["name"].string.lowercased()
+        let quantity = item[path: "system.quantity"].int
+        return quantity > 1 ? "\(name) (\(quantity))" : name
     }
 
     static func speeds(_ speed: JSONValue) -> [Speed] {

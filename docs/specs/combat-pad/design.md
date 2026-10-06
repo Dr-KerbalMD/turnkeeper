@@ -10,6 +10,7 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 | `Sources/CombatPad` | Mac app entry point. |
 | `Sources/FoundryImport` | Library that parses Foundry documents, converts rules text and matches art. |
 | `Sources/BestiaryImport` | CLI around FoundryImport that writes `Generated/`. |
+| `Sources/CharacterImport` | Demiplane character import: links and QR codes, the sheet PDF reader, the client and the token. |
 | `ios/CombatPad.xcodeproj` | iPad app. It references the package as `..` and bundles `Generated/` as a folder reference. |
 | `scripts/extract_pdf_art.py`, `scripts/pdfart/` | PyMuPDF extractor for token, pawn and card art from the Paizo PDFs, run in the project `.venv`. |
 | `Generated/` | Import output, gitignored and bundled into both apps. |
@@ -23,6 +24,8 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 3. **Rules text.** HTML and Foundry enrichers become `RulesText` runs. `@Check` and `@Damage` stay
    structured so templates and conditions can adjust them. `@UUID` becomes its label, `@Localize` is
    resolved from the lang JSON, and `@Template` becomes prose.
+   A `@UUID` to an Item in a compendium pack becomes a `{{link:<id>|<label>}}` run instead, where the glossary
+   ID is `<system>.<pack>.<_id>` (links by name are resolved to the `_id`). Links into effect packs stay labels.
 4. **Conditions.** The condition packs go to `conditions.json`. sf2e gets the pf2e conditions plus its
    own.
 5. **Foundry art.** Every module's `flags.compendiumArtMappings.{pf2e,sf2e}` file maps
@@ -50,7 +53,25 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    STARFINDER logo line). Art is scaled smoothly, since tokens are small.
    A creature with no art of a kind borrows it from a same-named creature of the same game in another
    pack (`ArtFallback`), preferring the one with the most art, then remastered; the report lists them.
-8. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
+8. **Glossary.** `CompendiumIndex` reads the Item packs of both systems (an Item pack is indexed on first
+   use) and records every glossary ID the import links to. Each creature gets a `LinkTable` from
+   `<kind>:<shown text>` to a glossary ID: spells and items by their compendium source (or, without one, their
+   embedded copy, `<creature key>.<item _id>`), Strike effects by the creature's own action or the ability
+   glossary, and traits as `trait.<game>.<slug>`. `GlossaryBuilder` then turns the linked documents into
+   `GlossaryEntry` values (name, category such as "Spell 3", traits and their links, rules text, with spell
+   cast, range, area, targets, defense and duration lines first), follows their links one more level, and
+   stops: everything a card links to, and everything those entries link to, is in the glossary. Trait text
+   comes from `traitDescriptions` in the system's `src/scripts/config/traits.ts`, else
+   `PF2E.TraitDescription<Slug>`, dropping a trailing `-value` (reach-10, deadly-d10); Starfinder prefers
+   `sf2e-overrides-en.json`.
+   **Player compendium.** For PC cards, `PlayerCompendium` also links every document in the player-facing
+   Item packs of both systems (spells, feats, class features, actions, ancestry features, heritages and
+   equipment), so they and the traits they link to are in the glossary. It writes `glossary-index.json`:
+   `GlossaryIndex` keys `<game>:<kind>:<normalized name>` (kinds spell, ability, item and trait) to glossary
+   IDs. Names are normalized by `GlossaryIndex.normalize` (lowercase, apostrophes dropped, other punctuation
+   as spaces), so "Healing Potion, Moderate" and "Healing Potion (Moderate)" meet; on a clash the remastered
+   document wins.
+9. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
    `packs/<game>.<pack>.json` per pack, plus `conditions.json`, the art files, and
    `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
 
@@ -129,11 +150,49 @@ Ported from the pf2e system, with tests.
   template adds an untyped ±2, conditions add their typed penalties, and the first damage instance of a
   Strike or ability takes the template's damage change.
   `PathfinderBattleCard`, `StarfinderBattleCard` and `HazardBattleCard` render them.
+- **Glossary links.** `BestiaryStore.glossaryEntry(_:)` loads `glossary.json` on first use. Linked words are
+  `CardSegment.link` runs, drawn as `Text` links (`combatpad-glossary:<id>`) with a dotted underline in the
+  card's ink. `CardLineView` handles the link with an `OpenURLAction` and shows a `GlossaryPopover`
+  anchored to the line; the popover's own lines do the same one level deeper. The `glossaryDepth`
+  environment value stops links at two levels, and without a glossary in the environment (snapshots) links
+  are plain text. Text of the creature's own embedded entries (Strike effects) is adjusted for the template
+  and conditions; other entries are shown as written.
 - **Card and notes split.** `SplitLayout` (in the Kit, tested) keeps the three panes as fractions of the
   height, with minimums, collapsing and a hidden creature-notes pane whose share is kept. `PaneStack` draws
   it with drag grips; the layout is saved per device in user defaults, not synced.
 - **Fonts.** Roboto Condensed and Roboto, plus the pf2e action glyph font, converted from the pf2e
   system's woff2 files.
+
+## Character import
+- **Sheet.** A PC's sheet is a `Creature` of kind `character`, with `PlayerDetails` (ancestry, heritage,
+  background, class, class DC, feats and class features), stored on its `PartyMember` with a
+  `CharacterLink` (source, character ID, game, revision) and an optional GM-typed max HP. On the board it
+  has the key `pc.<member id>`; `AppModel` resolves those keys from the party. Tiles still treat it as a PC.
+- **Demiplane.** The GraphQL API (`apiv4.demiplane.com/v1/graphql`, bearer token) gives the name, level,
+  avatar and game, but no computed statistics. Those come from the sheet PDF, a fillable form read field by
+  field with PDFKit (`DemiplaneSheetReader`), one sheet at a time since PDFKit can deadlock reading form
+  fields on several threads. Starfinder sheets (`/nexus/starfinder2e/…`, against Pathfinder's
+  `/nexus/pathfinder-2e/…`) add Computers, Piloting, credits and a ranged weapon's range, magazine and
+  expend, and have no damage types; a sheet's game comes from the API, else from those fields. `POST app.demiplane.com/api/magic-missile` with
+  `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports it: 202 (or sometimes 200 without a URL) while it builds,
+  then 200 with the PDF URL and a revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`, sent with
+  `Client-Pathname: /nexus/<pathfinder2e|starfinder2e>/campaigns/<id>` as Demiplane's own page does: the
+  server looks the campaign up in the game that path names, and answers 403 "Campaign not found" for a
+  Starfinder campaign asked without it. Both, and a fresh GraphQL token (`/api/auth/token`, then
+  `/api/generate-graphql-token`), need the web session's cookies.
+- **Shared characters.** `demiplane_user_character` returns only the user's own characters (Demiplane's own
+  client filters it by `user_id` too), so a character shared with the GM read-only gets no row, with any
+  token. Demiplane's server embeds the character in its sheet page (`/nexus/<slug>/character-sheet/<id>`)
+  for anyone allowed to view it, as `characterSheetContent.character` (`name`, `level`, `avatar_url`,
+  `nexus_id`: 1 Pathfinder, 100 Starfinder) inside the page's string-escaped React data; the import reads it
+  from there (`DemiplaneClient.sharedCharacter`). When the page doesn't have it either, the import goes on
+  with the link's game and the sheet's name and level.
+- **Session and token.** `DemiplaneSignInView` is a `WKWebView` on the default persistent data store; the
+  app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
+  shown, and an expired token is renewed from the session when there is one.
+- **Glossary links.** `CharacterGlossaryLinker` fills the sheet's `LinkTable` by name through
+  `BestiaryStore.glossaryID`, falling back to Pathfinder names for Starfinder characters (Starfinder 2e
+  shares the Player Core ancestries and feats); action text is replaced by the linked entry's rules text when there is one.
 
 ## Known limits
 - The iPad build uses a free personal team, so it must be reinstalled every 7 days.
@@ -141,3 +200,5 @@ Ported from the pf2e system, with tests.
 - Pasted art is newest-wins when both devices paste art for the same creature; there are no conflict copies.
 - Creatures in a `.combatpad` file are referenced by bestiary key, so both devices should run the same
   bestiary import.
+- Demiplane's sheet PDF has the wrong max HP, so PCs show only a max HP the GM types.
+- The Demiplane API is undocumented and may change without notice.

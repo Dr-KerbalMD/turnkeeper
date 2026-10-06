@@ -9,14 +9,25 @@ struct BattleCard: View {
     var textSize: CGFloat = 15
     var scrolls = true
 
+    @Environment(\.glossary) private var glossary
+
     var body: some View {
-        let content = CardContent(presenter: StatBlockPresenter(creature: creature, template: template,
-                                                                 conditions: conditions))
-        if creature.game == .starfinder {
-            StarfinderBattleCard(content: content, textSize: textSize, scrolls: scrolls)
-        } else {
-            PathfinderBattleCard(content: content, textSize: textSize, scrolls: scrolls)
+        let presenter = StatBlockPresenter(creature: creature, template: template, conditions: conditions)
+        let content = CardContent(presenter: presenter)
+        Group {
+            if creature.game == .starfinder {
+                StarfinderBattleCard(content: content, textSize: textSize, scrolls: scrolls)
+            } else {
+                PathfinderBattleCard(content: content, textSize: textSize, scrolls: scrolls)
+            }
         }
+        .environment(\.glossary, cardGlossary(presenter))
+    }
+
+    private func cardGlossary(_ presenter: StatBlockPresenter) -> GlossaryContext {
+        var context = glossary
+        context.presenter = presenter
+        return context
     }
 }
 

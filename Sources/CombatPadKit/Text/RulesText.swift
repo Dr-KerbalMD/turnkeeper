@@ -8,6 +8,7 @@ import Foundation
 /// - `{{check:reflex:34:basic}}` is a save or check against a DC (`basic` is optional).
 /// - `{{damage:2d6+4|fire;1d6|bleed|persistent}}` is one or more damage parts.
 /// - `{{actions:2}}` is an action glyph: `1`, `2`, `3`, `free` or `reaction`.
+/// - `{{link:pf2e.conditionitems.TBSHQspnbcqxsmjL|frightened 1}}` is a word linked to a glossary entry.
 public struct RulesText: Codable, Sendable, Hashable, ExpressibleByStringLiteral {
     public var markup: String
 
@@ -67,6 +68,8 @@ public enum RulesRun: Sendable, Hashable {
     case check(CheckReference)
     case damage([DamagePart])
     case actions(ActionCost)
+    /// A label linked to the glossary entry with the `target` ID.
+    case link(String, target: String, TextEmphasis)
 
     /// The run written back as markup.
     public var markup: String { RulesMarkupParser.markup(for: self) }

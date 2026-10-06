@@ -64,7 +64,10 @@ struct MagnetTile: View {
         .accessibilityValue(isVoiceTarget ? "next for voice entry" : "")
     }
 
-    private var tileArt: String { controller.entry(for: combatant)?.art.thumbnail ?? "" }
+    /// PC strips stay plain, even when a linked sheet has a portrait.
+    private var tileArt: String {
+        combatant.kind == .playerCharacter ? "" : controller.entry(for: combatant)?.art.thumbnail ?? ""
+    }
 
     private var isListening: Bool { voice.listeningFor == combatant.id }
 

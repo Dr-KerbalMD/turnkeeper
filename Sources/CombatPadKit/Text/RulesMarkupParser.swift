@@ -2,17 +2,19 @@ import Foundation
 
 /// Splits one paragraph of `RulesText` markup into runs.
 enum RulesMarkupParser {
+    /// Emphasis carries across tokens, so `*{{link:…}}*` is an italic link.
     static func runs(in line: String) -> [RulesRun] {
         var runs: [RulesRun] = []
+        var emphasis = TextEmphasis.plain
         var rest = Substring(line)
         while let open = rest.range(of: "{{"),
               let close = rest.range(of: "}}", range: open.upperBound..<rest.endIndex) {
-            runs += emphasisRuns(in: rest[rest.startIndex..<open.lowerBound])
-            let token = rest[open.upperBound..<close.lowerBound]
-            runs.append(tokenRun(String(token)) ?? .text(String(token), .plain))
+            runs += emphasisRuns(in: rest[rest.startIndex..<open.lowerBound], emphasis: &emphasis)
+            let token = String(rest[open.upperBound..<close.lowerBound])
+            runs.append(tokenRun(token, emphasis: emphasis) ?? .text(token, .plain))
             rest = rest[close.upperBound...]
         }
-        runs += emphasisRuns(in: rest)
+        runs += emphasisRuns(in: rest, emphasis: &emphasis)
         return runs
     }
 
@@ -27,6 +29,7 @@ enum RulesMarkupParser {
             return "{{check:\(check.statistic):\(check.difficultyClass)\(basic)}}"
         case let .damage(parts): return "{{damage:\(parts.map(damageMarkup).joined(separator: ";"))}}"
         case let .actions(cost): return "{{actions:\(actionsMarkup[cost] ?? "1")}}"
+        case let .link(label, target, emphasis): return emphasized("{{link:\(target)|\(label)}}", emphasis)
         }
     }
 
@@ -38,7 +41,16 @@ enum RulesMarkupParser {
         ([part.formula, part.type] + (part.isPersistent ? ["persistent"] : [])).joined(separator: "|")
     }
 
-    private static func tokenRun(_ token: String) -> RulesRun? {
+    private static func emphasized(_ text: String, _ emphasis: TextEmphasis) -> String {
+        switch emphasis {
+        case .plain: return text
+        case .bold: return "**\(text)**"
+        case .italic: return "*\(text)*"
+        }
+    }
+
+    private static func tokenRun(_ token: String, emphasis: TextEmphasis) -> RulesRun? {
+        if token.hasPrefix("link:") { return linkRun(token.dropFirst("link:".count), emphasis: emphasis) }
         let fields = token.split(separator: ":", omittingEmptySubsequences: false).map(String.init)
         guard fields.count >= 2 else { return nil }
         switch fields[0] {
@@ -55,6 +67,13 @@ enum RulesMarkupParser {
         }
     }
 
+    /// `<target>|<label>`; the label may hold any text but `}}`.
+    private static func linkRun(_ body: Substring, emphasis: TextEmphasis) -> RulesRun? {
+        guard let bar = body.firstIndex(of: "|"), bar > body.startIndex else { return nil }
+        let label = String(body[body.index(after: bar)...])
+        return label.isEmpty ? nil : .link(label, target: String(body[..<bar]), emphasis)
+    }
+
     private static func damagePart(_ text: Substring) -> DamagePart? {
         let fields = text.split(separator: "|", omittingEmptySubsequences: false).map(String.init)
         guard let formula = fields.first, !formula.isEmpty else { return nil }
@@ -62,10 +81,10 @@ enum RulesMarkupParser {
         return DamagePart(formula: formula, type: type, isPersistent: fields.contains("persistent"))
     }
 
-    /// Splits text on `**` and `*` markers into plain, bold and italic runs.
-    private static func emphasisRuns(in text: Substring) -> [RulesRun] {
+    /// Splits text on `**` and `*` markers into plain, bold and italic runs, starting from `emphasis` and
+    /// leaving it as the text ends.
+    private static func emphasisRuns(in text: Substring, emphasis: inout TextEmphasis) -> [RulesRun] {
         var runs: [RulesRun] = []
-        var emphasis = TextEmphasis.plain
         var current = ""
         var index = text.startIndex
         while index < text.endIndex {

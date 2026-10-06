@@ -74,6 +74,7 @@ public extension StatBlockText {
             return "DC \(check.difficultyClass) \(check.isBasic ? "basic " : "")\(statistic)"
         case let .damage(parts): return format(parts)
         case let .actions(cost): return glyphs.first { $0.1 == RulesRun.actions(cost).markup }?.0 ?? ""
+        case let .link(label, _, emphasis): return RulesRun.text(label, emphasis).markup
         default: return run.markup
         }
     }

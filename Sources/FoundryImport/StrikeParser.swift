@@ -4,13 +4,17 @@ import Foundation
 /// Reads stat-block Strikes from `melee` items.
 enum StrikeParser {
     static func strikes(_ items: [JSONValue]) -> [Strike] {
-        let abilityNames = Dictionary(
-            items.filter { $0["type"].string == "action" }
-                .map { ($0[path: "system.slug"].string, $0["name"].string) }
-                .filter { !$0.0.isEmpty },
+        let abilityNames = abilitiesBySlug(items).mapValues { $0["name"].string }
+        return items.filter { $0["type"].string == "melee" }.map { strike($0, abilityNames: abilityNames) }
+    }
+
+    /// The creature's `action` items by slug, which Strike effects name.
+    static func abilitiesBySlug(_ items: [JSONValue]) -> [String: JSONValue] {
+        Dictionary(
+            items.filter { $0["type"].string == "action" && !$0[path: "system.slug"].string.isEmpty }
+                .map { ($0[path: "system.slug"].string, $0) },
             uniquingKeysWith: { first, _ in first }
         )
-        return items.filter { $0["type"].string == "melee" }.map { strike($0, abilityNames: abilityNames) }
     }
 
     private static func strike(_ item: JSONValue, abilityNames: [String: String]) -> Strike {

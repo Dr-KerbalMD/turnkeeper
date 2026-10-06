@@ -8,6 +8,7 @@ struct CampaignSidebar: View {
     @State private var isAdding = false
     @State private var isImporting = false
     @State private var isSyncing = false
+    @State private var isShowingDemiplane = false
     @State private var exportDocument: LibraryDocument?
     @State private var renaming: Campaign?
 
@@ -27,10 +28,12 @@ struct CampaignSidebar: View {
             ToolbarItem {
                 Button("Sync with Nearby Device", systemImage: "arrow.triangle.2.circlepath") { isSyncing = true }
             }
+            ToolbarItem { Button("Demiplane", systemImage: "person.badge.key") { isShowingDemiplane = true } }
         }
         .sheet(isPresented: $isAdding) { CampaignSheet(campaign: nil) }
         .sheet(item: $renaming) { campaign in CampaignSheet(campaign: campaign) }
         .sheet(isPresented: $isSyncing) { NearbySyncSheet() }
+        .sheet(isPresented: $isShowingDemiplane) { DemiplaneSettingsView() }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.combatPadLibrary, .json]) { result in
             if case let .success(url) = result { model.importLibraryFile(url) }
         }

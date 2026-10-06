@@ -30,6 +30,12 @@ final class AppModel {
     var pendingPlanChange: PendingPlanChange?
     /// What the last paste or drop of stat blocks added, shown until dismissed.
     var statBlockImport: StatBlockImport?
+    /// The GM's Demiplane token and sign-in, kept on this device only.
+    let demiplane: DemiplaneAccount
+    /// What a Demiplane import is doing, while it runs.
+    var demiplaneProgress: String?
+    /// A campaign's characters, waiting for the GM to choose which to add.
+    var campaignImport: PendingCampaignImport?
 
     /// Where pasted artwork is kept; nil when there's nowhere to keep it.
     @ObservationIgnored let artStore: ArtStore?
@@ -37,8 +43,9 @@ final class AppModel {
     @ObservationIgnored private var saveTask: Task<Void, Never>?
 
     init(library: Library = Library(), bestiary: BestiaryStore = BestiaryStore(), file: LibraryFile? = nil,
-         artStore: ArtStore? = nil) {
+         artStore: ArtStore? = nil, demiplane: DemiplaneAccount? = nil) {
         self.library = library
+        self.demiplane = demiplane ?? DemiplaneAccount()
         self.bestiary = bestiary
         self.file = file
         self.artStore = artStore
@@ -48,6 +55,8 @@ final class AppModel {
     /// The app's model, with the saved library and the bundled bestiary.
     static func live() -> AppModel {
         let bestiary = BestiaryStore.locateGeneratedDirectory().flatMap { try? BestiaryStore(generatedDirectory: $0) }
+        // The glossary is large; reading it now keeps the first tap on a linked word quick.
+        if let bestiary { Task.detached(priority: .utility) { _ = bestiary.glossaryEntry("") } }
         let arguments = ProcessInfo.processInfo.arguments
         if let index = arguments.firstIndex(of: "--demo") {
             let mode = arguments.indices.contains(index + 1) ? arguments[index + 1] : "planner"
@@ -76,10 +85,11 @@ final class AppModel {
         library.sessions.first { $0.id == activeSessionID }
     }
 
-    /// A creature's summary, from the campaign's custom creatures or the bestiary, with any pasted art.
+    /// A creature's summary, from a linked PC, the campaign's custom creatures or the bestiary, with any
+    /// pasted art (a PC's portrait is its Demiplane avatar, stored as pasted art).
     func entry(_ key: String) -> BestiaryIndexEntry? {
-        let found = CustomCreature.isCustomKey(key)
-            ? library.customCreature(key: key).map { BestiaryIndexEntry(creature: $0.creature) }
+        let found = CustomCreature.isCustomKey(key) || PlayerCharacter.isKey(key)
+            ? creature(key).map(BestiaryIndexEntry.init)
             : bestiary.entry(key)
         guard var entry = found, let art = library.customArt(for: key) else { return found }
         entry.art = entry.art.replacing(with: art)
@@ -92,9 +102,12 @@ final class AppModel {
         return artStore?.url(for: String(path.dropFirst(CustomArt.pathPrefix.count)))
     }
 
-    /// A creature's full stat block, from the campaign's custom creatures or the bestiary.
+    /// A creature's full stat block, from a linked PC's sheet, the campaign's custom creatures or the bestiary.
     func creature(_ key: String) -> Creature? {
         if CustomCreature.isCustomKey(key) { return library.customCreature(key: key)?.creature }
+        if let memberID = PlayerCharacter.memberID(fromKey: key) {
+            return partyMember(memberID).flatMap(PlayerCharacter.creature(for:))
+        }
         return bestiary.creature(key)
     }
 

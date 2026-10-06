@@ -30,7 +30,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
 
 ## R3 Planning
 - R3.1 A campaign has a game (Pathfinder or Starfinder), which sets the look and the default bestiary.
-- R3.2 Parties are built separately from encounters. A PC has only a name.
+- R3.2 Parties are built separately from encounters. A quick PC has only a name and level; a PC can also
+  be linked to a Demiplane character for a battle card (R6).
 - R3.2a Campaigns can be renamed and switched between Pathfinder and Starfinder; a new one needs a name.
 - R3.2a1 Each PC can have their own level, used for challenge points: the lowest allowed level of the
   scenario's level range gives 2 points, then 3, 4 and 6. The present players' total picks the matching
@@ -129,5 +130,30 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R5.2 Starfinder cards follow the Alien Archive Battle Cards look, but with 2e content.
 - R5.3 Complex hazards get a hazard card in the same style.
 - R5.3a Every card shows its source book in small text at the bottom.
+- R5.3b Words on a card that the Foundry data links to another entry are tappable: spells, items, strike
+  effects, traits (on the trait line, Strikes and abilities), and links inside rules text, such as conditions,
+  actions and spells. A tap (or click) shows a popover with the entry's name, category, traits and text. Links
+  inside that popover open a second popover; links go two deep, and deeper ones read as plain text.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art (tokens, pawns and card backs)
   comes only from the user's own purchased PDFs, at import time, and is never committed.
+
+## R6 Player characters
+- R6.1 A PC can be added from Demiplane by scanning the QR code on its character sheet (iPad), by pasting
+  the sheet's link, its ID or an image of the QR code, or by importing a Demiplane campaign and choosing
+  from its characters. A quick PC (name and level only) can be linked later, and a linked one unlinked.
+- R6.2 Importing asks Demiplane to export the character sheet PDF and reads the computed numbers from it:
+  AC, saves, Perception, skills, speeds, Strikes, spells, actions and reactions, feats, class features,
+  items, languages and senses. Refreshing re-imports; a character that hasn't changed comes back at once.
+  Importing again matches by the Demiplane character, so it never duplicates a PC.
+  When an import fails, the reason shows in the import sheet at once, not after it closes.
+- R6.3 A linked PC's tile pins a PC battle card in the same style as creature cards, with conditions
+  applied to its numbers.
+- R6.4 The PC card links spells, actions, reactions, feats, class features, items and traits to the
+  Foundry glossary (R5.3b), matched by name for the character's game; a name without a match stays plain.
+  Actions with a glossary entry show its rules text, else Demiplane's text.
+- R6.5 Players track their own HP: PC tiles don't change (R4.4, R4.5). The GM may type a max HP, shown only
+  on the card; imports never overwrite it.
+- R6.6 Show Players for a PC shows only the card back, drawn around the Demiplane portrait.
+- R6.7 Demiplane access is set up in the app: sign in through a Demiplane web page (needed for campaigns
+  and sheet export, and to renew the token), or paste a token. The token stays in the device's Keychain;
+  it is never synced or exported. Linked PCs and their sheets travel with the party like any other data.

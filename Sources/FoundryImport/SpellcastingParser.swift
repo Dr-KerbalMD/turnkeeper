@@ -82,6 +82,11 @@ enum SpellcastingParser {
     }
 
     /// Strips "(Constant)" and "(At Will)" from the name and turns them into the group or note.
+    /// The spell's name as the card lists it, such as "detect magic".
+    static func listedName(_ spell: JSONValue) -> String {
+        nameAndKind(spell).entry.name
+    }
+
     private static func nameAndKind(_ spell: JSONValue) -> (entry: SpellEntry, kind: SpellRank.Kind) {
         var name = spell["name"].string
         var kind: SpellRank.Kind = spell[path: "system.traits.value"].strings.contains("cantrip") ? .cantrips : .ranked

@@ -1,0 +1,16 @@
+{
+  "_id": "4gBIw4IDrSfFHik4",
+  "name": "Daze",
+  "type": "spell",
+  "system": {
+    "area": null,
+    "defense": { "save": { "basic": true, "statistic": "will" } },
+    "description": { "value": "<p>The jolt deals @Damage[(@item.level)d6[mental]] damage. On a critical failure, the target is also @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p>" },
+    "duration": { "sustained": false, "value": "1 round" },
+    "level": { "value": 1 },
+    "range": { "value": "60 feet" },
+    "target": { "value": "1 creature" },
+    "time": { "value": "2" },
+    "traits": { "rarity": "common", "value": ["cantrip", "concentrate", "manipulate", "mental", "nonlethal"] }
+  }
+}
