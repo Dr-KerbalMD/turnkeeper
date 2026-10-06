@@ -26,7 +26,7 @@ LSREGISTER = /System/Library/Frameworks/CoreServices.framework/Frameworks/Launch
 install: app
 	rm -rf "/Applications/Combat Pad.app"
 	ditto "build/Combat Pad.app" "/Applications/Combat Pad.app"
-	$(LSREGISTER) -u "build/Combat Pad.app"
+	-$(LSREGISTER) -u "build/Combat Pad.app" 2>/dev/null  # Fails when it was never registered, which is fine.
 	rm -rf "build/Combat Pad.app"
 
 # Builds the iPad app and starts it in a simulator. IPAD_SIMULATOR names the simulator.
