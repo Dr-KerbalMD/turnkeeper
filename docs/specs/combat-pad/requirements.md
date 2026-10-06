@@ -145,6 +145,7 @@ ladder, and the right half is the notes side, which shows the battle card of the
   AC, saves, Perception, skills, speeds, Strikes, spells, actions and reactions, feats, class features,
   items, languages and senses. Refreshing re-imports; a character that hasn't changed comes back at once.
   Importing again matches by the Demiplane character, so it never duplicates a PC.
+  When an import fails, the reason shows in the import sheet at once, not after it closes.
 - R6.3 A linked PC's tile pins a PC battle card in the same style as creature cards, with conditions
   applied to its numbers.
 - R6.4 The PC card links spells, actions, reactions, feats, class features, items and traits to the

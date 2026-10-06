@@ -16,6 +16,8 @@ struct DemiplaneImportSheet: View {
     @State private var text = ""
     @State private var isScanning = false
     @State private var isShowingSettings = false
+    /// Why the last import failed, shown here: an alert on the window would wait until this sheet closes.
+    @State private var importError: String?
 
     private var reference: DemiplaneReference? { DemiplaneReference.parse(text) }
 
@@ -43,9 +45,16 @@ struct DemiplaneImportSheet: View {
                 if let progress = model.demiplaneProgress {
                     Section { ProgressView(progress) }
                 }
+                if let importError {
+                    Section {
+                        Label(importError, systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.red)
+                    }
+                }
             }
             .formStyle(.grouped)
             .navigationTitle(memberID == nil ? "Add from Demiplane" : "Link to Demiplane")
+            .onChange(of: text) { importError = nil }
             .toolbar { toolbar }
             .onDrop(of: [.image], isTargeted: nil) { providers in
                 readQRCode(providers)
@@ -83,12 +92,21 @@ struct DemiplaneImportSheet: View {
     /// A character closes the sheet once imported; a campaign opens the list of its characters first.
     private func importReference() async {
         guard let reference else { return }
-        if case .campaign = reference {
-            guard memberID == nil else { return }
-            await model.importFromDemiplane(reference, partyID: partyID)
-        } else if await model.importFromDemiplane(reference, partyID: partyID, memberID: memberID) {
-            dismiss()
+        importError = nil
+        let isCampaign: Bool
+        if case .campaign = reference { isCampaign = true } else { isCampaign = false }
+        guard !isCampaign || memberID == nil else { return }
+        if await model.importFromDemiplane(reference, partyID: partyID, memberID: memberID) {
+            if !isCampaign { dismiss() }
+        } else {
+            showFailure()
         }
+    }
+
+    /// Moves the model's error into this sheet, so it shows now and not again once the sheet closes.
+    private func showFailure() {
+        importError = model.errorMessage
+        model.errorMessage = nil
     }
 
     private var campaignImport: Binding<PendingCampaignImport?> {
@@ -104,7 +122,7 @@ struct DemiplaneImportSheet: View {
             if let payload = payloads.first(where: { DemiplaneReference.parse($0) != nil }) {
                 text = payload
             } else {
-                model.errorMessage = "Reading the QR code failed: the image has no Demiplane QR code."
+                importError = "Reading the QR code failed: the image has no Demiplane QR code."
             }
         }
     }
