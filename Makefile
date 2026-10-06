@@ -20,10 +20,14 @@ app:
 run: app
 	open "build/Combat Pad.app"
 
-# Copies the built app into /Applications, replacing an earlier copy.
+# Moves the built app into /Applications, replacing an earlier copy. The build copy is unregistered and
+# removed so Finder and Spotlight launch the installed one.
+LSREGISTER = /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 install: app
 	rm -rf "/Applications/Combat Pad.app"
 	ditto "build/Combat Pad.app" "/Applications/Combat Pad.app"
+	$(LSREGISTER) -u "build/Combat Pad.app"
+	rm -rf "build/Combat Pad.app"
 
 # Builds the iPad app and starts it in a simulator. IPAD_SIMULATOR names the simulator.
 ipad-simulator:
