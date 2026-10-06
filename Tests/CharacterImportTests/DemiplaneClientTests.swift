@@ -49,6 +49,16 @@ struct DemiplaneClientTests {
         await expectError("tokenExpired") { try await client.character(id: "x") }
     }
 
+    @Test("Export keeps asking while Demiplane answers 200 without the PDF link")
+    func exportStillBuilding() async throws {
+        let transport = FakeTransport()
+        transport.respond(to: TestData.exportPath, json: ["success": true])
+        transport.respond(to: TestData.exportPath, json: TestData.exportDone())
+        let export = try await client(transport).exportSheet(id: TestData.characterID)
+        #expect(export.revision == "rev1")
+        #expect(transport.requests(to: TestData.exportPath).count == 2)
+    }
+
     @Test("Export waits through 202s, then returns the PDF link and revision, sending the session cookies")
     func export() async throws {
         let transport = FakeTransport()
@@ -75,9 +85,11 @@ struct DemiplaneClientTests {
         let rejected = FakeTransport()
         rejected.respond(to: TestData.exportPath, status: 401, body: Data())
         await expectError("signInNeeded") { try await client(rejected).exportSheet(id: "x") }
-        let odd = FakeTransport()
-        odd.respond(to: TestData.exportPath, json: ["success": true])
-        await expectError("unexpectedResponse") { try await client(odd).exportSheet(id: "x") }
+        let neverLinked = FakeTransport()
+        neverLinked.respond(to: TestData.exportPath, json: ["success": true])
+        var waiting = client(neverLinked)
+        waiting.maximumPolls = 3
+        await expectError("timedOut") { try await waiting.exportSheet(id: "x") }
     }
 
     @Test("A sheet that was never exported is reported as such")

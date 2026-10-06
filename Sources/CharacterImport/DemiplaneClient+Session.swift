@@ -10,7 +10,8 @@ public struct DemiplaneCampaign: Sendable, Equatable {
 /// The web app's endpoints, which need the signed-in session's cookies.
 extension DemiplaneClient {
     /// Asks Demiplane to export the sheet PDF, waiting while it is built. Comes back at once when the
-    /// character hasn't changed since the last export.
+    /// character hasn't changed since the last export. While it builds, Demiplane answers 202, or 200
+    /// without the PDF link; both mean "ask again".
     public func exportSheet(id: String) async throws -> SheetExport {
         let operation = "Exporting the character sheet"
         let body: [String: Any] = [
@@ -25,7 +26,9 @@ extension DemiplaneClient {
             let (data, response) = try await transport.send(request)
             switch response.statusCode {
             case 202: try await sleep(pollInterval)
-            case 200: return try Self.sheetExport(data, operation: operation)
+            case 200:
+                if let export = Self.sheetExport(data) { return export }
+                try await sleep(pollInterval)
             case 401, 403: throw CharacterImportError.signInNeeded(operation: operation)
             default: throw CharacterImportError.rejected(operation: operation, status: response.statusCode, message: "")
             }
@@ -90,12 +93,11 @@ extension DemiplaneClient {
         }
     }
 
-    static func sheetExport(_ data: Data, operation: String) throws -> SheetExport {
+    /// The PDF link and revision in a finished export; nil while the PDF is still being built.
+    static func sheetExport(_ data: Data) -> SheetExport? {
         let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] ?? [:]
         let result = json["result"] as? [String: Any] ?? [:]
-        guard let link = result["url"] as? String, let url = URL(string: link) else {
-            throw CharacterImportError.unexpectedResponse(operation: operation, detail: "no PDF link")
-        }
+        guard let link = result["url"] as? String, let url = URL(string: link) else { return nil }
         return SheetExport(url: url, revision: result["targetRevision"] as? String ?? "")
     }
 

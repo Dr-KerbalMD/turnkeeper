@@ -174,8 +174,8 @@ Ported from the pf2e system, with tests.
   fields on several threads. Starfinder sheets (`/nexus/starfinder2e/…`, against Pathfinder's
   `/nexus/pathfinder-2e/…`) add Computers, Piloting, credits and a ranged weapon's range, magazine and
   expend, and have no damage types; a sheet's game comes from the API, else from those fields. `POST app.demiplane.com/api/magic-missile` with
-  `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports it: 202 while it builds, then 200 with the PDF URL and a
-  revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`, sent with
+  `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports it: 202 (or sometimes 200 without a URL) while it builds,
+  then 200 with the PDF URL and a revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`, sent with
   `Client-Pathname: /nexus/<pathfinder2e|starfinder2e>/campaigns/<id>` as Demiplane's own page does: the
   server looks the campaign up in the game that path names, and answers 403 "Campaign not found" for a
   Starfinder campaign asked without it. Both, and a fresh GraphQL token (`/api/auth/token`, then
