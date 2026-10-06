@@ -21,7 +21,7 @@ public struct DemiplaneImporter: Sendable {
     }
 
     public func importCharacter(id: String, game hint: Game?) async throws -> ImportedCharacter {
-        let character = try await lookUp(id)
+        let character = try await lookUp(id, game: hint)
         let game = character?.game ?? hint
         let export = client.session == nil
             ? SheetExport(url: DemiplaneClient.publicSheetURL(id: id, game: game ?? .pathfinder), revision: "")
@@ -35,13 +35,14 @@ public struct DemiplaneImporter: Sendable {
         return ImportedCharacter(sheet: linked.sheet, link: link, avatarURL: character?.avatarURL)
     }
 
-    /// The character's identity, or nil when the API won't show it: Demiplane only shows players their own
-    /// characters, so a GM importing a player's character goes by the sheet and the link's game instead.
-    private func lookUp(_ id: String) async throws -> DemiplaneCharacter? {
+    /// The character's identity. The GraphQL API only returns the user's own characters, so a character
+    /// shared with the GM is read from its sheet page instead; nil when neither has it, and the import goes
+    /// by the sheet and the link's game.
+    private func lookUp(_ id: String, game hint: Game?) async throws -> DemiplaneCharacter? {
         do {
             return try await client.character(id: id)
         } catch CharacterImportError.notFound {
-            return nil
+            return try? await client.sharedCharacter(id: id, game: hint ?? .pathfinder)
         }
     }
 

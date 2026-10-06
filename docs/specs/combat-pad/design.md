@@ -180,9 +180,13 @@ Ported from the pf2e system, with tests.
   server looks the campaign up in the game that path names, and answers 403 "Campaign not found" for a
   Starfinder campaign asked without it. Both, and a fresh GraphQL token (`/api/auth/token`, then
   `/api/generate-graphql-token`), need the web session's cookies.
-- **Other players' characters.** The GraphQL API shows a user only their own characters, so a GM looking up
-  a player's character gets no row. The import then goes on without it: the game from the link (or the
-  campaign's), the name and level from the sheet, and no avatar.
+- **Shared characters.** `demiplane_user_character` returns only the user's own characters (Demiplane's own
+  client filters it by `user_id` too), so a character shared with the GM read-only gets no row, with any
+  token. Demiplane's server embeds the character in its sheet page (`/nexus/<slug>/character-sheet/<id>`)
+  for anyone allowed to view it, as `characterSheetContent.character` (`name`, `level`, `avatar_url`,
+  `nexus_id`: 1 Pathfinder, 100 Starfinder) inside the page's string-escaped React data; the import reads it
+  from there (`DemiplaneClient.sharedCharacter`). When the page doesn't have it either, the import goes on
+  with the link's game and the sheet's name and level.
 - **Session and token.** `DemiplaneSignInView` is a `WKWebView` on the default persistent data store; the
   app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
   shown, and an expired token is renewed from the session when there is one.
