@@ -28,6 +28,11 @@ public enum DemiplaneReference: Equatable, Sendable {
         }
     }
 
+    /// The game's slug in Demiplane's page paths, such as `/nexus/starfinder2e/campaigns/…`.
+    public static func nexusSlug(for game: Game) -> String {
+        game == .starfinder ? "starfinder2e" : "pathfinder2e"
+    }
+
     private static func game(in text: String) -> Game? {
         text.firstMatch(of: nexusPattern).flatMap { game(nexus: String($0.output.slug)) }
     }

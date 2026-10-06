@@ -1,3 +1,4 @@
+import CombatPadKit
 import Foundation
 
 /// A Demiplane campaign: its name and the IDs of its characters.
@@ -32,13 +33,16 @@ extension DemiplaneClient {
         throw CharacterImportError.timedOut(operation: operation)
     }
 
-    /// The campaign's name and its characters' IDs.
-    public func campaign(id: String) async throws -> DemiplaneCampaign {
+    /// The campaign's name and its characters' IDs. Demiplane looks the campaign up in the game named by the
+    /// page it is asked from (`Client-Pathname`), so a Starfinder campaign asked as Pathfinder is "not found".
+    public func campaign(id: String, game: Game) async throws -> DemiplaneCampaign {
         let operation = "Reading the Demiplane campaign"
         var components = URLComponents(string: Self.appURL.absoluteString + "/api/getCampaign")!
         components.queryItems = [URLQueryItem(name: "campaignUuid", value: id)]
         var request = try sessionRequest(path: "/api/getCampaign", operation: operation)
         request.url = components.url
+        request.setValue("/nexus/\(DemiplaneReference.nexusSlug(for: game))/campaigns/\(id)",
+                         forHTTPHeaderField: "Client-Pathname")
         let json = try await signedInJSON(request, operation: operation)
         guard let response = json["campaignResponse"] as? [String: Any] else {
             throw CharacterImportError.notFound(operation: operation, id: id)

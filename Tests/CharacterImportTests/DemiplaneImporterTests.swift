@@ -52,11 +52,26 @@ struct DemiplaneImporterTests {
         transport.respond(to: TestData.graphQLPath, json: TestData.character)
         transport.respond(to: TestData.graphQLPath, json: ["data": ["demiplane_user_character": []]])
         transport.respond(to: TestData.exportPath, json: TestData.exportDone())
+        transport.respond(to: TestData.exportPath, status: 500, body: Data())
         transport.respond(to: "/sheet.pdf", body: try TestData.sheetPDF())
-        let result = try await importer(transport, signedIn: true).importCampaign(id: "camp", game: .pathfinder)
+        let result = try await importer(transport, signedIn: true).importCampaign(id: "camp", game: .starfinder)
         #expect(result.name == "Friday" && result.characters.count == 1)
         #expect(result.failures.map(\.characterID) == ["missing"])
-        #expect(result.failures.first?.message.contains("no character missing") == true)
+        #expect(result.failures.first?.message.contains("answered 500") == true)
+        #expect(transport.requests(to: "/api/getCampaign").first?.value(forHTTPHeaderField: "Client-Pathname")
+                == "/nexus/starfinder2e/campaigns/camp")
+    }
+
+    @Test("A character the API won't show (another player's) is imported from its sheet and the link's game")
+    func otherPlayersCharacter() async throws {
+        let transport = FakeTransport()
+        transport.respond(to: TestData.graphQLPath, json: ["data": ["demiplane_user_character": []]])
+        transport.respond(to: TestData.exportPath, json: TestData.exportDone(revision: "r1"))
+        transport.respond(to: "/sheet.pdf", body: try TestData.sheetPDF())
+        let imported = try await importer(transport, signedIn: true).importCharacter(id: TestData.characterID,
+                                                                                     game: .pathfinder)
+        #expect(imported.sheet.name == "Dr Ignatius Constaline" && imported.link.revision == "r1")
+        #expect(imported.avatarURL == nil)
     }
 }
 

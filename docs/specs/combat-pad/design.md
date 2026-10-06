@@ -175,9 +175,14 @@ Ported from the pf2e system, with tests.
   `/nexus/pathfinder-2e/…`) add Computers, Piloting, credits and a ranged weapon's range, magazine and
   expend, and have no damage types; a sheet's game comes from the API, else from those fields. `POST app.demiplane.com/api/magic-missile` with
   `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports it: 202 while it builds, then 200 with the PDF URL and a
-  revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`. Both, and a
-  fresh GraphQL token (`/api/auth/token`, then `/api/generate-graphql-token`), need the web session's
-  cookies.
+  revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`, sent with
+  `Client-Pathname: /nexus/<pathfinder2e|starfinder2e>/campaigns/<id>` as Demiplane's own page does: the
+  server looks the campaign up in the game that path names, and answers 403 "Campaign not found" for a
+  Starfinder campaign asked without it. Both, and a fresh GraphQL token (`/api/auth/token`, then
+  `/api/generate-graphql-token`), need the web session's cookies.
+- **Other players' characters.** The GraphQL API shows a user only their own characters, so a GM looking up
+  a player's character gets no row. The import then goes on without it: the game from the link (or the
+  campaign's), the name and level from the sheet, and no avatar.
 - **Session and token.** `DemiplaneSignInView` is a `WKWebView` on the default persistent data store; the
   app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
   shown, and an expired token is renewed from the session when there is one.

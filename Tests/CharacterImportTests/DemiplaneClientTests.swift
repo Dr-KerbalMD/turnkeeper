@@ -101,17 +101,22 @@ struct DemiplaneClientTests {
                 ["uuid": "bbb"], ["user_character": ["uuid": "aaa"]], ["id": 4]
             ]
         ]])
-        let campaign = try await client(transport).campaign(id: "camp")
+        let campaign = try await client(transport).campaign(id: "camp", game: .starfinder)
         #expect(campaign == DemiplaneCampaign(name: "Starfinder Society", characterIDs: ["aaa", "bbb"]))
         #expect(transport.requests.first?.url?.query == "campaignUuid=camp")
+        // Demiplane finds the campaign in the game named by the page asking.
+        #expect(transport.requests.first?.value(forHTTPHeaderField: "Client-Pathname")
+                == "/nexus/starfinder2e/campaigns/camp")
     }
 
     @Test("A campaign needs a signed-in session")
     func campaignSignedOut() async {
         let transport = FakeTransport()
         transport.respond(to: "/api/getCampaign", status: 401, json: ["error": "User is not logged in"])
-        await expectError("signInNeeded") { try await client(transport).campaign(id: "camp") }
-        await expectError("signInNeeded") { try await client(transport, signedIn: false).campaign(id: "camp") }
+        await expectError("signInNeeded") { try await client(transport).campaign(id: "camp", game: .pathfinder) }
+        await expectError("signInNeeded") {
+            try await client(transport, signedIn: false).campaign(id: "camp", game: .pathfinder)
+        }
     }
 
     @Test("A fresh GraphQL token comes from the session's access token")
