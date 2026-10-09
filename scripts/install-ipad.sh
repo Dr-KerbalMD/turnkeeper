@@ -4,14 +4,16 @@
 # The iPad must be connected by cable or on the same network, unlocked, with Developer Mode on.
 # Your Apple developer team goes in ios/Local.xcconfig (see ios/Signing.xcconfig).
 #
-# IPAD  name of the iPad to install on (default: the first connected iPad)
+# IPAD         name of the iPad to install on (default: the first connected iPad)
+# IPAD_LAUNCH  "no" to leave the app closed after installing, as a scheduled reinstall does
 set -eu
 
 cd "$(dirname "$0")/.."
 mkdir -p Generated
 
 DEVICES="$(mktemp)"
-trap 'rm -f "$DEVICES"' EXIT
+BUILD_LOG="$(mktemp)"
+trap 'rm -f "$DEVICES" "$BUILD_LOG"' EXIT
 xcrun devicectl list devices --json-output "$DEVICES" >/dev/null
 
 IPAD="${IPAD:-$(/usr/bin/python3 - "$DEVICES" <<'PYTHON'
@@ -33,15 +35,22 @@ BUNDLE_ID="$(xcodebuild -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad 
     -showBuildSettings 2>/dev/null | sed -n 's/^ *PRODUCT_BUNDLE_IDENTIFIER = //p' | head -n 1)"
 
 echo "Building for ${IPAD}..."
-xcodebuild -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
+# A failed build must stop here: the app left by an earlier build would install with its old signature.
+if ! xcodebuild -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
     -destination 'generic/platform=iOS' -derivedDataPath ios/build -allowProvisioningUpdates build \
-    | grep -E 'error:|warning: .*[Pp]rovision|BUILD' || true
+    >"$BUILD_LOG" 2>&1; then
+    grep -E 'error:' "$BUILD_LOG" >&2 || tail -n 20 "$BUILD_LOG" >&2
+    echo "Installing failed: the build failed." >&2
+    exit 1
+fi
+grep -E 'warning: .*[Pp]rovision|BUILD' "$BUILD_LOG" || true
 
 APP="ios/build/Build/Products/Debug-iphoneos/CombatPad.app"
 [ -d "$APP" ] || { echo "Installing failed: the build did not produce the app." >&2; exit 1; }
 
 xcrun devicectl device install app --device "$IPAD" "$APP" >/dev/null
 echo "Installed on $IPAD."
+[ "${IPAD_LAUNCH:-yes}" = no ] && exit 0
 
 if LAUNCH="$(xcrun devicectl device process launch --device "$IPAD" "$BUNDLE_ID" 2>&1)"; then
     echo "Started the app."
