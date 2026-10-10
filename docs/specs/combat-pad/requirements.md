@@ -128,12 +128,14 @@ ladder, and the right half is the notes side, which shows the battle card of the
   be reset, and ends it if the GM goes ahead.
 - R4.12 The battle card follows the current turn. Tapping a tile pins that card.
 - R4.13 Art can be shown full screen; on the iPad the player view covers the whole screen. If an external display is connected, the art goes there.
-- R4.14 The player view shows a card back drawn in code around the creature's portrait from the user's PDFs
-  (not Paizo's own card backs).
+- R4.14 The player view shows the creature's card back (R5.5) around its portrait from the user's PDFs.
 
 ## R5 Battle cards
-- R5.1 Pathfinder cards follow the Pathfinder Bestiary Battle Cards look.
-- R5.2 Starfinder cards follow the Alien Archive Battle Cards look, but with 2e content.
+- R5.1 The cards are Tabletop Kit's battle cards (shared with Field Guide), in a look of their own rather than
+  Paizo's Battle Cards': Pathfinder on parchment in a stone frame, the level on a shield; Starfinder on a dark
+  panel in steel brackets, the level in a hexagon; elites in a gold frame.
+- R5.2 Their UI art comes from the user's own Rexard packs: `make bestiary` copies it into `Generated/CardArt`
+  (`REXARD_PACKS`, default `~/Downloads`). Without it the cards are drawn in plain colors.
 - R5.3 Complex hazards get a hazard card in the same style.
 - R5.3a Every card shows its source book in small text at the bottom.
 - R5.3b Words on a card that the Foundry data links to another entry are tappable: spells, items, strike
@@ -142,6 +144,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   inside that popover open a second popover; links go two deep, and deeper ones read as plain text.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art comes only from the user's own purchased
   PDFs, read on the device, and is never bundled or committed.
+- R5.5 Card backs show the creature in a landscape picked by its traits (Pathfinder) or glowing on a dark texture
+  with its name on a terminal plate (Starfinder).
 
 ## R6 Player characters
 - R6.1 A PC can be added from Demiplane by scanning the QR code on its character sheet (iPad), by pasting
