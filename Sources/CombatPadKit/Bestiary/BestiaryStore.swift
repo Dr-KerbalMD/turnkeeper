@@ -7,6 +7,8 @@ public final class BestiaryStore: @unchecked Sendable {
     public let conditions: [ConditionDefinition]
     /// Whether the import wrote a glossary, so cards can link to it.
     public let hasGlossary: Bool
+    /// Creature name → the name its art has in the PDFs, from `art-overrides.json`.
+    public let artOverrides: [String: String]
     private let entriesByKey: [String: BestiaryIndexEntry]
     private var packs: [String: [String: Creature]] = [:]
     private var glossary: [String: GlossaryEntry]?
@@ -23,6 +25,8 @@ public final class BestiaryStore: @unchecked Sendable {
         conditions = conditionsData.flatMap { try? JSONDecoder().decode([ConditionDefinition].self, from: $0) } ?? []
         entriesByKey = Dictionary(index.entries.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
         hasGlossary = FileManager.default.fileExists(atPath: bestiary.appendingPathComponent("glossary.json").path)
+        let overrides = try? Data(contentsOf: bestiary.appendingPathComponent("art-overrides.json"))
+        artOverrides = overrides.flatMap { try? JSONDecoder().decode([String: String].self, from: $0) } ?? [:]
     }
 
     /// An empty bestiary, for previews and when nothing has been imported.
@@ -32,6 +36,7 @@ public final class BestiaryStore: @unchecked Sendable {
         conditions = []
         entriesByKey = [:]
         hasGlossary = false
+        artOverrides = [:]
     }
 
     /// Finds the `Generated` folder: the `COMBAT_PAD_GENERATED` environment variable, the app bundle, or,
