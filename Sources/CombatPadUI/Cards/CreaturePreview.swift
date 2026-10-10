@@ -22,8 +22,11 @@ struct CreaturePreview: View {
         NavigationStack {
             Group {
                 if let creature = model.creature(key) {
-                    FlippableCard(entry: model.entry(key), isFlipped: $isFlipped) {
-                        BattleCard(creature: creature, template: template, conditions: conditions)
+                    VStack(spacing: 8) {
+                        FlippableCard(entry: model.entry(key), isFlipped: $isFlipped) {
+                            BattleCard(creature: creature, template: template, conditions: conditions)
+                        }
+                        MissingArtNote(key: key)
                     }
                     .padding()
                 } else {
