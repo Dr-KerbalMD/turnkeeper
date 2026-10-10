@@ -18,10 +18,16 @@ ladder, and the right half is the notes side, which shows the battle card of the
   `~/git/pf2e`. Simple hazards are excluded.
 - R2.2 `make bestiary` re-imports the bestiary. Running it twice on the same input produces identical
   output.
-- R2.3 Creature art comes from the Foundry art modules' `compendiumArtMappings`, and from the user's
-  Paizo token and pawn PDFs for creatures the modules don't cover, mainly Starfinder.
-- R2.4 The import writes a report covering counts per pack, creatures without art, unmatched PDF art,
-  and enrichers it couldn't parse.
+- R2.3 Creature art comes only from the user's own Paizo pawn, token and Battle Cards PDFs, read on the
+  device by Tabletop Kit's art library; none is bundled. Creature Art (in the sidebar's toolbar) offers
+  Import from Scrollkeeper, which watches the folder Scrollkeeper downloads to and adds its PDFs by reference
+  (no copies; new downloads are added on request and at launch), and Add PDFs…, which keeps copies of other
+  PDFs. Art is matched to creatures by name and game, remastered creatures preferring remastered products'
+  art; a Battle Card's creature or a pawn gives the portrait, a token the token (else the portrait).
+- R2.3a A referenced PDF that was deleted or moved is listed as missing in Creature Art, with the art it
+  took away, and a creature whose art came only from missing PDFs says on its card which PDF it needs. Art
+  returns when the PDF does (Check Again).
+- R2.4 The import writes a report covering counts per pack and enrichers it couldn't parse.
 - R2.5 The browser searches by name and trait, and filters by level, game, source, rarity, size and
   kind, and by source book. With a party chosen, the level filter starts at party level −4 to +4. The
   "Name or trait" field sits below the filters, directly above the results.
@@ -122,8 +128,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   be reset, and ends it if the GM goes ahead.
 - R4.12 The battle card follows the current turn. Tapping a tile pins that card.
 - R4.13 Art can be shown full screen; on the iPad the player view covers the whole screen. If an external display is connected, the art goes there.
-- R4.14 The player view shows the creature's Battle Card back, taken from the user's Battle Cards
-  PDFs. A creature without a card gets a back drawn in the same style around its portrait.
+- R4.14 The player view shows a card back drawn in code around the creature's portrait from the user's PDFs
+  (not Paizo's own card backs).
 
 ## R5 Battle cards
 - R5.1 Pathfinder cards follow the Pathfinder Bestiary Battle Cards look.
@@ -134,8 +140,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   effects, traits (on the trait line, Strikes and abilities), and links inside rules text, such as conditions,
   actions and spells. A tap (or click) shows a popover with the entry's name, category, traits and text. Links
   inside that popover open a second popover; links go two deep, and deeper ones read as plain text.
-- R5.4 The card fronts are drawn in code, with free fonts. Paizo art (tokens, pawns and card backs)
-  comes only from the user's own purchased PDFs, at import time, and is never committed.
+- R5.4 The card fronts are drawn in code, with free fonts. Paizo art comes only from the user's own purchased
+  PDFs, read on the device, and is never bundled or committed.
 
 ## R6 Player characters
 - R6.1 A PC can be added from Demiplane by scanning the QR code on its character sheet (iPad), by pasting

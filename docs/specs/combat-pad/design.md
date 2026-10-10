@@ -28,32 +28,10 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    ID is `<system>.<pack>.<_id>` (links by name are resolved to the `_id`). Links into effect packs stay labels.
 4. **Conditions.** The condition packs go to `conditions.json`. sf2e gets the pf2e conditions plus its
    own.
-5. **Foundry art.** Every module's `flags.compendiumArtMappings.{pf2e,sf2e}` file maps
-   `<system>.<pack>` → `_id` → portrait and token. Only IDs that exist are used. Module priority comes
-   from `art-sources.json`.
-6. **PDF art.** `extract_pdf_art.py` finds every folder in Scrollkeeper's downloads whose name contains
-   "Battle Cards", "Pawn" or "Token Box", and pairs embedded images with their printed labels. For token
-   fronts and backs, the label is the text at the same position on the next page. For pawns, it is the
-   text below the image. Names are matched to creatures after normalization, including "X, Y" → "Y X".
-   `art-overrides.json` holds manual fixes.
-7. **Battle card backs.** These make the player view, the "what you're fighting" screen. Each art
-   page of a Battle Cards PDF is rendered whole, frame included, at about 200 dpi to
-   `Generated/CardBacks/<set>/<slug>.webp`. It is named by the title on its stat page; "continued
-   from card N" pages are skipped. `art-sources.json` gives each PDF's layout:
-   - `cardsAlternating`: art page, then stat page (Pathfinder Bestiary).
-   - `cardsBlocks`: a run of stat pages, then a run of art pages in the same order (Monster Core).
-   - `cardsSplitFiles`: a FRONTS PDF and a BACKS PDF matched by page number (Abomination Vaults,
-     Alien Archive).
-   
-   Card titles such as "AEON, AXIOMITE" are matched by token set against the creature name, with the
-   family prefix optional. Remastered creatures prefer remaster sets such as Monster Core, and legacy
-   creatures prefer legacy sets. Creatures without a card get a card back drawn in the same style:
-   a parchment frame around a red field with the portrait for Pathfinder; for Starfinder, the Alien
-   Archive look (teal scanline field, glowing frame, edge ticks, token hexagon, silver name plate and a
-   STARFINDER logo line). Art is scaled smoothly, since tokens are small.
-   A creature with no art of a kind borrows it from a same-named creature of the same game in another
-   pack (`ArtFallback`), preferring the one with the most art, then remastered; the report lists them.
-8. **Glossary.** `CompendiumIndex` reads the Item packs of both systems (an Item pack is indexed on first
+5. **Art overrides.** `art-overrides.json` (creature name → the name its art has in a PDF), when present, is
+   copied to `Generated/Bestiary/art-overrides.json` for matching art on the device (below). The import
+   handles no art itself.
+6. **Glossary.** `CompendiumIndex` reads the Item packs of both systems (an Item pack is indexed on first
    use) and records every glossary ID the import links to. Each creature gets a `LinkTable` from
    `<kind>:<shown text>` to a glossary ID: spells and items by their compendium source (or, without one, their
    embedded copy, `<creature key>.<item _id>`), Strike effects by the creature's own action or the ability
@@ -71,9 +49,26 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    IDs. Names are normalized by `GlossaryIndex.normalize` (lowercase, apostrophes dropped, other punctuation
    as spaces), so "Healing Potion, Moderate" and "Healing Potion (Moderate)" meet; on a clash the remastered
    document wins.
-9. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
-   `packs/<game>.<pack>.json` per pack, plus `conditions.json`, the art files, and
-   `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
+7. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
+   `packs/<game>.<pack>.json` per pack, plus `conditions.json` and `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
+
+## Creature art
+- `CreatureArtStore` (an actor) owns Tabletop Kit's `ArtLibrary` in Application Support/Combat Pad/Creature Art (apart from
+  pasted art's `Art` folder, whose unused files are swept at launch). Import
+  from Scrollkeeper watches the chosen folder and runs `addNewFiles`, by reference; Add PDFs… commits each file
+  kept. At launch the store refreshes the PDFs' statuses and adds new files from the watched folders. Pictures
+  are drawn by `ArtLibrary.picture(of:maxPixels:)` and cached by entry and size.
+- After each change the store publishes a catalog: per entry its id, name, game, whether a remastered product
+  (Monster Core, NPC Core, Alien Core, Howl of the Wild, Rage of Elements) prints it, whether its first print is
+  a token, whether it can be drawn, and the titles of the PDFs printing it. `LibraryArtMatcher` (CombatPadKit)
+  indexes it by game and normalized name, with the same rules as the old PDF matcher: words compared as a set,
+  a "FAMILY, MEMBER" title also under the member alone, a creature's name tried as is, without "spellcaster"
+  and without parentheses, `art-overrides.json` first. Remastered creatures prefer entries a remastered product
+  prints, legacy ones the others, drawable entries first.
+- `AppModel.entry(_:)` fills a bestiary creature's `ArtReference` from the matcher: `library:<entry id>` paths
+  for the portrait (a non-token entry, else the token) and the token (a token entry, else the portrait).
+  `ArtImage` asks the store for `library:` paths and loads other paths from files as before. A creature whose
+  matched art can't be drawn gets `missingArt`, the titles of the PDFs it needs, shown on its card.
 
 ## Rules
 Ported from the pf2e system, with tests.

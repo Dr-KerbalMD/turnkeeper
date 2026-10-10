@@ -90,8 +90,11 @@ struct CardPanel: View {
     @ViewBuilder
     private func card(for combatant: Combatant) -> some View {
         if let creature = controller.creature(for: combatant) {
-            FlippableCard(entry: controller.entry(for: combatant), isFlipped: $isFlipped) {
-                BattleCard(creature: creature, template: combatant.template, conditions: combatant.conditions)
+            VStack(spacing: 6) {
+                FlippableCard(entry: controller.entry(for: combatant), isFlipped: $isFlipped) {
+                    BattleCard(creature: creature, template: combatant.template, conditions: combatant.conditions)
+                }
+                MissingArtNote(key: combatant.creatureKey).foregroundStyle(.white.opacity(0.7))
             }
         } else {
             PlayerCard(combatant: combatant)

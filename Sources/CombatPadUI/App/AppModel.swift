@@ -39,16 +39,24 @@ final class AppModel {
 
     /// Where pasted artwork is kept; nil when there's nowhere to keep it.
     @ObservationIgnored let artStore: ArtStore?
+    /// The creature art from the user's PDFs; nil when there's nowhere to keep it.
+    @ObservationIgnored let creatureArt: CreatureArtStore?
+    /// What the art library holds, and the creatures' art matched from it.
+    var artCatalog = ArtCatalog()
+    var artMatcher = LibraryArtMatcher()
+    /// What reading PDFs of art is doing, while it runs.
+    var artProgress: String?
     @ObservationIgnored private let file: LibraryFile?
     @ObservationIgnored private var saveTask: Task<Void, Never>?
 
     init(library: Library = Library(), bestiary: BestiaryStore = BestiaryStore(), file: LibraryFile? = nil,
-         artStore: ArtStore? = nil, demiplane: DemiplaneAccount? = nil) {
+         artStore: ArtStore? = nil, creatureArt: CreatureArtStore? = nil, demiplane: DemiplaneAccount? = nil) {
         self.library = library
         self.demiplane = demiplane ?? DemiplaneAccount()
         self.bestiary = bestiary
         self.file = file
         self.artStore = artStore
+        self.creatureArt = creatureArt
         selectedCampaignID = library.activeCampaigns.first?.id
     }
 
@@ -67,7 +75,10 @@ final class AppModel {
             let library = try file.load()
             let artStore = try? ArtStore.standard()
             artStore?.sweep(keeping: library.liveImageFileNames)
-            return AppModel(library: library, bestiary: bestiary ?? BestiaryStore(), file: file, artStore: artStore)
+            let model = AppModel(library: library, bestiary: bestiary ?? BestiaryStore(), file: file,
+                                 artStore: artStore, creatureArt: try? CreatureArtStore.standard())
+            Task { await model.refreshCreatureArt(addingNew: true) }
+            return model
         } catch {
             let model = AppModel(bestiary: bestiary ?? BestiaryStore())
             model.errorMessage = error.localizedDescription
@@ -86,17 +97,22 @@ final class AppModel {
     }
 
     /// A creature's summary, from a linked PC, the campaign's custom creatures or the bestiary, with any
-    /// pasted art (a PC's portrait is its Demiplane avatar, stored as pasted art).
+    /// pasted art (a PC's portrait is its Demiplane avatar, stored as pasted art), else its art from the user's
+    /// PDFs.
     func entry(_ key: String) -> BestiaryIndexEntry? {
         let found = CustomCreature.isCustomKey(key) || PlayerCharacter.isKey(key)
             ? creature(key).map(BestiaryIndexEntry.init)
             : bestiary.entry(key)
-        guard var entry = found, let art = library.customArt(for: key) else { return found }
-        entry.art = entry.art.replacing(with: art)
-        return entry
+        guard var entry = found else { return nil }
+        if let art = library.customArt(for: key) {
+            entry.art = entry.art.replacing(with: art)
+            return entry
+        }
+        return entry.art.hasArt ? entry : withLibraryArt(entry)
     }
 
-    /// The file behind an art path: pasted art from the art store, anything else from the bundled bestiary.
+    /// The file behind an art path: pasted art from the art store, anything else from the bundled bestiary. Art
+    /// from the user's PDFs has no file; `artPicture(for:maxPixels:)` draws it.
     func artURL(for path: String) -> URL? {
         guard path.hasPrefix(CustomArt.pathPrefix) else { return bestiary.url(for: path) }
         return artStore?.url(for: String(path.dropFirst(CustomArt.pathPrefix.count)))
