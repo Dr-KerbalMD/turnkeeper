@@ -1,14 +1,12 @@
 import Foundation
 import FoundryImport
 
-/// `BestiaryImport [--pf2e DIR] [--modules DIR] [--out DIR] [--config DIR]`
+/// `BestiaryImport [--pf2e DIR] [--out DIR] [--config DIR]`
 ///
-/// Defaults: `~/git/pf2e`, the Foundry modules folder in Application Support, `Generated`, and the
-/// current folder (for `art-sources.json`).
+/// Defaults: `~/git/pf2e`, `Generated`, and the current folder (for the optional `art-overrides.json`).
 let home = FileManager.default.homeDirectoryForCurrentUser
 var options = [
     "--pf2e": home.appendingPathComponent("git/pf2e").path,
-    "--modules": home.appendingPathComponent("Library/Application Support/FoundryVTT/Data/modules").path,
     "--out": "Generated",
     "--config": "."
 ]
@@ -24,7 +22,6 @@ while let flag = arguments.popFirst() {
 let directories = options.mapValues { URL(fileURLWithPath: $0, isDirectory: true) }
 let configuration = ImportConfiguration(
     repository: directories["--pf2e"]!,
-    modulesDirectory: directories["--modules"]!,
     outputDirectory: directories["--out"]!,
     configurationDirectory: directories["--config"]!
 )

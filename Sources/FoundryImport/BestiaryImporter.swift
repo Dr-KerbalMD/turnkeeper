@@ -5,22 +5,20 @@ import Foundation
 public struct ImportConfiguration: Sendable {
     /// The pf2e system repository, such as `~/git/pf2e`.
     public var repository: URL
-    /// The Foundry `Data/modules` folder holding the art modules.
-    public var modulesDirectory: URL
-    /// The `Generated` folder. PDF art is expected in its `PdfArt` subfolder.
+    /// The `Generated` folder.
     public var outputDirectory: URL
-    /// `art-sources.json` and `art-overrides.json` live here.
+    /// Where the optional `art-overrides.json` lives.
     public var configurationDirectory: URL
 
-    public init(repository: URL, modulesDirectory: URL, outputDirectory: URL, configurationDirectory: URL) {
+    public init(repository: URL, outputDirectory: URL, configurationDirectory: URL) {
         self.repository = repository
-        self.modulesDirectory = modulesDirectory
         self.outputDirectory = outputDirectory
         self.configurationDirectory = configurationDirectory
     }
 }
 
-/// Runs the whole import: creatures, conditions, art, and the output files.
+/// Runs the whole import: creatures, conditions, the glossary and the output files. Art is matched on the device,
+/// from the user's own PDFs; the import only passes on `art-overrides.json`.
 public struct BestiaryImporter {
     public var configuration: ImportConfiguration
 
@@ -39,14 +37,13 @@ public struct BestiaryImporter {
         var glossaryIndex = try PlayerCompendium.link(scanner: scanner, links: links)
         var text = RulesTextConverter(localizer: localizer, links: links)
         var report = ImportReport()
-        var creatures = try readCreatures(scanner: scanner, text: &text, report: &report)
+        let creatures = try readCreatures(scanner: scanner, text: &text, report: &report)
         let conditions = try ConditionImporter.conditions(scanner: scanner, text: &text)
         var glossaryParser = GlossaryEntryParser(text: text)
         let glossary = GlossaryBuilder.entries(parser: &glossaryParser)
         report.glossaryCount = glossary.count
         PlayerCompendium.addTraits(of: glossary, to: &glossaryIndex)
         report.glossaryNameCount = glossaryIndex.count
-        try assignArt(to: &creatures, report: &report)
         let unparsed = glossaryParser.text.unparsedEnrichers
         report.unparsedEnrichers = Dictionary(unparsed.map { ($0, 1) }, uniquingKeysWith: +)
         let writer = BestiaryWriter(outputDirectory: configuration.outputDirectory)
@@ -54,6 +51,7 @@ public struct BestiaryImporter {
             creatures: creatures, conditions: conditions, glossary: glossary, glossaryIndex: glossaryIndex
         )
         try writer.write(bestiary, revision: revision())
+        try copyArtOverrides()
         try writer.writeReport(report.markdown(creatures: creatures))
         return report
     }
@@ -76,27 +74,13 @@ public struct BestiaryImporter {
         return creatures.sorted { $0.key < $1.key }
     }
 
-    private func assignArt(to creatures: inout [Creature], report: inout ImportReport) throws {
-        let sources = try ArtSources(directory: configuration.configurationDirectory)
-        let mapper = FoundryArtMapper(
-            modulesDirectory: configuration.modulesDirectory, priority: sources.modulePriority
-        )
-        let copier = ArtCopier(mapper: mapper, outputDirectory: configuration.outputDirectory)
-        let foundryArt = mapper.art(knownKeys: Set(creatures.map(\.key)))
-        let pdfEntries = try PdfArtIndex.entries(in: configuration.outputDirectory)
-        let matcher = PdfArtMatcher(entries: pdfEntries, overrides: sources.overrides)
-        var usedPdfArt = Set<String>()
-        for index in creatures.indices {
-            if let art = foundryArt[creatures[index].key] {
-                creatures[index].art = try copier.copy(art)
-            }
-            let pdfArt = matcher.art(for: creatures[index])
-            creatures[index].art = ArtChooser.combine(creatures[index].art, pdfArt: pdfArt)
-            usedPdfArt.formUnion(pdfArt.values.map(\.path))
-        }
-        report.borrowedArt = ArtFallback.borrow(into: &creatures)
-        try copier.removeUnreferenced(keeping: Set(creatures.flatMap { [$0.art.portrait, $0.art.token] }))
-        report.unmatchedPdfArt = pdfEntries.filter { !usedPdfArt.contains($0.path) }.map(\.name)
+    /// Creature names whose art has another name in the PDFs, for matching art on the device.
+    private func copyArtOverrides() throws {
+        let overrides = configuration.configurationDirectory.appendingPathComponent("art-overrides.json")
+        let destination = configuration.outputDirectory.appendingPathComponent("Bestiary/art-overrides.json")
+        try? FileManager.default.removeItem(at: destination)
+        guard FileManager.default.fileExists(atPath: overrides.path) else { return }
+        try FileManager.default.copyItem(at: overrides, to: destination)
     }
 
     private func revision() -> String {
@@ -107,19 +91,5 @@ public struct BestiaryImporter {
         let refFile = configuration.repository.appendingPathComponent(".git/" + reference.dropFirst(5))
         let commit = try? String(contentsOf: refFile, encoding: .utf8)
         return commit?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-    }
-}
-
-/// Fills art gaps from PDF art. Foundry module art wins; PDF tokens and pawns cover the rest, and
-/// card backs are only ever from PDFs.
-enum ArtChooser {
-    static func combine(_ art: ArtReference, pdfArt: [PdfArtEntry.Kind: PdfArtEntry]) -> ArtReference {
-        let token = pdfArt[.token]?.path ?? pdfArt[.pawn]?.path ?? ""
-        let portrait = pdfArt[.pawn]?.path ?? pdfArt[.token]?.path ?? ""
-        return ArtReference(
-            portrait: art.portrait.isEmpty ? portrait : art.portrait,
-            token: art.token.isEmpty ? token : art.token,
-            cardBack: pdfArt[.cardBack]?.path ?? ""
-        )
     }
 }
