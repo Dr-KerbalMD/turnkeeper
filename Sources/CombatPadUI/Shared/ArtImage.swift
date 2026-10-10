@@ -2,8 +2,8 @@ import CombatPadKit
 import ImageIO
 import SwiftUI
 
-/// A creature's art from the bundled `Generated` folder, loaded off the main thread and downsampled to the
-/// size shown. Shows a placeholder when there is no art.
+/// A creature's art: from the user's PDFs, or pasted, loaded off the main thread and downsampled to the size
+/// shown. Shows a placeholder when there is no art.
 struct ArtImage: View {
     enum Shape {
         case circle
@@ -45,9 +45,7 @@ struct ArtImage: View {
     }
 
     private func load() async -> CGImage? {
-        guard let url = model.artURL(for: path) else { return nil }
-        let pixels = Int(size * displayScale)
-        return await ArtLoader.shared.image(at: url, maxPixels: pixels)
+        await model.artPicture(for: path, maxPixels: Int(size * displayScale))
     }
 }
 

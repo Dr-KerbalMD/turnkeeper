@@ -10,9 +10,14 @@ let package = Package(
         .executable(name: "CombatPad", targets: ["CombatPad"]),
         .executable(name: "BestiaryImport", targets: ["BestiaryImport"])
     ],
+    dependencies: [
+        .package(url: "https://github.com/scooper4711/tabletop-kit.git", from: "0.3.0")
+    ],
     targets: [
         .target(name: "CombatPadKit"),
-        .target(name: "CombatPadUI", dependencies: ["CombatPadKit", "CharacterImport"]),
+        .target(name: "CombatPadUI", dependencies: [
+            "CombatPadKit", "CharacterImport", .product(name: "ArtExtraction", package: "tabletop-kit")
+        ]),
         .target(name: "CharacterImport", dependencies: ["CombatPadKit"]),
         .executableTarget(name: "CombatPad", dependencies: ["CombatPadUI"]),
         .target(name: "FoundryImport", dependencies: ["CombatPadKit"]),

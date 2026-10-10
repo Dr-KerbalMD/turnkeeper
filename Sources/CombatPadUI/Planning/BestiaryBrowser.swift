@@ -197,10 +197,11 @@ private struct BestiaryRow: View {
     let addedCount: Int
     let add: () -> Void
     let preview: () -> Void
+    @Environment(AppModel.self) private var model
 
     var body: some View {
         HStack(spacing: 12) {
-            ArtImage(path: entry.art.thumbnail, size: 48, shape: .circle, alignment: .top)
+            ArtImage(path: (model.entry(entry.key) ?? entry).art.thumbnail, size: 48, shape: .circle, alignment: .top)
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.name).font(.headline)
                 Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
