@@ -53,7 +53,8 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
    `packs/<game>.<pack>.json` per pack, plus `conditions.json` and `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
 
 ## Creature art
-- `CreatureArtStore` (an actor) owns Tabletop Kit's `ArtLibrary` in Application Support/Combat Pad/Art. Import
+- `CreatureArtStore` (an actor) owns Tabletop Kit's `ArtLibrary` in Application Support/Combat Pad/Creature Art (apart from
+  pasted art's `Art` folder, whose unused files are swept at launch). Import
   from Scrollkeeper watches the chosen folder and runs `addNewFiles`, by reference; Add PDFs… commits each file
   kept. At launch the store refreshes the PDFs' statuses and adds new files from the watched folders. Pictures
   are drawn by `ArtLibrary.picture(of:maxPixels:)` and cached by entry and size.

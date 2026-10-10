@@ -51,9 +51,10 @@ actor CreatureArtStore {
         library = try ArtLibrary(folder: folder)
     }
 
-    /// The store in `Application Support/Combat Pad/Art`.
+    /// The store in `Application Support/Combat Pad/Creature Art`, apart from pasted art's `Art` folder, whose
+    /// unused files are swept at launch.
     static func standard() throws -> CreatureArtStore {
-        try CreatureArtStore(folder: URL.applicationSupportDirectory.appendingPathComponent("Combat Pad/Art"))
+        try CreatureArtStore(folder: URL.applicationSupportDirectory.appendingPathComponent("Combat Pad/Creature Art"))
     }
 
     /// What the library holds now, each PDF checked again for whether it is still there.
