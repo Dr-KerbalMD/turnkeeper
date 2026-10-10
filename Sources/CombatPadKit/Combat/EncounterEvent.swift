@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// When an event fires.

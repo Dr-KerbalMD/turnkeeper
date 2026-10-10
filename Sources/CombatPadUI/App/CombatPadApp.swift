@@ -1,3 +1,5 @@
+import BattleCards
+import Bestiary
 import CombatPadKit
 import SwiftUI
 
@@ -14,6 +16,7 @@ public struct CombatPadApp: App {
         Fonts.register(from: BestiaryStore.locateGeneratedDirectory())
         PlayerDisplay.shared.bestiary = model.bestiary
         PlayerDisplay.shared.artStore = model.artStore
+        PlayerDisplay.shared.creatureArt = model.creatureArt
         _model = State(initialValue: model)
     }
 

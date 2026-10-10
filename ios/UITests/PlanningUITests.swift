@@ -1,4 +1,5 @@
 import XCTest
+import Bestiary
 
 /// Planning and player-view checks against the demo library.
 final class PlanningUITests: XCTestCase {

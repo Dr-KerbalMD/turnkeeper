@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// Plans the import of stat blocks copied from Pluck into an encounter: each block becomes a custom creature,

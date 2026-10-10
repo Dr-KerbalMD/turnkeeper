@@ -1,3 +1,4 @@
+import Bestiary
 import SwiftUI
 
 /// Says which PDFs a creature's art needs when they have gone missing (R2.3a), such as after they were deleted

@@ -1,5 +1,5 @@
+import CreatureImport
 import Foundation
-import FoundryImport
 
 /// `BestiaryImport [--pf2e DIR] [--out DIR] [--config DIR]`
 ///

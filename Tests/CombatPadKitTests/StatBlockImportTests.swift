@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 import Testing
 @testable import CombatPadKit
@@ -76,92 +77,8 @@ private enum Fixtures {
     }
 }
 
-@Suite("Converting stat blocks from Pluck")
-struct StatBlockConverterTests {
-    @Test("Name, level, traits and statistics")
-    func statistics() throws {
-        let creature = Fixtures.convert(try Fixtures.blocks()[0]).creature
-        #expect(creature.name == "Gwibble" && creature.kind == .creature && creature.level == 3)
-        #expect(creature.traits == TraitLine(rarity: "unique", size: "Small", traits: ["fey"]))
-        #expect(creature.source.title == "Pathfinder Society Scenario #7-99")
-        #expect(creature.senses.perception == 9)
-        #expect(creature.senses.senses == ["darkvision", "scent (imprecise) 30 feet"])
-        #expect(creature.languages == ["Common", "Sylvan", "telepathy 30 feet"])
-        #expect(creature.skills.map(\.modifier) == [10, 12])
-        #expect(creature.attributes.strength == -1 && creature.attributes.dexterity == 4)
-        #expect(creature.attributes.charisma == 3)
-    }
-
-    @Test("Defenses, with their notes, weaknesses and resistances")
-    func defenses() throws {
-        let defenses = Fixtures.convert(try Fixtures.blocks()[0]).creature.defenses
-        #expect(defenses.armorClass == 19 && defenses.armorClassDetails == "21 with shield raised")
-        #expect(defenses.fortitude == 7 && defenses.reflex == 11 && defenses.will == 9)
-        #expect(defenses.saveDetails == "+1 status to all saves vs. magic")
-        #expect(defenses.hitPoints == 45 && defenses.hitPointDetails == "regeneration 5 (deactivated by fire)")
-        #expect(defenses.weaknesses == [DamageAdjustment(type: "cold iron", value: 5)])
-        #expect(defenses.resistances == [DamageAdjustment(type: "physical", value: 3, exceptions: ["silver"])])
-    }
-
-    @Test("Strikes, spells and abilities, with unreadable lines kept as text")
-    func offense() throws {
-        let conversion = Fixtures.convert(try Fixtures.blocks()[0])
-        let creature = conversion.creature
-        #expect(creature.speeds == [Speed(type: "land", feet: 25), Speed(type: "fly", feet: 30)])
-        let jaws = try #require(creature.strikes.first)
-        #expect(jaws.name == "jaws" && jaws.attackBonus == 12 && jaws.traits == ["agile", "finesse"])
-        #expect(jaws.damage == [DamagePart(formula: "2d6+4", type: "piercing"),
-                                DamagePart(formula: "1d4", type: "bleed", isPersistent: true)])
-        #expect(creature.strikes[1].isRanged)
-        #expect(creature.strikes[1].damage == [DamagePart(formula: "1d8", type: "acid")])
-        let spells = try #require(creature.spellcasting.first)
-        #expect(spells.difficultyClass == 20 && spells.attack == 12 && spells.ranks.count == 2)
-        let retort = try #require(creature.abilities.first)
-        #expect(retort.cost == .reaction && retort.section == .defensive && retort.traits == ["emotion", "mental"])
-        #expect(retort.text.markup.contains("{{check:will:20:basic}}"))
-        #expect(retort.text.markup.contains("**Trigger**"))
-        #expect(creature.abilities.last?.name == "Melee")
-        #expect(StatBlockText.plainText(creature.abilities.last!.text).hasSuffix("The gwibble cackles."))
-        #expect(conversion.warnings == ["Melee: couldn't read the attack"])
-    }
-
-    @Test("A complex hazard's Stealth, defenses and text")
-    func hazard() throws {
-        let conversion = Fixtures.convert(try Fixtures.blocks()[1])
-        let hazard = conversion.creature
-        #expect(hazard.kind == .hazard && hazard.level == 2 && hazard.initiativeStatistic == "stealth")
-        #expect(hazard.hazard?.stealth == 10)
-        #expect(hazard.hazard?.disable.markup.contains("{{check:thievery:18}}") == true)
-        #expect(hazard.defenses.hardness == 6 && hazard.defenses.hitPoints == 24)
-        #expect(hazard.defenses.hitPointDetails == "(BT 12)")
-        #expect(hazard.defenses.immunities == ["critical hits", "object immunities"])
-        #expect(hazard.hazard?.routine.markup.isEmpty == false && conversion.warnings.isEmpty)
-    }
-
-    @Test("Plain text is read into the same blocks")
-    func plainText() {
-        let text = """
-        Gwibble (1-2) — Creature 3
-        Unique, Small, Fey
-        Perception +9; darkvision
-        AC 19; Fort +7, Ref +11, Will +9
-        HP 45
-        Spiteful Retort ⤾ Trigger A creature mocks the gwibble.
-        Effect The creature takes 2d6 mental damage.
-        Speed 25 feet
-        Melee ◆ jaws +12 (agile), Damage 2d6+4 piercing
-        Primal Innate Spells DC 20, attack +12; 2nd faerie fire
-        """
-        let blocks = PluckStatBlock.blocks(fromPlainText: text)
-        #expect(blocks.count == 1 && blocks[0].variant == "1-2" && blocks[0].level == "Creature 3")
-        #expect(blocks[0].entries.map(\.name) == ["Perception", "AC", "HP", "Spiteful Retort", "Speed", "Melee",
-                                                  "Primal Innate Spells"])
-        let creature = Fixtures.convert(blocks[0]).creature
-        #expect(creature.name == "Gwibble" && creature.defenses.will == 9 && creature.strikes.count == 1)
-        #expect(creature.abilities.first?.cost == .reaction)
-        #expect(creature.abilities.first?.text.markup.contains("**Effect**") == true)
-    }
-
+@Suite("Planning stat blocks from Pluck")
+struct StatBlockImportTests {
     @Test("Blocks go to the variant for their subtier")
     func importPlan() throws {
         var scenario = Scenario(campaignID: UUID(), name: "7-99", variantLabels: ["1–2", "3–4"])

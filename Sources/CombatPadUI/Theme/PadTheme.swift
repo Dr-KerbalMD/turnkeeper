@@ -1,3 +1,5 @@
+import BattleCards
+import Bestiary
 import CombatPadKit
 import SwiftUI
 
@@ -64,18 +66,6 @@ extension CreatureTemplate {
         case .weak: return Color(hex: 0x80DEEA)
         case .normal: return nil
         }
-    }
-}
-
-extension Color {
-    init(hex: UInt32, opacity: Double = 1) {
-        self.init(
-            .sRGB,
-            red: Double((hex >> 16) & 0xFF) / 255,
-            green: Double((hex >> 8) & 0xFF) / 255,
-            blue: Double(hex & 0xFF) / 255,
-            opacity: opacity
-        )
     }
 }
 

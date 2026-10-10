@@ -15,42 +15,10 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 | `scripts/extract_pdf_art.py`, `scripts/pdfart/` | PyMuPDF extractor for token, pawn and card art from the Paizo PDFs, run in the project `.venv`. |
 | `Generated/` | Import output, gitignored and bundled into both apps. |
 
-## Bestiary import pipeline
-1. **Pack discovery.** Read `system.pf2e.json` and `system.sf2e.json` for the Actor packs. Scan
-   `packs/<system>/<pack>/**/*.json`, keeping `type == "npc"` and complex `hazard` documents.
-2. **Normalization.** Each document becomes a `Creature` with the key `<game>.<pack>.<_id>`. Strikes
-   come from `melee` items, abilities from `action` items, spells are grouped by `spellcastingEntry`,
-   and lore comes from `lore` items.
-3. **Rules text.** HTML and Foundry enrichers become `RulesText` runs. `@Check` and `@Damage` stay
-   structured so templates and conditions can adjust them. `@UUID` becomes its label, `@Localize` is
-   resolved from the lang JSON, and `@Template` becomes prose.
-   A `@UUID` to an Item in a compendium pack becomes a `{{link:<id>|<label>}}` run instead, where the glossary
-   ID is `<system>.<pack>.<_id>` (links by name are resolved to the `_id`). Links into effect packs stay labels.
-4. **Conditions.** The condition packs go to `conditions.json`. sf2e gets the pf2e conditions plus its
-   own.
-5. **Art overrides.** `art-overrides.json` (creature name → the name its art has in a PDF), when present, is
-   copied to `Generated/Bestiary/art-overrides.json` for matching art on the device (below). The import
-   handles no art itself.
-6. **Glossary.** `CompendiumIndex` reads the Item packs of both systems (an Item pack is indexed on first
-   use) and records every glossary ID the import links to. Each creature gets a `LinkTable` from
-   `<kind>:<shown text>` to a glossary ID: spells and items by their compendium source (or, without one, their
-   embedded copy, `<creature key>.<item _id>`), Strike effects by the creature's own action or the ability
-   glossary, and traits as `trait.<game>.<slug>`. `GlossaryBuilder` then turns the linked documents into
-   `GlossaryEntry` values (name, category such as "Spell 3", traits and their links, rules text, with spell
-   cast, range, area, targets, defense and duration lines first), follows their links one more level, and
-   stops: everything a card links to, and everything those entries link to, is in the glossary. Trait text
-   comes from `traitDescriptions` in the system's `src/scripts/config/traits.ts`, else
-   `PF2E.TraitDescription<Slug>`, dropping a trailing `-value` (reach-10, deadly-d10); Starfinder prefers
-   `sf2e-overrides-en.json`.
-   **Player compendium.** For PC cards, `PlayerCompendium` also links every document in the player-facing
-   Item packs of both systems (spells, feats, class features, actions, ancestry features, heritages and
-   equipment), so they and the traits they link to are in the glossary. It writes `glossary-index.json`:
-   `GlossaryIndex` keys `<game>:<kind>:<normalized name>` (kinds spell, ability, item and trait) to glossary
-   IDs. Names are normalized by `GlossaryIndex.normalize` (lowercase, apostrophes dropped, other punctuation
-   as spaces), so "Healing Potion, Moderate" and "Healing Potion (Moderate)" meet; on a clash the remastered
-   document wins.
-7. **Output.** `Generated/Bestiary/index.json` holds a summary of every creature. There is one
-   `packs/<game>.<pack>.json` per pack, plus `conditions.json` and `Generated/import-report.md`. Keys and arrays are sorted, so the output is deterministic.
+## Bestiary import
+The creature model, stat-block presentation, conditions and the pf2e import live in
+[Tabletop Kit](https://github.com/scooper4711/tabletop-kit) (`Bestiary` and `CreatureImport`), shared with Field
+Guide; its spec describes the import pipeline. `make bestiary` runs Combat Pad's `BestiaryImport` executable on it.
 
 ## Creature art
 - `CreatureArtStore` (an actor) owns Tabletop Kit's `ArtLibrary` in Application Support/Combat Pad/Creature Art (apart from
@@ -144,9 +112,10 @@ Ported from the pf2e system, with tests.
 - **Battle cards.** `StatBlockPresenter` (in the Kit) produces adjusted values with breakdowns: the
   template adds an untyped ±2, conditions add their typed penalties, and the first damage instance of a
   Strike or ability takes the template's damage change.
-  `PathfinderBattleCard`, `StarfinderBattleCard` and `HazardBattleCard` render them.
+  Tabletop Kit's `BattleCard` and `CardBack` render them, with the UI art in `Generated/CardArt` passed as the
+  `cardArt` environment value (the root view, the player display and card snapshots).
 - **Glossary links.** `BestiaryStore.glossaryEntry(_:)` loads `glossary.json` on first use. Linked words are
-  `CardSegment.link` runs, drawn as `Text` links (`combatpad-glossary:<id>`) with a dotted underline in the
+  `CardSegment.link` runs, drawn as `Text` links (`tabletop-glossary:<id>`) with a dotted underline in the
   card's ink. `CardLineView` handles the link with an `OpenURLAction` and shows a `GlossaryPopover`
   anchored to the line; the popover's own lines do the same one level deeper. The `glossaryDepth`
   environment value stops links at two levels, and without a glossary in the environment (snapshots) links

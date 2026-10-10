@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// What a combatant is, which sets its magnet color and what the pad tracks for it.

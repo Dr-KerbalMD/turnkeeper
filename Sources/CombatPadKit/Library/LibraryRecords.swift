@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// A record that can be shared between devices: it has a stable ID, the time it last changed, and a

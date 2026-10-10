@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// Where a player character's names are looked up: the bundled bestiary's glossary.

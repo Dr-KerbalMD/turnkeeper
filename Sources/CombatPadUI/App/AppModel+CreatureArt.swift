@@ -1,3 +1,4 @@
+import Bestiary
 import CombatPadKit
 import CoreGraphics
 import Foundation
@@ -97,4 +98,9 @@ extension AppModel {
     private func progressReporter() -> @Sendable (String) -> Void {
         { name in Task { @MainActor in self.artProgress = "Reading \(name)…" } }
     }
+}
+
+extension BestiaryStore {
+    /// The cards' UI art, copied from the user's Rexard packs by the import into `Generated/CardArt`.
+    var cardArtFolder: URL { directory.appendingPathComponent("CardArt") }
 }

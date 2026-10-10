@@ -1,4 +1,5 @@
 import ArtExtraction
+import Bestiary
 import CombatPadKit
 import CoreGraphics
 import Foundation

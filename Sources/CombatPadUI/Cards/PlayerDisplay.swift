@@ -1,3 +1,5 @@
+import BattleCards
+import Bestiary
 import CombatPadKit
 import Observation
 import SwiftUI
@@ -19,9 +21,10 @@ final class PlayerDisplay {
     /// The handout on show, as its name and image path.
     private(set) var handout: (name: String, imagePath: String)?
     var hasSecondScreen = false
-    /// The bestiary and art store, so the second screen can load art without the app model.
+    /// The bestiary and art stores, so the second screen can load art without the app model.
     var bestiary = BestiaryStore()
     var artStore: ArtStore?
+    var creatureArt: CreatureArtStore?
 
     private init() {}
 
@@ -46,11 +49,15 @@ struct PlayerScreen: View {
             Color.black.ignoresSafeArea()
             if let entry = display.entry {
                 CardBackView(entry: entry)
-                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore))
+                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore,
+                                          creatureArt: display.creatureArt))
+                    .environment(\.cardArt, CardArtPieces(folder: display.bestiary.cardArtFolder))
                     .transition(.opacity)
             } else if let handout = display.handout {
                 HandoutPlayerView(name: handout.name, imagePath: handout.imagePath)
-                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore))
+                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore,
+                                          creatureArt: display.creatureArt))
+                    .environment(\.cardArt, CardArtPieces(folder: display.bestiary.cardArtFolder))
                     .transition(.opacity)
             }
         }

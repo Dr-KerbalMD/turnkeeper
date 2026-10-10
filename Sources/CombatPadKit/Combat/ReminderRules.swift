@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// The reminders a combatant's conditions, notes and duration arrows raise at the start and end of its

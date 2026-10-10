@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// A card the GM must dismiss when a turn changes, such as "Slowed 1: one fewer action".
