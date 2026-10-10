@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// One encounter of a scenario, with a creature list for each difficulty variant.

@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// Art pasted in for a creature, shown everywhere in place of the bundled art. The library only points to

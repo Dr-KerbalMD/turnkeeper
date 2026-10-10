@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// A creature or complex hazard the GM made, by hand or from a stat block copied out of a PDF. It belongs

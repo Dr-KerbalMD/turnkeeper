@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// Builds the opening state of a fight from a planned encounter variant and a party.

@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// How dangerous an encounter is for the party.

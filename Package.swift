@@ -11,17 +11,19 @@ let package = Package(
         .executable(name: "BestiaryImport", targets: ["BestiaryImport"])
     ],
     dependencies: [
-        .package(url: "https://github.com/scooper4711/tabletop-kit.git", from: "0.3.0")
+        .package(url: "https://github.com/scooper4711/tabletop-kit.git", from: "0.4.0")
     ],
     targets: [
-        .target(name: "CombatPadKit"),
+        .target(name: "CombatPadKit", dependencies: [.product(name: "Bestiary", package: "tabletop-kit")]),
         .target(name: "CombatPadUI", dependencies: [
-            "CombatPadKit", "CharacterImport", .product(name: "ArtExtraction", package: "tabletop-kit")
+            "CombatPadKit", "CharacterImport", .product(name: "ArtExtraction", package: "tabletop-kit"),
+            .product(name: "BattleCards", package: "tabletop-kit")
         ]),
         .target(name: "CharacterImport", dependencies: ["CombatPadKit"]),
         .executableTarget(name: "CombatPad", dependencies: ["CombatPadUI"]),
-        .target(name: "FoundryImport", dependencies: ["CombatPadKit"]),
-        .executableTarget(name: "BestiaryImport", dependencies: ["FoundryImport"]),
+        .executableTarget(name: "BestiaryImport", dependencies: [
+            .product(name: "CreatureImport", package: "tabletop-kit")
+        ]),
         .executableTarget(name: "CardSnapshots", dependencies: ["CombatPadUI"]),
         .testTarget(
             name: "CombatPadKitTests",
@@ -30,11 +32,6 @@ let package = Package(
         .testTarget(
             name: "CharacterImportTests",
             dependencies: ["CharacterImport"],
-            resources: [.copy("Fixtures")]
-        ),
-        .testTarget(
-            name: "FoundryImportTests",
-            dependencies: ["FoundryImport"],
             resources: [.copy("Fixtures")]
         )
     ]

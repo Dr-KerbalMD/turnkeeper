@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 import Testing
 @testable import CombatPadKit

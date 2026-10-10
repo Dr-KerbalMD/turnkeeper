@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 
 /// HP and condition changes.

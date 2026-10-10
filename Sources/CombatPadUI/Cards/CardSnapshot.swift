@@ -1,3 +1,5 @@
+import BattleCards
+import Bestiary
 import CharacterImport
 import CombatPadKit
 import ImageIO
@@ -18,6 +20,7 @@ public enum CardSnapshot {
         Fonts.register(from: directory)
         let card = BattleCard(creature: creature, template: template, conditions: conditions, scrolls: false)
             .frame(width: width)
+            .environment(\.cardArt, CardArtPieces(folder: bestiary.cardArtFolder))
         let renderer = ImageRenderer(content: card)
         renderer.scale = 2
         guard let image = renderer.cgImage else { return nil }

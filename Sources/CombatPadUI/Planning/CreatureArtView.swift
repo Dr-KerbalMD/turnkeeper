@@ -1,3 +1,4 @@
+import Bestiary
 import SwiftUI
 import UniformTypeIdentifiers
 
