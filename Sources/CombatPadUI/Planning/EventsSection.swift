@@ -23,8 +23,8 @@ struct EventsSection: View {
                     }
                     .buttonStyle(.borderless)
                     .foregroundStyle(.primary)
-                    RemoveButton(title: "Remove Event") { removeEvents { $0.id == event.id } }
                 }
+                .deleteCommand { removeEvents { $0.id == event.id } }
                 .contextMenu {
                     Button("Remove Event", systemImage: "trash", role: .destructive) {
                         removeEvents { $0.id == event.id }

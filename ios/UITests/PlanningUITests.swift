@@ -122,14 +122,17 @@ final class PlanningUITests: XCTestCase {
         XCTAssertTrue(waitUntil { show.isHittable })
     }
 
-    /// Each creature row has its own remove button, since swipe-to-delete doesn't exist on the Mac.
+    /// Swiping a creature row right to left offers Delete.
     func testRemovingACreatureFromTheEncounter() {
         app.launchArguments = ["--demo", "planner"]
         app.launch()
         let warrior = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Goblin Warrior'")).firstMatch
         XCTAssertTrue(warrior.waitForExistence(timeout: 10))
         sleep(1)
-        app.buttons.matching(identifier: "Remove from Encounter").firstMatch.tap()
+        warrior.swipeLeft()
+        let delete = app.buttons["Delete"]
+        XCTAssertTrue(delete.waitForExistence(timeout: 5), "Swiping the row offers no Delete")
+        delete.tap()
         XCTAssertTrue(waitUntil { !warrior.exists }, "The Goblin Warrior row is still there after removing it")
     }
 
