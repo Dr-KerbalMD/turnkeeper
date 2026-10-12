@@ -1,4 +1,5 @@
 import Bestiary
+import CreatureArt
 import SwiftUI
 import UniformTypeIdentifiers
 

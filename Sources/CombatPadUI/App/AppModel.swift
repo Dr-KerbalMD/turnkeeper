@@ -1,5 +1,6 @@
 import Bestiary
 import CombatPadKit
+import CreatureArt
 import Foundation
 import Observation
 

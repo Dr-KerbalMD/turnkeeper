@@ -1,6 +1,7 @@
 import BattleCards
 import Bestiary
 import CombatPadKit
+import CreatureArt
 import Observation
 import SwiftUI
 #if os(iOS)
