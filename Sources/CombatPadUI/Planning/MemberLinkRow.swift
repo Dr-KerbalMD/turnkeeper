@@ -25,11 +25,13 @@ struct MemberLinkRow: View {
                 }
                 .font(.caption)
                 Spacer()
-                TextField("Max HP", value: maxHitPoints, format: .number)
+                TextField("Max HP", value: maxHitPoints, format: .number, prompt: Text("Max HP"))
+                    .labelsHidden()
                     .frame(width: 70)
                     .multilineTextAlignment(.trailing)
                     .help("Shown on the PC's card only; players track their own HP")
                 Button("Battle Card", systemImage: "person.text.rectangle") { isShowingCard = true }
+                    .help("Show the PC's battle card")
                 if model.refreshingMemberID == member.id {
                     ProgressView().controlSize(.small)
                 } else {
@@ -38,9 +40,10 @@ struct MemberLinkRow: View {
                     }
                     .disabled(model.demiplaneProgress != nil)
                 }
-                Button("Unlink", systemImage: "link.badge.minus", role: .destructive) {
+                Button("Unlink", systemImage: "xmark.circle", role: .destructive) {
                     model.unlinkFromDemiplane(memberID: member.id, partyID: partyID)
                 }
+                .help("Unlink from Demiplane")
             }
             .buttonStyle(.borderless)
             .labelStyle(.iconOnly)

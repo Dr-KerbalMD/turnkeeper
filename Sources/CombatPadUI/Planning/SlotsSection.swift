@@ -124,7 +124,7 @@ private struct SlotRow: View {
         .contextMenu {
             Button("Remove from Encounter", systemImage: "trash", role: .destructive, action: remove)
             if model.hasPastedArtwork(slot.creatureKey) {
-                Button("Remove Pasted Artwork", systemImage: "photo.badge.minus") {
+                Button("Remove Pasted Artwork", systemImage: "trash") {
                     model.removeArtwork(for: slot.creatureKey)
                 }
             }
