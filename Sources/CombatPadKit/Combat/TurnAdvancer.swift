@@ -4,35 +4,45 @@ import Foundation
 /// the outgoing combatant's end of turn, the end of the round, the start of the next round, initiative
 /// events passed on the way, and the incoming combatant's start of turn.
 public enum TurnAdvancer {
-    public static func next(_ state: CombatState) -> TurnAdvance {
+    /// Delaying strips are skipped. Those between this turn and the next strip that isn't delaying act now
+    /// if they're in `actingNow`, and otherwise wait below that strip. A strip that delays on its own turn
+    /// has its end of turn now, as the Delay rule says, and none when it returns to finish the turn.
+    public static func next(_ state: CombatState, actingNow: Set<UUID> = []) -> TurnAdvance {
         var state = state
         guard state.phase == .active, !state.order.isEmpty else { return TurnAdvance(state: state, reminders: []) }
         var reminders: [Reminder] = []
         let outgoing = state.currentID.flatMap { state.order.contains($0) ? $0 : nil }
-        if let outgoing {
-            reminders += ReminderRules.endOfTurn(&state, combatantID: outgoing)
-            reminders += turnEvents(state, slotOf: outgoing, isStart: false)
-        }
-        let outgoingIndex = outgoing.flatMap { state.order.firstIndex(of: $0) } ?? -1
+        if let outgoing { reminders += endOfTurn(&state, outgoing) }
         let outgoingInitiative = outgoing.flatMap { state[$0]?.initiative } ?? .infinity
-        let nextIndex = outgoingIndex + 1
-        if nextIndex >= state.order.count {
+        if let incoming = state.passDelayedStrips(actingNow: actingNow) {
+            state.currentID = incoming
+            reminders += initiativeEvents(state, after: initiative(of: incoming, in: state), upTo: outgoingInitiative)
+        } else {
             reminders += initiativeEvents(state, after: -.infinity, upTo: outgoingInitiative)
             reminders += roundEvents(state, .endOfRound)
             state.round += 1
             reminders += roundEvents(state, .startOfRound)
-            state.currentID = state.order[0]
-            reminders += initiativeEvents(state, after: initiative(of: state.order[0], in: state), upTo: .infinity)
-        } else {
-            let incoming = state.order[nextIndex]
-            state.currentID = incoming
-            reminders += initiativeEvents(state, after: initiative(of: incoming, in: state), upTo: outgoingInitiative)
+            let first = state.order[state.nextActingIndex(after: -1) ?? 0]
+            state.currentID = first
+            reminders += initiativeEvents(state, after: initiative(of: first, in: state), upTo: .infinity)
         }
-        if let incoming = state.currentID {
+        state.returnDelayedStripsAtRoundEnd()
+        if let incoming = state.currentID, state[incoming]?.delayedMidTurn == false {
             reminders += ReminderRules.startOfTurn(&state, combatantID: incoming)
             reminders += turnEvents(state, slotOf: incoming, isStart: true)
         }
         return TurnAdvance(state: state, reminders: reminders)
+    }
+
+    /// The outgoing strip's end of turn. One returning from a delay finishes its turn quietly: its end of turn
+    /// came when it delayed.
+    private static func endOfTurn(_ state: inout CombatState, _ id: UUID) -> [Reminder] {
+        guard let combatant = state[id] else { return [] }
+        if combatant.delayedMidTurn && !combatant.isDelaying {
+            state[id]?.delayedMidTurn = false
+            return []
+        }
+        return ReminderRules.endOfTurn(&state, combatantID: id) + turnEvents(state, slotOf: id, isStart: false)
     }
 
     private static func initiative(of id: UUID, in state: CombatState) -> Double {

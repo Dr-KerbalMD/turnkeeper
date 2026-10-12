@@ -54,8 +54,9 @@ enum TestData {
     static let graphQLPath = "/v1/graphql"
     static let exportPath = "/api/magic-missile"
 
-    static func sheetPDF() throws -> Data {
-        guard let url = Bundle.module.url(forResource: "ignatius", withExtension: "pdf", subdirectory: "Fixtures")
+    /// A sheet PDF from the fixtures: Ignatius (Pathfinder) or Eagan (Starfinder).
+    static func sheetPDF(_ name: String = "ignatius") throws -> Data {
+        guard let url = Bundle.module.url(forResource: name, withExtension: "pdf", subdirectory: "Fixtures")
         else { throw URLError(.fileDoesNotExist) }
         return try Data(contentsOf: url)
     }

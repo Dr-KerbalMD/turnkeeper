@@ -5,19 +5,6 @@ import Testing
 
 @Suite("Turn advancing and reminders")
 struct TurnAdvancerTests {
-    /// A started fight: a goblin at 17, Valeros at 12 and an ogre at 8, plus any events.
-    private func fight(events: [EncounterEvent] = []) -> (CombatState, [UUID]) {
-        let goblin = Combatant(kind: .creature, name: "Goblin")
-        let valeros = Combatant(kind: .playerCharacter, name: "Valeros")
-        let ogre = Combatant(kind: .creature, name: "Ogre")
-        var state = CombatState(combatants: [valeros, ogre, goblin], events: events)
-        state.setInitiative(17, for: goblin.id)
-        state.setInitiative(12, for: valeros.id)
-        state.setInitiative(8, for: ogre.id)
-        state.beginCombat()
-        return (state, [goblin.id, valeros.id, ogre.id])
-    }
-
     @Test("Begin combat sorts by initiative and starts round 1 with the highest")
     func beginCombat() {
         let (state, ids) = fight()
@@ -161,18 +148,6 @@ struct TurnAdvancerTests {
         }
         #expect(titles == ["Bless ends"])
         #expect(state.durations.isEmpty)
-    }
-
-    @Test("Delay passes the turn; returning acts now at that point in the order")
-    func delay() {
-        var (state, ids) = fight()
-        state.startDelay(ids[0])
-        #expect(state.currentID == ids[1])
-        #expect(state.delaying.map(\.id) == [ids[0]])
-        state = TurnAdvancer.next(state).state
-        state.endDelay(ids[0])
-        #expect(state.currentID == ids[0])
-        #expect(state.order == [ids[1], ids[0], ids[2]])
     }
 
     @Test("Knocked out: dying 1 plus wounded, moved to just before the current turn")

@@ -37,8 +37,35 @@ struct DemiplaneImporterTests {
         transport.respond(to: url.path, body: try TestData.sheetPDF())
         let imported = try await importer(transport, signedIn: false).importCharacter(id: TestData.characterID,
                                                                                       game: .starfinder)
-        #expect(imported.link.revision.isEmpty && imported.link.game == .pathfinder)
+        #expect(imported.link.revision.isEmpty && imported.link.game == .pathfinder && imported.isLastExport)
         #expect(transport.requests(to: TestData.exportPath).isEmpty)
+    }
+
+    @Test("A second import after a rebuild reads the new export, not a cached sheet")
+    func reimport() async throws {
+        let transport = FakeTransport()
+        transport.respond(to: TestData.graphQLPath, json: ["data": ["demiplane_user_character": []]])
+        transport.respond(to: TestData.exportPath, json: TestData.exportDone(revision: "r1"))
+        transport.respond(to: TestData.exportPath, json: TestData.exportDone(revision: "r2"))
+        transport.respond(to: "/sheet.pdf", body: try TestData.sheetPDF("ignatius"))
+        transport.respond(to: "/sheet.pdf", body: try TestData.sheetPDF("eagan"))
+        let importer = importer(transport, signedIn: true)
+        let first = try await importer.importCharacter(id: TestData.characterID, game: nil)
+        let second = try await importer.importCharacter(id: TestData.characterID, game: nil)
+        #expect(first.link.revision == "r1" && first.sheet.name == "Dr Ignatius Constaline")
+        #expect(second.link.revision == "r2" && second.sheet.name == "Eagan Norr (v.2)")
+        #expect(!first.isLastExport && !second.isLastExport)
+    }
+
+    @Test("Requests to Demiplane skip the URL cache")
+    func uncached() async throws {
+        let transport = FakeTransport()
+        transport.respond(to: TestData.graphQLPath, json: TestData.character)
+        transport.respond(to: TestData.exportPath, json: TestData.exportDone())
+        transport.respond(to: "/sheet.pdf", body: try TestData.sheetPDF())
+        _ = try await importer(transport, signedIn: true).importCharacter(id: TestData.characterID, game: nil)
+        #expect(!transport.requests.isEmpty)
+        #expect(transport.requests.allSatisfy { $0.cachePolicy == .reloadIgnoringLocalCacheData })
     }
 
     @Test("A campaign imports each character, keeping the failures")

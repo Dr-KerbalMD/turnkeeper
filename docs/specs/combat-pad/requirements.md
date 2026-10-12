@@ -52,8 +52,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   events. A variant can be copied from another one.
 - R3.5 A slot has a creature, count, template (elite, normal or weak), side, whether it starts on
   the bench, and the conditions and temporary HP its creatures start the fight with.
-  Slots, events and party members each have a remove button (and a context menu item), since
-  swipe-to-delete exists only on the iPad. Adding a creature that is already in the encounter adds a new
+  Slots, events and party members are removed by swiping right to left, and on the Mac from the context
+  menu or with the Delete key. Swiping a party member left to right marks them away, or back. Adding a creature that is already in the encounter adds a new
   slot, so one stack can be made weak or elite. Combatants of the same creature are numbered together across
   slots (Wolf 1, Wolf 2, even when one is weak), and on the board weak and elite strips have a colored border,
   a different color for each.
@@ -113,6 +113,19 @@ ladder, and the right half is the notes side, which shows the battle card of the
   already taken.
 - R4.7 Conditions are applied from a palette, shown as chips, and change the battle card's numbers.
   Changed numbers are tinted and show their breakdown on long-press or hover.
+- R4.7a In combat, swiping a strip left to right delays it (asking first, for now), and right to left
+  knocks it out (dying 1 plus wounded) or, on a delaying strip, brings it back where it is. The context
+  menu has the same actions for the Mac and accessibility. There are no Delay or Dying drop zones.
+- R4.7b A delaying strip stays on the ladder, shifted right and dimmed, and its turns are skipped. Delaying
+  on its own turn passes the turn, and the strip waits just below whoever acts next; delaying off its turn
+  moves it just below the next strip. As the Delay rule says, a strip delaying on its own turn has its
+  end of turn at once (persistent damage, frightened, durations that end); when it returns it finishes that
+  turn without start- or end-of-turn reminders again.
+- R4.7c Before the turn passes over delaying strips, Next asks which act now: yes or no for one, a list to
+  tick for several. Those that act now go top to bottom; the rest move below the next strip that isn't
+  delaying. When the last strip that isn't delaying starts its turn, every delaying strip below it comes
+  back, so all act that round. A delaying strip can be dragged down, never up. Fights saved with a strip
+  in the old Delay zone come back with it delaying just below the current strip.
 - R4.8 Benched creatures can be brought into combat at any time.
 - R4.9 Durations and events count down and fire in rules order.
 - R4.10 Turn reminders are modal and must be dismissed: slowed, stunned, quickened and dying at the
@@ -142,6 +155,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
   effects, traits (on the trait line, Strikes and abilities), and links inside rules text, such as conditions,
   actions and spells. A tap (or click) shows a popover with the entry's name, category, traits and text. Links
   inside that popover open a second popover; links go two deep, and deeper ones read as plain text.
+- R5.3c A card lists the immunities a creature's traits grant even when the Foundry data leaves them out:
+  construct, mindless and swarm (Tabletop Kit's `TraitImmunities`). Hardness can't be derived, so a creature
+  whose hardness is missing upstream has none on its card.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art comes only from the user's own purchased
   PDFs, read on the device, and is never bundled or committed.
 - R5.5 Card backs show the creature in a landscape picked by its traits (Pathfinder) or glowing on a dark texture
@@ -154,10 +170,14 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R6.2 Importing asks Demiplane to export the character sheet PDF and reads the computed numbers from it:
   AC, saves, Perception, skills, speeds, Strikes, spells, actions and reactions, feats, class features,
   items, languages and senses. Refreshing re-imports; a character that hasn't changed comes back at once.
+  A refresh always says what happened: what changed ("Updated Eagan Norr: AC 18 → 19."), that nothing did
+  (perhaps the player hasn't saved the rebuild), that the member isn't linked, and, when signed out, that
+  Demiplane's last export was read. It never shows an old copy of the sheet from a cache.
   Importing again matches by the Demiplane character, so it never duplicates a PC.
   When an import fails, the reason shows in the import sheet at once, not after it closes.
 - R6.3 A linked PC's tile pins a PC battle card in the same style as creature cards, with conditions
   applied to its numbers.
+- R6.3a A linked member's battle card opens from its row in the party, without the Weak and Elite templates.
 - R6.4 The PC card links spells, actions, reactions, feats, class features, items and traits to the
   Foundry glossary (R5.3b), matched by name for the character's game; a name without a match stays plain.
   Actions with a glossary entry show its rules text, else Demiplane's text.

@@ -21,6 +21,12 @@ final class BoardController {
     private var victoryAcknowledged = false
     /// End-of-combat events shown before the fight closes; empty until the GM ends a fight that has some.
     private(set) var endingEvents: [EncounterEvent] = []
+    /// A strip swiped to delay, waiting for the GM to confirm.
+    var delayToConfirm: Combatant?
+    /// Delaying strips the GM is asked about before the turn passes; empty when nobody is asked.
+    private(set) var delayedChoice: [Combatant] = []
+    /// The fight to pass the turn on from once the GM answers about the delaying strips.
+    @ObservationIgnored private var pendingTurn: CombatState?
     private var undoStack: [CombatState] = []
     private var redoStack: [CombatState] = []
     @ObservationIgnored private var generator = SystemRandomNumberGenerator()
@@ -34,7 +40,7 @@ final class BoardController {
     var state: CombatState { session?.state ?? CombatState() }
     var canUndo: Bool { !undoStack.isEmpty }
     var canRedo: Bool { !redoStack.isEmpty }
-    var isBlocked: Bool { !reminders.isEmpty }
+    var isBlocked: Bool { !reminders.isEmpty || !delayedChoice.isEmpty }
     var isFinished: Bool { session?.isFinished ?? false }
 
     /// Every enemy that has joined the fight is at 0 HP.
@@ -108,6 +114,7 @@ final class BoardController {
         guard let previous = undoStack.popLast() else { return }
         redoStack.append(state)
         reminders.removeAll()
+        cancelDelayedChoice()
         save(previous)
     }
 
@@ -119,13 +126,45 @@ final class BoardController {
 
     // MARK: Turns
 
-    /// Next turn, with its reminders queued. Does nothing while reminders are waiting.
+    /// Next turn, with its reminders queued. Does nothing while reminders are waiting. With delaying strips
+    /// just ahead, the GM is asked first which of them act now.
     func next() {
         guard !isBlocked else { return }
-        let advance = TurnAdvancer.next(state)
+        passTurn(from: state)
+    }
+
+    /// Delays a strip. On its own turn the turn passes too, as one undo step.
+    func startDelay(_ id: UUID) {
+        var delayed = state
+        delayed.startDelay(id)
+        if state.currentID == id, !isBlocked {
+            passTurn(from: delayed)
+        } else {
+            change { $0 = delayed }
+        }
+    }
+
+    /// The GM's answer about the delaying strips ahead: the chosen act now, top to bottom, and the rest wait.
+    func passTurn(actingNow chosen: Set<UUID>) {
+        guard let base = pendingTurn else { return }
+        pendingTurn = nil
+        delayedChoice = []
+        let advance = TurnAdvancer.next(base, actingNow: chosen)
         change { $0 = advance.state }
         reminders = advance.reminders
         pinnedID = nil
+    }
+
+    /// Closes the question about delaying strips without passing the turn.
+    func cancelDelayedChoice() {
+        pendingTurn = nil
+        delayedChoice = []
+    }
+
+    private func passTurn(from base: CombatState) {
+        pendingTurn = base
+        delayedChoice = base.delayedStripsAhead
+        if delayedChoice.isEmpty { passTurn(actingNow: []) }
     }
 
     /// Dismisses the front reminder, applying an action from it first if one was chosen.

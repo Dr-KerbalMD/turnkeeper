@@ -9,7 +9,7 @@ extension DemiplaneClient {
     /// (the character isn't shared with this user, or the page has changed).
     public func sharedCharacter(id: String, game: Game) async throws -> DemiplaneCharacter? {
         let path = "/nexus/\(DemiplaneReference.nexusSlug(for: game))/character-sheet/\(id)"
-        var request = URLRequest(url: Self.appURL.appendingPathComponent(path))
+        var request = URLRequest(url: Self.appURL.appendingPathComponent(path), cachePolicy: Self.uncached)
         if let session { request.setValue(session.cookieHeader, forHTTPHeaderField: "Cookie") }
         let (data, response) = try await transport.send(request)
         guard response.statusCode == 200, let html = String(data: data, encoding: .utf8) else { return nil }

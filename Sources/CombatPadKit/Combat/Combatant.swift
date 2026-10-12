@@ -20,7 +20,8 @@ public enum Side: String, Codable, Sendable {
 public enum PadPlace: String, Codable, Sendable {
     /// In initiative order.
     case ladder
-    /// Waiting off to the side; it comes back by taking its turn now.
+    /// Waiting off to the side. Sessions saved before delayed strips stayed on the ladder have it; they
+    /// decode as ladder combatants with `isDelaying` set.
     case delaying
     /// On the bench, not yet in the fight.
     case bench
@@ -43,6 +44,11 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
     /// The rolled initiative. Ties can be broken with halves, such as 17.5.
     public var initiative: Double?
     public var place: PadPlace
+    /// Delaying: still on the ladder, but its turns are skipped until it returns.
+    public var isDelaying: Bool
+    /// Delayed after its turn began. As the Delay rule says, its end of turn came at once; when it returns it
+    /// takes the rest of that turn, without start- or end-of-turn reminders again.
+    public var delayedMidTurn: Bool
     public var conditions: [AppliedCondition]
     public var notes: String
 
@@ -58,8 +64,37 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
         temporaryHitPoints = 0
         initiative = nil
         place = .ladder
+        isDelaying = false
+        delayedMidTurn = false
         conditions = []
         notes = ""
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, kind, side, name, creatureKey, slotID, template, damageTaken, temporaryHitPoints, initiative
+        case place, isDelaying, delayedMidTurn, conditions, notes
+    }
+
+    /// Sessions saved before delayed strips stayed on the ladder have no `isDelaying`, and keep delayed
+    /// combatants off the ladder; those come back to it, still delaying.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        kind = try container.decode(CombatantKind.self, forKey: .kind)
+        side = try container.decode(Side.self, forKey: .side)
+        name = try container.decode(String.self, forKey: .name)
+        creatureKey = try container.decode(String.self, forKey: .creatureKey)
+        slotID = try container.decodeIfPresent(UUID.self, forKey: .slotID)
+        template = try container.decode(CreatureTemplate.self, forKey: .template)
+        damageTaken = try container.decode(Int.self, forKey: .damageTaken)
+        temporaryHitPoints = try container.decode(Int.self, forKey: .temporaryHitPoints)
+        initiative = try container.decodeIfPresent(Double.self, forKey: .initiative)
+        let savedPlace = try container.decode(PadPlace.self, forKey: .place)
+        place = savedPlace == .delaying ? .ladder : savedPlace
+        isDelaying = try container.decodeIfPresent(Bool.self, forKey: .isDelaying) ?? (savedPlace == .delaying)
+        delayedMidTurn = try container.decodeIfPresent(Bool.self, forKey: .delayedMidTurn) ?? false
+        conditions = try container.decode([AppliedCondition].self, forKey: .conditions)
+        notes = try container.decode(String.self, forKey: .notes)
     }
 
     public var tracksHitPoints: Bool { kind != .playerCharacter }

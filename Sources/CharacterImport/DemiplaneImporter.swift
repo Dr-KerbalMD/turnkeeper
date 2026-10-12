@@ -7,6 +7,8 @@ public struct ImportedCharacter: Sendable {
     public var sheet: Creature
     public var link: CharacterLink
     public var avatarURL: URL?
+    /// Read signed out, from whatever Demiplane exported last, which may be older than the character.
+    public var isLastExport = false
 }
 
 /// Imports Demiplane characters: identity from the API, numbers from the exported sheet PDF, and glossary
@@ -33,7 +35,8 @@ public struct DemiplaneImporter: Sendable {
         var link = CharacterLink(source: .demiplane, characterID: id, game: sheet.game, revision: export.revision)
         link.linkedNames = linked.linkedNames
         link.totalNames = linked.totalNames
-        return ImportedCharacter(sheet: linked.sheet, link: link, avatarURL: character?.avatarURL)
+        return ImportedCharacter(sheet: linked.sheet, link: link, avatarURL: character?.avatarURL,
+                                 isLastExport: client.session == nil)
     }
 
     /// The character's identity. The GraphQL API only returns the user's own characters, so a character

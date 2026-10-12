@@ -3,6 +3,8 @@
 # saved library, only an imported bestiary in Generated/.
 #
 # IPAD_SIMULATOR  name of the simulator to use (default: an iPad on the newest iOS installed)
+# ONLY            tests to run, space-separated, such as "DelayUITests PlanningUITests/testHandoutShownToPlayers"
+#                 (default: all of them, which takes several minutes)
 set -eu
 
 cd "$(dirname "$0")/.."
@@ -11,10 +13,13 @@ DEVICE="$(scripts/ipad-simulator-id.sh)"
 [ -n "$DEVICE" ] || { echo "Running the UI tests failed: no iPad simulator is installed." >&2; exit 1; }
 echo "Running the UI tests on simulator $DEVICE..."
 
+set -- -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
+    -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath ios/build -skipPackageUpdates
+for test in ${ONLY:-}; do set -- "$@" -only-testing:"CombatPadUITests/$test"; done
+
 LOG="$(mktemp)"
 trap 'rm -f "$LOG"' EXIT
 STATUS=0
-xcodebuild test -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
-    -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath ios/build > "$LOG" 2>&1 || STATUS=$?
+xcodebuild test "$@" > "$LOG" 2>&1 || STATUS=$?
 grep -E " error: |Test Case .*(passed|failed)|\*\* TEST" "$LOG" || tail -n 20 "$LOG"
 exit "$STATUS"

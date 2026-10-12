@@ -8,12 +8,13 @@ struct DemiplaneTarget: Identifiable {
 }
 
 /// Under a party member: for a linked PC, where its sheet came from, its max HP (typed by the GM, shown on
-/// the card only) and Refresh and Unlink; for a quick PC, a way to link one.
+/// the card only), its battle card, and Refresh and Unlink; for a quick PC, a way to link one.
 struct MemberLinkRow: View {
     let member: PartyMember
     let partyID: UUID
     let onLink: () -> Void
     @Environment(AppModel.self) private var model
+    @State private var isShowingCard = false
 
     var body: some View {
         if let link = member.link {
@@ -24,20 +25,29 @@ struct MemberLinkRow: View {
                 }
                 .font(.caption)
                 Spacer()
-                TextField("Max HP", value: maxHitPoints, format: .number)
+                TextField("Max HP", value: maxHitPoints, format: .number, prompt: Text("Max HP"))
+                    .labelsHidden()
                     .frame(width: 70)
                     .multilineTextAlignment(.trailing)
                     .help("Shown on the PC's card only; players track their own HP")
-                Button("Refresh", systemImage: "arrow.clockwise") {
-                    Task { await model.refreshFromDemiplane(memberID: member.id, partyID: partyID) }
+                Button("Battle Card", systemImage: "person.text.rectangle") { isShowingCard = true }
+                    .help("Show the PC's battle card")
+                if model.refreshingMemberID == member.id {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Button("Refresh", systemImage: "arrow.clockwise") {
+                        Task { await model.refreshFromDemiplane(memberID: member.id, partyID: partyID) }
+                    }
+                    .disabled(model.demiplaneProgress != nil)
                 }
-                .disabled(model.demiplaneProgress != nil)
-                Button("Unlink", systemImage: "link.badge.minus", role: .destructive) {
+                Button("Unlink", systemImage: "xmark.circle", role: .destructive) {
                     model.unlinkFromDemiplane(memberID: member.id, partyID: partyID)
                 }
+                .help("Unlink from Demiplane")
             }
             .buttonStyle(.borderless)
             .labelStyle(.iconOnly)
+            .sheet(isPresented: $isShowingCard) { CreaturePreview(key: PlayerCharacter.key(for: member)) }
         } else {
             Button("Link to Demiplane…", systemImage: "link", action: onLink)
                 .buttonStyle(.borderless)

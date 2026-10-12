@@ -78,7 +78,7 @@ extension DemiplaneClient {
 
     private func sessionRequest(path: String, operation: String) throws -> URLRequest {
         guard let session else { throw CharacterImportError.signInNeeded(operation: operation) }
-        var request = URLRequest(url: Self.appURL.appendingPathComponent(path))
+        var request = URLRequest(url: Self.appURL.appendingPathComponent(path), cachePolicy: Self.uncached)
         request.setValue(session.cookieHeader, forHTTPHeaderField: "Cookie")
         request.setValue(Self.appURL.absoluteString, forHTTPHeaderField: "Origin")
         request.setValue(Self.appURL.absoluteString + "/", forHTTPHeaderField: "Referer")

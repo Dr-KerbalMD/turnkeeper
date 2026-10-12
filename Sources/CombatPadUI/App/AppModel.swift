@@ -1,5 +1,6 @@
 import Bestiary
 import CombatPadKit
+import CreatureArt
 import Foundation
 import Observation
 
@@ -35,6 +36,8 @@ final class AppModel {
     let demiplane: DemiplaneAccount
     /// What a Demiplane import is doing, while it runs.
     var demiplaneProgress: String?
+    /// The party member whose sheet is being refreshed, for the progress on its row.
+    var refreshingMemberID: UUID?
     /// A campaign's characters, waiting for the GM to choose which to add.
     var campaignImport: PendingCampaignImport?
 

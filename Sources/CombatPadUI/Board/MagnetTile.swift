@@ -17,9 +17,11 @@ struct MagnetTile: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            Image(systemName: "arrowtriangle.right.fill")
+            Image(systemName: combatant.isDelaying ? "hourglass" : "arrowtriangle.right.fill")
                 .foregroundStyle(.yellow)
-                .opacity(isCurrent ? 1 : 0)
+                .opacity(isCurrent || combatant.isDelaying ? 1 : 0)
+                .frame(width: 16)
+                .accessibilityLabel(combatant.isDelaying ? "Delaying" : "")
             initiativeBadge
             ArtImage(path: tileArt, size: 46, shape: .circle, alignment: .top)
             VStack(alignment: .leading, spacing: 4) {

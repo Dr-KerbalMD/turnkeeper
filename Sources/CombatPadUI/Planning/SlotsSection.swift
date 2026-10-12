@@ -87,7 +87,6 @@ private struct SlotRow: View {
                     .buttonStyle(.borderless)
                 Stepper("× \(slot.count)", value: field(\.count), in: 1...20)
                     .fixedSize()
-                RemoveButton(title: "Remove from Encounter", action: remove)
             }
             HStack {
                 Picker("Template", selection: field(\.template)) {
@@ -121,10 +120,11 @@ private struct SlotRow: View {
                             conditions: slot.conditions) { edit in change { edit(&$0.conditions) } }
         }
         .acceptsArtwork(for: slot.creatureKey, model: model)
+        .deleteCommand(perform: remove)
         .contextMenu {
             Button("Remove from Encounter", systemImage: "trash", role: .destructive, action: remove)
             if model.hasPastedArtwork(slot.creatureKey) {
-                Button("Remove Pasted Artwork", systemImage: "photo.badge.minus") {
+                Button("Remove Pasted Artwork", systemImage: "trash") {
                     model.removeArtwork(for: slot.creatureKey)
                 }
             }
