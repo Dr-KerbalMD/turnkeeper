@@ -21,9 +21,15 @@ extension AppModel {
         }
     }
 
-    /// Re-imports a linked member's sheet, keeping its name and the GM's max HP.
+    /// Re-imports a linked member's sheet, keeping its name and the GM's max HP, and says what changed.
     func refreshFromDemiplane(memberID: UUID, partyID: UUID) async {
-        guard let link = party(partyID)?.members.first(where: { $0.id == memberID })?.link else { return }
+        guard let member = party(partyID)?.members.first(where: { $0.id == memberID }) else { return }
+        guard let link = member.link else {
+            statusMessage = "\(member.name) isn't linked to Demiplane."
+            return
+        }
+        refreshingMemberID = memberID
+        defer { refreshingMemberID = nil }
         await importFromDemiplane(.character(id: link.characterID, game: link.game), partyID: partyID,
                                   memberID: memberID)
     }
@@ -41,22 +47,34 @@ extension AppModel {
     func add(_ characters: [ImportedCharacter], to partyID: UUID, memberID: UUID? = nil) async {
         guard var party = party(partyID) else { return }
         var portraits: [(key: String, url: URL)] = []
+        var updates: [SheetUpdate] = []
         for imported in characters {
-            let index = party.members.firstIndex { $0.id == memberID }
-                ?? party.members.firstIndex { $0.link?.characterID == imported.link.characterID }
-                ?? party.members.endIndex
-            if index == party.members.endIndex { party.members.append(PartyMember(name: imported.sheet.name)) }
-            party.members[index].sheet = imported.sheet
-            party.members[index].link = imported.link
-            party.members[index].level = imported.sheet.level
-            if let url = imported.avatarURL { portraits.append((PlayerCharacter.key(for: party.members[index]), url)) }
+            updates.append(party.apply(imported.sheet, link: imported.link, to: memberID))
+            guard let url = imported.avatarURL,
+                  let member = party.members.first(where: { $0.link?.characterID == imported.link.characterID })
+            else { continue }
+            portraits.append((PlayerCharacter.key(for: member), url))
         }
         library.save(party)
-        statusMessage = characters.count == 1 ? "Imported \(characters[0].sheet.name)."
+        statusMessage = characters.count == 1 ? Self.importMessage(characters[0], updates[0], party: party)
             : "Imported \(characters.count) characters."
         for portrait in portraits {
             await storePortrait(from: portrait.url, for: portrait.key)
         }
+    }
+
+    /// "Updated Eagan Norr: AC 18 → 19.", or a hint when nothing changed, noting a signed-out import.
+    private static func importMessage(_ imported: ImportedCharacter, _ update: SheetUpdate, party: Party) -> String {
+        let name = party.members.first { $0.link?.characterID == imported.link.characterID }?.name
+            ?? imported.sheet.name
+        let message = switch update {
+        case .added: "Imported \(name)."
+        case .updated(let changes) where changes.isEmpty: "Updated \(name)."
+        case .updated(let changes): "Updated \(name): \(changes.joined(separator: ", "))."
+        case .unchanged: "No changes to \(name) on Demiplane. Has the player saved the rebuild?"
+        }
+        guard imported.isLastExport else { return message }
+        return message + " Signed out, so Demiplane's last export was used."
     }
 
     private func runDemiplane(_ progress: String, _ work: (DemiplaneImporter) async throws -> Void) async -> Bool {

@@ -8,7 +8,7 @@ struct DemiplaneTarget: Identifiable {
 }
 
 /// Under a party member: for a linked PC, where its sheet came from, its max HP (typed by the GM, shown on
-/// the card only) and Refresh and Unlink; for a quick PC, a way to link one.
+/// the card only), and Refresh and Unlink; for a quick PC, a way to link one.
 struct MemberLinkRow: View {
     let member: PartyMember
     let partyID: UUID
@@ -28,10 +28,14 @@ struct MemberLinkRow: View {
                     .frame(width: 70)
                     .multilineTextAlignment(.trailing)
                     .help("Shown on the PC's card only; players track their own HP")
-                Button("Refresh", systemImage: "arrow.clockwise") {
-                    Task { await model.refreshFromDemiplane(memberID: member.id, partyID: partyID) }
+                if model.refreshingMemberID == member.id {
+                    ProgressView().controlSize(.small)
+                } else {
+                    Button("Refresh", systemImage: "arrow.clockwise") {
+                        Task { await model.refreshFromDemiplane(memberID: member.id, partyID: partyID) }
+                    }
+                    .disabled(model.demiplaneProgress != nil)
                 }
-                .disabled(model.demiplaneProgress != nil)
                 Button("Unlink", systemImage: "link.badge.minus", role: .destructive) {
                     model.unlinkFromDemiplane(memberID: member.id, partyID: partyID)
                 }
