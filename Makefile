@@ -42,7 +42,7 @@ ipad-install:
 icon:
 	swift scripts/make-icon.swift
 
-# Runs the iPad UI tests in a simulator, against the demo fight.
+# Runs the iPad UI tests in a simulator, against the demo fight. ONLY="DelayUITests ..." runs just those.
 ipad-uitest:
 	scripts/run-ipad-uitests.sh
 
