@@ -30,6 +30,9 @@ public struct DemiplaneClient: Sendable {
 
     static let graphQLURL = URL(string: "https://apiv4.demiplane.com/v1/graphql")!
     static let appURL = URL(string: "https://app.demiplane.com")!
+    /// Every request skips the URL cache: the signed-out sheet's address never changes, so a cached copy would
+    /// hide a player's rebuild.
+    static let uncached = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 
     public init(transport: any HTTPTransport, token: String?, session: DemiplaneSession?) {
         self.transport = transport
@@ -45,7 +48,7 @@ public struct DemiplaneClient: Sendable {
             deleted_at: {_is_null: true}}) { uuid name level avatar_url nexus { slug } } }
             """
         let body: [String: Any] = ["query": query, "variables": ["id": id]]
-        var request = URLRequest(url: Self.graphQLURL)
+        var request = URLRequest(url: Self.graphQLURL, cachePolicy: Self.uncached)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let token, !token.isEmpty { request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization") }
@@ -64,7 +67,7 @@ public struct DemiplaneClient: Sendable {
 
     /// The sheet PDF at a URL from `exportSheet`, or `publicSheetURL` when there is no session.
     public func sheetPDF(at url: URL) async throws -> Data {
-        let (data, response) = try await transport.send(URLRequest(url: url))
+        let (data, response) = try await transport.send(URLRequest(url: url, cachePolicy: Self.uncached))
         switch response.statusCode {
         case 200: return data
         case 403, 404: throw CharacterImportError.notExported(operation: "Downloading the character sheet")
