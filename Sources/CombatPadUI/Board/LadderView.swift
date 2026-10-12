@@ -1,13 +1,16 @@
-import Bestiary
 import CombatPadKit
 import SwiftUI
 
-/// The initiative half of the pad: the ladder of magnets with event markers between them, the Delay and
-/// Dying drop zones, and the bench of creatures waiting to join.
+/// The initiative half of the pad: the ladder of magnets with event markers between them, and the bench of
+/// creatures waiting to join. In combat, swiping a strip left to right delays it, and right to left knocks it
+/// out, or brings a delaying strip back.
 struct LadderView: View {
     let controller: BoardController
     @Binding var sheet: BoardSheet?
     @Environment(\.padTheme) private var theme
+
+    /// Swiping to delay asks first, while the gesture is new to the table.
+    private static let confirmsSwipeToDelay = true
 
     var body: some View {
         VStack(spacing: 10) {
@@ -17,6 +20,10 @@ struct LadderView: View {
                         switch item {
                         case let .combatant(combatant):
                             MagnetTile(controller: controller, combatant: combatant, sheet: $sheet)
+                                .modifier(SwipeableStrip(leading: delayAction(combatant),
+                                                         trailing: knockOutAction(combatant)))
+                                .opacity(combatant.isDelaying ? 0.7 : 1)
+                                .padding(.leading, combatant.isDelaying ? 24 : 0)
                                 .dropDestination(for: String.self) { ids, _ in drop(ids, before: combatant.id) }
                         case let .event(event):
                             EventMarker(event: event)
@@ -25,7 +32,6 @@ struct LadderView: View {
                 }
                 .padding(12)
             }
-            if controller.state.phase == .active { gutters }
             if controller.state.phase == .setup { HoldToTalkButton(controller: controller) }
             BenchTray(controller: controller) { id in
                 controller.bringInFromBench(id)
@@ -35,26 +41,29 @@ struct LadderView: View {
         .padding(.bottom, 10)
     }
 
-    private var gutters: some View {
-        HStack(spacing: 10) {
-            DropZone(title: "Delay", systemImage: "hourglass", items: controller.state.delaying) { id in
-                controller.change { $0.endDelay(id) }
+    /// Left to right: delay, in combat and when not delaying already.
+    private func delayAction(_ combatant: Combatant) -> StripSwipeAction? {
+        guard controller.state.phase == .active, !combatant.isDelaying else { return nil }
+        return StripSwipeAction(title: "Delay", systemImage: "hourglass", color: .orange) {
+            if Self.confirmsSwipeToDelay {
+                controller.delayToConfirm = combatant
+            } else {
+                controller.startDelay(combatant.id)
             }
-            .dropDestination(for: String.self) { ids, _ in
-                ids.compactMap(UUID.init(uuidString:)).forEach { id in controller.change { $0.startDelay(id) } }
-                return true
-            }
-            DropZone(title: "Dying", systemImage: "heart.slash", items: dying, action: nil)
-                .dropDestination(for: String.self) { ids, _ in
-                    ids.compactMap(UUID.init(uuidString:)).forEach { id in controller.change { $0.knockOut(id) } }
-                    return true
-                }
         }
-        .padding(.horizontal, 12)
     }
 
-    private var dying: [Combatant] {
-        controller.state.ladder.filter { $0.condition(ConditionSlug.dying) != nil }
+    /// Right to left: a delaying strip returns; any other is knocked out.
+    private func knockOutAction(_ combatant: Combatant) -> StripSwipeAction? {
+        guard controller.state.phase == .active else { return nil }
+        if combatant.isDelaying {
+            return StripSwipeAction(title: "Return", systemImage: "arrow.uturn.left", color: .green) {
+                controller.change { $0.endDelay(combatant.id) }
+            }
+        }
+        return StripSwipeAction(title: "Knocked Out", systemImage: "heart.slash", color: .red) {
+            controller.change { $0.knockOut(combatant.id) }
+        }
     }
 
     private func drop(_ ids: [String], before target: UUID) -> Bool {
@@ -65,10 +74,11 @@ struct LadderView: View {
             controller.bringInFromBench(id)
             controller.change { $0.move(id, toIndex: $0.order.firstIndex(of: target) ?? 0) }
             sheet = .initiative(id)
-        case .delaying:
-            controller.change { $0.endDelay(id) }
         default:
-            controller.change { $0.move(id, toIndex: $0.order.firstIndex(of: target) ?? 0) }
+            // A delaying strip only moves down.
+            let index = state.order.firstIndex(of: target) ?? 0
+            guard state.canMove(id, toIndex: index) else { return false }
+            controller.change { $0.move(id, toIndex: index) }
         }
         return true
     }
@@ -126,32 +136,6 @@ private struct EventMarker: View {
             RoundedRectangle(cornerRadius: 8).strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
                 .foregroundStyle(.gray)
         }
-    }
-}
-
-/// A labeled drop zone listing the combatants in it.
-private struct DropZone: View {
-    let title: String
-    let systemImage: String
-    let items: [Combatant]
-    let action: ((UUID) -> Void)?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Label(title, systemImage: systemImage).font(.caption.bold())
-            ForEach(items) { combatant in
-                Button(combatant.name) { action?(combatant.id) }
-                    .font(.caption)
-                    .disabled(action == nil)
-                    .help(action == nil ? "" : "Return now: takes its turn at this point in the order")
-            }
-            if items.isEmpty { Text("Drag a strip here").font(.caption2).foregroundStyle(.secondary) }
-        }
-        .frame(maxWidth: .infinity, minHeight: 54, alignment: .topLeading)
-        .padding(8)
-        .foregroundStyle(.white)
-        .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
-        .overlay { RoundedRectangle(cornerRadius: 8).strokeBorder(.white.opacity(0.25)) }
     }
 }
 

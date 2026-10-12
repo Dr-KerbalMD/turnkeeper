@@ -49,6 +49,7 @@ private struct BoardContent: View {
         .overlay { ListeningOverlay(controller: controller) }
         .sheet(item: $sheet) { sheet in BoardSheetContent(sheet: sheet, controller: controller) }
         .sheet(isPresented: reminderBinding) { ReminderStack(controller: controller) }
+        .delayedChoice(controller: controller)
         .sheet(isPresented: endBinding) {
             if controller.endingEvents.isEmpty {
                 VictorySheet(controller: controller)
@@ -76,7 +77,7 @@ private struct BoardContent: View {
     }
 
     private var reminderBinding: Binding<Bool> {
-        Binding(get: { controller.isBlocked }, set: { _ in })
+        Binding(get: { !controller.reminders.isEmpty }, set: { _ in })
     }
 
     private var endBinding: Binding<Bool> {

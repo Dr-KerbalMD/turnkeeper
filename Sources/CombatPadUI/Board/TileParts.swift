@@ -76,17 +76,18 @@ struct TileMenu: View {
         }
         Divider()
         if controller.state.phase == .active {
-            Button("Delay", systemImage: "hourglass") { controller.change { $0.startDelay(combatant.id) } }
+            if combatant.isDelaying {
+                Button("Return from Delay", systemImage: "arrow.uturn.left") {
+                    controller.change { $0.endDelay(combatant.id) }
+                }
+            } else {
+                Button("Delay", systemImage: "hourglass") { controller.startDelay(combatant.id) }
+            }
             Button("Knocked Out (Dying)", systemImage: "heart.slash") {
                 controller.change { $0.knockOut(combatant.id) }
             }
         }
-        Button("Move to Bench", systemImage: "chair.lounge") {
-            controller.change { state in
-                state.order.removeAll { $0 == combatant.id }
-                state[combatant.id]?.place = .bench
-            }
-        }
+        Button("Move to Bench", systemImage: "chair.lounge") { controller.change { $0.moveToBench(combatant.id) } }
         Button("Remove", systemImage: "trash", role: .destructive) { controller.change { $0.remove(combatant.id) } }
     }
 
