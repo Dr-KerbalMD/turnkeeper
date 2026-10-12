@@ -109,7 +109,13 @@ Ported from the pf2e system, with tests.
 ## UI
 - **Themes.** `PadTheme` defines a Pathfinder look (parchment and red) and a Starfinder look (teal,
   neon cyan and a starfield). Magnet colors are shared by both.
-- **Board.** The left half holds the ladder, the delay and dying gutters, the bench and event tiles.
+- **Board.** The left half holds the ladder, the bench and event tiles.
+  The ladder is a scroll view, so strips use `SwipeableStrip`: a sideways `DragGesture` (ignored when the
+  drag starts more vertical than sideways, so scrolling and `.draggable` still work) that slides the strip
+  over a colored action and fires it past a threshold.
+- **Delay.** `Combatant.isDelaying` keeps a delaying strip in `CombatState.order`. `TurnAdvancer.next`
+  skips delaying strips and takes `actingNow`, the GM's answer about `delayedStripsAhead`, which
+  `BoardController` asks for (an alert for one, a sheet for several) before passing the turn.
   The right half holds the battle card and notes.
 - **Battle cards.** `StatBlockPresenter` (in the Kit) produces adjusted values with breakdowns: the
   template adds an untyped ±2, conditions add their typed penalties, and the first damage instance of a

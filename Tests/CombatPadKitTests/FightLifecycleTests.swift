@@ -33,7 +33,8 @@ struct FightLifecycleTests {
     func allEnemiesDown() {
         var orc = combatant("Orc")
         orc.damageTaken = 20
-        var goblin = combatant("Goblin", place: .delaying)
+        var goblin = combatant("Goblin")
+        goblin.isDelaying = true
         goblin.damageTaken = 6
         let reserve = combatant("Reserve", place: .bench)
         let pit = combatant("Pit", .hazard)

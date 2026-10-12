@@ -28,6 +28,26 @@ public struct CombatState: Codable, Sendable, Hashable {
         durations = []
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case phase, round, combatants, order, currentID, events, durations
+    }
+
+    /// Sessions saved before delayed strips stayed on the ladder kept them out of the order. They come back
+    /// just below the current strip, still delaying, so the next turn offers them a turn.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        phase = try container.decode(CombatPhase.self, forKey: .phase)
+        round = try container.decode(Int.self, forKey: .round)
+        combatants = try container.decode([Combatant].self, forKey: .combatants)
+        order = try container.decode([UUID].self, forKey: .order)
+        currentID = try container.decodeIfPresent(UUID.self, forKey: .currentID)
+        events = try container.decode([EncounterEvent].self, forKey: .events)
+        durations = try container.decode([DurationMarker].self, forKey: .durations)
+        let missing = combatants.filter { $0.place == .ladder && !order.contains($0.id) }.map(\.id)
+        let below = currentID.flatMap { order.firstIndex(of: $0) }.map { $0 + 1 } ?? order.count
+        order.insert(contentsOf: missing, at: below)
+    }
+
     public subscript(id: UUID) -> Combatant? {
         get { combatants.first { $0.id == id } }
         set {
@@ -42,7 +62,8 @@ public struct CombatState: Codable, Sendable, Hashable {
     /// The combatants on the ladder, in turn order.
     public var ladder: [Combatant] { order.compactMap { self[$0] } }
     public var bench: [Combatant] { combatants.filter { $0.place == .bench } }
-    public var delaying: [Combatant] { combatants.filter { $0.place == .delaying } }
+    /// Strips on the ladder whose turns are skipped until they return.
+    public var delaying: [Combatant] { ladder.filter(\.isDelaying) }
     public var current: Combatant? { currentID.flatMap { self[$0] } }
 
     // MARK: Progress
@@ -104,9 +125,9 @@ public struct CombatState: Codable, Sendable, Hashable {
 
     // MARK: Ladder changes
 
-    /// Moves a strip to a new place in the order, as when the GM drags it.
+    /// Moves a strip to a new place in the order, as when the GM drags it. A delaying strip only moves down.
     public mutating func move(_ id: UUID, toIndex index: Int) {
-        guard let from = order.firstIndex(of: id) else { return }
+        guard let from = order.firstIndex(of: id), canMove(id, toIndex: index) else { return }
         order.remove(at: from)
         order.insert(id, at: min(max(index, 0), order.count))
     }
@@ -119,23 +140,6 @@ public struct CombatState: Codable, Sendable, Hashable {
         self[id]?.initiative = initiative
         let index = initiative.flatMap { value in ladder.firstIndex { ($0.initiative ?? -100) < value } }
         order.insert(id, at: index ?? order.count)
-    }
-
-    /// Takes a combatant out of the order to Delay. Delaying on its own turn passes the turn on.
-    public mutating func startDelay(_ id: UUID) {
-        guard let index = order.firstIndex(of: id) else { return }
-        if currentID == id { currentID = order.count > 1 ? order[(index + 1) % order.count] : nil }
-        order.remove(at: index)
-        self[id]?.place = .delaying
-    }
-
-    /// A delaying combatant returns: it acts now, and its place in the order becomes this point.
-    public mutating func endDelay(_ id: UUID) {
-        guard self[id]?.place == .delaying else { return }
-        self[id]?.place = .ladder
-        let index = currentID.flatMap { order.firstIndex(of: $0) } ?? order.count
-        order.insert(id, at: index)
-        currentID = id
     }
 
     /// When a combatant is knocked out, its place moves to just before the turn it happened on.

@@ -113,6 +113,19 @@ ladder, and the right half is the notes side, which shows the battle card of the
   already taken.
 - R4.7 Conditions are applied from a palette, shown as chips, and change the battle card's numbers.
   Changed numbers are tinted and show their breakdown on long-press or hover.
+- R4.7a In combat, swiping a strip left to right delays it (asking first, for now), and right to left
+  knocks it out (dying 1 plus wounded) or, on a delaying strip, brings it back where it is. The context
+  menu has the same actions for the Mac and accessibility. There are no Delay or Dying drop zones.
+- R4.7b A delaying strip stays on the ladder, shifted right and dimmed, and its turns are skipped. Delaying
+  on its own turn passes the turn, and the strip waits just below whoever acts next; delaying off its turn
+  moves it just below the next strip. As the Delay rule says, a strip delaying on its own turn has its
+  end of turn at once (persistent damage, frightened, durations that end); when it returns it finishes that
+  turn without start- or end-of-turn reminders again.
+- R4.7c Before the turn passes over delaying strips, Next asks which act now: yes or no for one, a list to
+  tick for several. Those that act now go top to bottom; the rest move below the next strip that isn't
+  delaying. When the last strip that isn't delaying starts its turn, every delaying strip below it comes
+  back, so all act that round. A delaying strip can be dragged down, never up. Fights saved with a strip
+  in the old Delay zone come back with it delaying just below the current strip.
 - R4.8 Benched creatures can be brought into combat at any time.
 - R4.9 Durations and events count down and fire in rules order.
 - R4.10 Turn reminders are modal and must be dismissed: slowed, stunned, quickened and dying at the
