@@ -21,15 +21,17 @@ The creature model, stat-block presentation, conditions and the pf2e import live
 Guide; its spec describes the import pipeline. `make bestiary` runs Combat Pad's `BestiaryImport` executable on it.
 
 ## Creature art
-- `CreatureArtStore` (an actor) owns Tabletop Kit's `ArtLibrary` in Application Support/Combat Pad/Creature Art (apart from
+- Tabletop Kit's `CreatureArtStore` (an actor, in its `CreatureArt` product) owns the kit's `ArtLibrary`; Combat
+  Pad's `standard()` puts it in Application Support/Combat Pad/Creature Art (apart from
   pasted art's `Art` folder, whose unused files are swept at launch). Import
   from Scrollkeeper watches the chosen folder and runs `addNewFiles`, by reference; Add PDFs… commits each file
   kept. At launch the store refreshes the PDFs' statuses and adds new files from the watched folders. Pictures
   are drawn by `ArtLibrary.picture(of:maxPixels:)` and cached by entry and size.
 - After each change the store publishes a catalog: per entry its id, name, game, whether a remastered product
   (Monster Core, NPC Core, Alien Core, Howl of the Wild, Rage of Elements) prints it, whether its first print is
-  a token, whether it can be drawn, and the titles of the PDFs printing it. `LibraryArtMatcher` (CombatPadKit)
-  indexes it by game and normalized name, with the same rules as the old PDF matcher: words compared as a set,
+  a token, whether it can be drawn, the titles of the PDFs printing it, and whether it is an item's art.
+  Tabletop Kit's `LibraryArtMatcher` (`Bestiary`) indexes it by game and normalized name, items apart so a
+  creature never takes an item's art, with the same rules as the old PDF matcher: words compared as a set,
   a "FAMILY, MEMBER" title also under the member alone, a creature's name tried as is, without "spellcaster"
   and without parentheses, `art-overrides.json` first. Remastered creatures prefer entries a remastered product
   prints, legacy ones the others, drawable entries first.
@@ -151,6 +153,12 @@ Ported from the pf2e system, with tests.
   `nexus_id`: 1 Pathfinder, 100 Starfinder) inside the page's string-escaped React data; the import reads it
   from there (`DemiplaneClient.sharedCharacter`). When the page doesn't have it either, the import goes on
   with the link's game and the sheet's name and level.
+- **Refresh.** Every request to Demiplane skips the URL cache (`reloadIgnoringLocalCacheData`): signed out,
+  the sheet's address never changes, so a cached PDF would hide a rebuild. `Party.apply(_:link:to:)`
+  (CombatPadKit) puts an imported sheet on its member and returns a `SheetUpdate`: `added`, `unchanged` (the
+  same sheet as before) or `updated` with the changes a GM cares about (level, AC, saves, Perception, class DC,
+  then skills, Strikes, spells, feats and items). The status message reports it, and says when the import was
+  signed out and so read Demiplane's last export. The party row shows progress while its refresh runs.
 - **Session and token.** `DemiplaneSignInView` is a `WKWebView` on the default persistent data store; the
   app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
   shown, and an expired token is renewed from the session when there is one.

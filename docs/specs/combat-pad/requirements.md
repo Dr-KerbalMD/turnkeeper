@@ -142,6 +142,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
   effects, traits (on the trait line, Strikes and abilities), and links inside rules text, such as conditions,
   actions and spells. A tap (or click) shows a popover with the entry's name, category, traits and text. Links
   inside that popover open a second popover; links go two deep, and deeper ones read as plain text.
+- R5.3c A card lists the immunities a creature's traits grant even when the Foundry data leaves them out:
+  construct, mindless and swarm (Tabletop Kit's `TraitImmunities`). Hardness can't be derived, so a creature
+  whose hardness is missing upstream has none on its card.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art comes only from the user's own purchased
   PDFs, read on the device, and is never bundled or committed.
 - R5.5 Card backs show the creature in a landscape picked by its traits (Pathfinder) or glowing on a dark texture
@@ -154,10 +157,14 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R6.2 Importing asks Demiplane to export the character sheet PDF and reads the computed numbers from it:
   AC, saves, Perception, skills, speeds, Strikes, spells, actions and reactions, feats, class features,
   items, languages and senses. Refreshing re-imports; a character that hasn't changed comes back at once.
+  A refresh always says what happened: what changed ("Updated Eagan Norr: AC 18 → 19."), that nothing did
+  (perhaps the player hasn't saved the rebuild), that the member isn't linked, and, when signed out, that
+  Demiplane's last export was read. It never shows an old copy of the sheet from a cache.
   Importing again matches by the Demiplane character, so it never duplicates a PC.
   When an import fails, the reason shows in the import sheet at once, not after it closes.
 - R6.3 A linked PC's tile pins a PC battle card in the same style as creature cards, with conditions
   applied to its numbers.
+- R6.3a A linked member's battle card opens from its row in the party, without the Weak and Elite templates.
 - R6.4 The PC card links spells, actions, reactions, feats, class features, items and traits to the
   Foundry glossary (R5.3b), matched by name for the character's game; a name without a match stays plain.
   Actions with a glossary entry show its rules text, else Demiplane's text.
