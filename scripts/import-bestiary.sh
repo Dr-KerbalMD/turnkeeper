@@ -3,13 +3,13 @@
 # from the user's own PDFs on the device.
 #
 # PF2E_REPO           the pf2e system repository (default ~/git/pf2e)
-# REXARD_PACKS        the folder holding the user's Rexard UI packs, for the cards' art (default ~/Downloads)
+# REXARD_PACKS        the folder holding the user's Rexard UI packs, for the cards' art (default ~/git/rexard-packs)
 set -eu
 
 cd "$(dirname "$0")/.."
 
 PF2E_REPO="${PF2E_REPO:-$HOME/git/pf2e}"
-REXARD_PACKS="${REXARD_PACKS:-$HOME/Downloads}"
+REXARD_PACKS="${REXARD_PACKS:-$HOME/git/rexard-packs}"
 
 if [ ! -x .venv/bin/python ] || ! .venv/bin/python -c "import fontTools, brotli" 2>/dev/null; then
     python3 -m venv .venv
