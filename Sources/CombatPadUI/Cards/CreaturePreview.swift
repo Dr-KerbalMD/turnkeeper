@@ -3,7 +3,8 @@ import Bestiary
 import CombatPadKit
 import SwiftUI
 
-/// A creature's battle card on its own, from the bestiary browser, with the player view one tap away.
+/// A creature's battle card on its own, from the bestiary browser, an encounter or the party (a PC's `pc.` key),
+/// with the player view one tap away.
 struct CreaturePreview: View {
     let key: String
     @Environment(AppModel.self) private var model
@@ -31,6 +32,9 @@ struct CreaturePreview: View {
                         MissingArtNote(key: key)
                     }
                     .padding()
+                } else if isPlayerCharacter {
+                    ContentUnavailableView("No battle card", systemImage: "person.crop.rectangle",
+                                           description: Text("Link this player to Demiplane to import their sheet."))
                 } else {
                     ContentUnavailableView("Not in the bestiary", systemImage: "questionmark")
                 }
@@ -39,13 +43,15 @@ struct CreaturePreview: View {
             .acceptsArtwork(for: key, model: model)
             .toolbar { ArtworkControls(key: key) }
             .toolbar {
-                ToolbarItem {
-                    Picker("Template", selection: $template) {
-                        Text("Weak").tag(CreatureTemplate.weak)
-                        Text("Normal").tag(CreatureTemplate.normal)
-                        Text("Elite").tag(CreatureTemplate.elite)
+                if !isPlayerCharacter {
+                    ToolbarItem {
+                        Picker("Template", selection: $template) {
+                            Text("Weak").tag(CreatureTemplate.weak)
+                            Text("Normal").tag(CreatureTemplate.normal)
+                            Text("Elite").tag(CreatureTemplate.elite)
+                        }
+                        .pickerStyle(.segmented)
                     }
-                    .pickerStyle(.segmented)
                 }
                 ToolbarItem { ShowPlayersButton(entry: model.entry(key)) }
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
@@ -53,6 +59,9 @@ struct CreaturePreview: View {
         }
         .frame(minWidth: 600, minHeight: 760)
     }
+
+    /// PCs have no Weak or Elite templates.
+    private var isPlayerCharacter: Bool { PlayerCharacter.isKey(key) }
 }
 
 /// The player view, full screen. Tap to close.
