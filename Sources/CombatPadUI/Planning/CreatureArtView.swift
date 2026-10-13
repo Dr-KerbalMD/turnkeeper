@@ -49,6 +49,9 @@ struct CreatureArtView: View {
                 Task { await model.refreshCreatureArt(addingNew: true) }
             }
         }
+        // In a form row, every button fires on a tap anywhere in the row: Add PDFs… then set the picker to
+        // PDFs, so Scrollkeeper's folder couldn't be opened. Borderless buttons take only their own taps.
+        .buttonStyle(.borderless)
         .disabled(model.artProgress != nil)
     }
 
