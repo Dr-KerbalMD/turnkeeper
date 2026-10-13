@@ -148,8 +148,9 @@ Ported from the pf2e system, with tests.
 - **Card and notes split.** `SplitLayout` (in the Kit, tested) keeps the three panes as fractions of the
   height, with minimums, collapsing and a hidden creature-notes pane whose share is kept. `PaneStack` draws
   it with drag grips; the layout is saved per device in user defaults, not synced.
-- **Fonts.** Roboto Condensed and Roboto, plus the pf2e action glyph font, converted from the pf2e
-  system's woff2 files.
+- **Fonts.** Roboto Condensed and Roboto, converted from the pf2e system's woff2 files, plus Paizo's
+  Pathfinder-Icons font for the action icons, which `make bestiary` copies unaltered from the private `Artwork`
+  submodule (Tabletop Kit's `ActionIcons` maps costs to its code points).
 
 ## Character import
 - **Sheet.** A PC's sheet is a `Creature` of kind `character`, with `PlayerDetails` (ancestry, heritage,

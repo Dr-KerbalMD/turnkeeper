@@ -172,7 +172,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R5.3d A creature's conditions show as colored tags under its traits, labeled and colored as on its strip
   ("Frightened 2"). A tap on a tag shows the condition's rules text in a popover.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art comes only from the user's own purchased
-  PDFs, read on the device, and is never bundled or committed.
+  PDFs, read on the device, and is never bundled or committed, except Paizo's Pathfinder-Icons font for the
+  action icons: bundled unaltered under the Paizo Compatibility License, and kept out of the repository.
 - R5.5 Card backs show the creature in a landscape picked by its traits (Pathfinder) or glowing on a dark texture
   with its name on a terminal plate (Starfinder).
 
