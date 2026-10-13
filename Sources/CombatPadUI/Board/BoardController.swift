@@ -252,6 +252,11 @@ final class BoardController {
                                   conditions: combatant.conditions).armorClass
     }
 
+    /// The fight as the player screen shows it.
+    var playerScreen: PlayerScreenFight {
+        state.playerScreen { maxHitPoints(of: $0) }
+    }
+
     func maxHitPoints(of combatant: Combatant) -> Int {
         guard let creature = stripCreature(for: combatant) else { return 0 }
         return StatBlockPresenter(creature: creature, template: combatant.template,

@@ -88,7 +88,8 @@ Ported from the pf2e system, with tests.
   `Pasted/<file>` paths, which `AppModel.artURL` resolves to the store, so every view and the player view
   show it; the card back is cleared so the drawn back frames it.
 - **Handouts.** `Handout` records (scenario, name, image file) store their image in the same `ArtStore`
-  and travel in packages the same way. `PlayerDisplay` shows either a creature or a handout.
+  and travel in packages the same way. `PlayerDisplay` shows either a handout or, while the player screen is
+  on, the fight.
 - **System paste buttons.** Pasting uses SwiftUI's `PasteButton`, which reads the pasteboard without iOS's
   Allow Paste prompt. Where a toolbar may be crowded, it sits in the page instead: iOS ignores a paste
   button it can't see in full.
@@ -129,6 +130,14 @@ Ported from the pf2e system, with tests.
   `battleCardFullScreenHost()`, so a Mac card fills its window or sheet. The board's card is keyed by
   combatant (`.id`), so a new turn starts it on its front. Condition tags and `ConditionLabel` are the kit's;
   the strip chips use the same `ConditionLabel`.
+- **Player screen.** `CombatState.playerScreen(maxHitPoints:)` (tested) builds a `PlayerScreenFight`: the
+  ladder as `PlayerScreenLine`s with a `HealthEstimate` (Tabletop Kit) for enemies, and the acting
+  combatant's creature key. `BoardView` pushes `BoardController.playerScreen` to `PlayerDisplay.fight` on
+  every change and clears it when the board closes. `PlayerScreenToggle` sets
+  `PlayerDisplay.isPlayerScreenOn`: on the Mac it opens or dismisses the Players window (whose appearing
+  and disappearing set it too); on the iPad without a second screen it presents `PlayerScreen` in a
+  `fullScreenCover`. `PlayerScreen`, the root of the external-display scene and the Players window, uses
+  the app's own `AppModel` and lays the order and art side by side, or stacked when taller than wide.
 - **Glossary links.** `BestiaryStore.glossaryEntry(_:)` loads `glossary.json` on first use. Linked words are
   `CardSegment.link` runs, drawn as `Text` links (`tabletop-glossary:<id>`) with a dotted underline in the
   card's ink. `CardLineView` handles the link with an `OpenURLAction` and shows a `GlossaryPopover`
@@ -182,6 +191,14 @@ Ported from the pf2e system, with tests.
   `battleCardFullScreenHost()`, so a Mac card fills its window or sheet. The board's card is keyed by
   combatant (`.id`), so a new turn starts it on its front. Condition tags and `ConditionLabel` are the kit's;
   the strip chips use the same `ConditionLabel`.
+- **Player screen.** `CombatState.playerScreen(maxHitPoints:)` (tested) builds a `PlayerScreenFight`: the
+  ladder as `PlayerScreenLine`s with a `HealthEstimate` (Tabletop Kit) for enemies, and the acting
+  combatant's creature key. `BoardView` pushes `BoardController.playerScreen` to `PlayerDisplay.fight` on
+  every change and clears it when the board closes. `PlayerScreenToggle` sets
+  `PlayerDisplay.isPlayerScreenOn`: on the Mac it opens or dismisses the Players window (whose appearing
+  and disappearing set it too); on the iPad without a second screen it presents `PlayerScreen` in a
+  `fullScreenCover`. `PlayerScreen`, the root of the external-display scene and the Players window, uses
+  the app's own `AppModel` and lays the order and art side by side, or stacked when taller than wide.
 - **Glossary links.** `CharacterGlossaryLinker` fills the sheet's `LinkTable` by name through
   `BestiaryStore.glossaryID`, falling back to Pathfinder names for Starfinder characters (Starfinder 2e
   shares the Player Core ancestries and feats); action text is replaced by the linked entry's rules text when there is one.

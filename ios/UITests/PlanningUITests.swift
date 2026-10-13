@@ -28,13 +28,14 @@ final class PlanningUITests: XCTestCase {
         XCTAssertFalse(app.navigationBars["Bestiary"].exists)
     }
 
-    /// Show Players covers the whole screen, hiding the board behind it, and a tap closes it.
-    func testShowPlayersFillsTheScreen() {
+    /// Without a second screen, the Player Screen toggle covers the whole screen, hiding the board behind it,
+    /// and a tap closes it.
+    func testPlayerScreenFillsTheScreen() {
         app.launchArguments = ["--demo", "board"]
         app.launch()
-        let show = app.buttons["Show Players"]
-        XCTAssertTrue(show.waitForExistence(timeout: 10))
-        show.tap()
+        let toggle = app.switches["Player Screen"]
+        XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+        toggle.tap()
         let next = app.buttons["Next"]
         XCTAssertTrue(waitUntil { !next.isHittable })
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()

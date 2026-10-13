@@ -31,10 +31,17 @@ public struct CombatPadApp: App {
         #if os(macOS)
         Window("Players", id: PlayerWindow.id) {
             PlayerScreen()
-                .onAppear { PlayerDisplay.shared.hasSecondScreen = true }
-                .onDisappear { PlayerDisplay.shared.hasSecondScreen = false }
+                // The window is the player screen: open is on, closed is off.
+                .onAppear {
+                    PlayerDisplay.shared.hasSecondScreen = true
+                    PlayerDisplay.shared.isPlayerScreenOn = true
+                }
+                .onDisappear {
+                    PlayerDisplay.shared.hasSecondScreen = false
+                    PlayerDisplay.shared.isPlayerScreenOn = false
+                }
         }
-        .defaultSize(width: 700, height: 1000)
+        .defaultSize(width: 1280, height: 720)
         #endif
     }
 }
