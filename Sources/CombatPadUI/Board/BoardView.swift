@@ -58,6 +58,8 @@ private struct BoardContent: View {
             }
         }
         .boardKeyboardShortcuts(controller: controller)
+        .onChange(of: controller.playerScreen, initial: true) { PlayerDisplay.shared.fight = $1 }
+        .onDisappear { PlayerDisplay.shared.fight = nil }
         .task { if controller.state.phase == .setup { await VoiceInitiative.shared.requestPermission() } }
         .focusable()
         .focusEffectDisabled()

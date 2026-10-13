@@ -3,14 +3,12 @@ import Bestiary
 import CombatPadKit
 import SwiftUI
 
-/// A creature's battle card on its own, from the bestiary browser, an encounter or the party (a PC's `pc.` key),
-/// with the player view one tap away.
+/// A creature's battle card on its own, from the bestiary browser, an encounter or the party (a PC's `pc.` key).
 struct CreaturePreview: View {
     let key: String
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
     @State private var template: CreatureTemplate
-    @State private var isFlipped = false
     /// Conditions shown on the card, such as a planned creature's starting conditions.
     let conditions: [AppliedCondition]
 
@@ -26,9 +24,8 @@ struct CreaturePreview: View {
             Group {
                 if let creature = model.creature(key) {
                     VStack(spacing: 8) {
-                        FlippableCard(entry: model.entry(key), isFlipped: $isFlipped) {
-                            BattleCard(creature: creature, template: template, conditions: conditions)
-                        }
+                        CreatureBattleCard(entry: model.entry(key), front: BattleCard(
+                            creature: creature, template: template, conditions: conditions))
                         MissingArtNote(key: key)
                     }
                     .padding()
@@ -53,30 +50,13 @@ struct CreaturePreview: View {
                         .pickerStyle(.segmented)
                     }
                 }
-                ToolbarItem { ShowPlayersButton(entry: model.entry(key)) }
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
         }
+        .battleCardFullScreenHost()
         .frame(minWidth: 600, minHeight: 760)
     }
 
     /// PCs have no Weak or Elite templates.
     private var isPlayerCharacter: Bool { PlayerCharacter.isKey(key) }
-}
-
-/// The player view, full screen. Tap to close.
-struct PlayerViewSheet: View {
-    let entry: BestiaryIndexEntry
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        CardBackView(entry: entry)
-            .onTapGesture { dismiss() }
-            #if os(iOS)
-            .statusBarHidden()
-            .persistentSystemOverlays(.hidden)
-            #else
-            .frame(minWidth: 640, idealWidth: 760, minHeight: 900, idealHeight: 1100)
-            #endif
-    }
 }

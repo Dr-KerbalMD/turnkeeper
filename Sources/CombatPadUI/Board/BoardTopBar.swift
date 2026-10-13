@@ -30,6 +30,7 @@ struct BoardTopBar: View {
             }
             DurationArrows(controller: controller)
             Spacer()
+            PlayerScreenToggle()
             if controller.state.phase == .setup {
                 BeginCombatButton(controller: controller)
             } else {

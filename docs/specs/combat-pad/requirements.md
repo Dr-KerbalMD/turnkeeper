@@ -79,9 +79,13 @@ ladder, and the right half is the notes side, which shows the battle card of the
   encounter's notes. On the board the card, creature notes and encounter notes are a split resized by
   dragging grips; a notes pane dragged small collapses to its header, a tap reopens it, a double-tap on a
   grip resets the split, and the split is remembered on each device.
-- R3.5f A battle card, in planning and on the board, has a flip button (the circling-arrows symbol) that
-  turns it over to show the GM the creature's art privately. On the board it turns back when the card
-  changes to another combatant.
+- R3.5f A battle card, in planning and on the board, is Tabletop Kit's interactive card (shared with Field
+  Guide). Tapping an empty part of the card shows its corner icons and a second tap hides them; with a
+  pointer, each icon shows while the pointer is over its corner. Taps on linked words and trait or condition
+  tags open their popovers instead. The top-right icon turns the card over to show the GM the creature's art
+  privately (only when it has a bestiary entry); on the board it turns back when the card changes to another
+  combatant. The bottom-right icon, or a pinch out, shows the face that's showing full screen (filling the
+  window on the Mac); the same icons work there, and the bottom-right one, a pinch in or Escape exits.
 - R3.6 The encounter budget shows the XP total and threat for the party's level and size.
 - R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
 - R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or
@@ -140,8 +144,15 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R4.11d Changing an in-progress difficulty's creatures or events in the planner warns that the fight will
   be reset, and ends it if the GM goes ahead.
 - R4.12 The battle card follows the current turn. Tapping a tile pins that card.
-- R4.13 Art can be shown full screen; on the iPad the player view covers the whole screen. If an external display is connected, the art goes there.
-- R4.14 The player view shows the creature's card back (R5.5) around its portrait from the user's PDFs.
+- R4.13 A Player Screen toggle on the board's top bar shows the fight to the players: on the iPad on an
+  external display or AirPlay screen when one is connected, else covering the iPad's screen until tapped;
+  on the Mac in the Players window, which the toggle opens and closes. Battle cards have no Show Players
+  button; a card turned over and shown full screen (R3.5f) is the way to hold one creature's art up.
+- R4.14 The player screen shows the initiative order on one half: the acting strip outlined, delaying strips
+  shifted right as on the GM's ladder, benched combatants left out. Each enemy shows how hurt it looks:
+  Unharmed (full HP), Healthy (over 75%), Injured (over 50%), Bloodied (over 25%), Near Death, or Down (0 HP
+  or dying). PCs and allies show no health. The other half shows the acting combatant's card back (R5.5)
+  around its portrait. It never shows a stat block or a number.
 
 ## R5 Battle cards
 - R5.1 The cards are Tabletop Kit's battle cards (shared with Field Guide), in a look of their own rather than
@@ -158,6 +169,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R5.3c A card lists the immunities a creature's traits grant even when the Foundry data leaves them out:
   construct, mindless and swarm (Tabletop Kit's `TraitImmunities`). Hardness can't be derived, so a creature
   whose hardness is missing upstream has none on its card.
+- R5.3d A creature's conditions show as colored tags under its traits, labeled and colored as on its strip
+  ("Frightened 2"). A tap on a tag shows the condition's rules text in a popover.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art comes only from the user's own purchased
   PDFs, read on the device, and is never bundled or committed.
 - R5.5 Card backs show the creature in a landscape picked by its traits (Pathfinder) or glowing on a dark texture
@@ -183,7 +196,7 @@ ladder, and the right half is the notes side, which shows the battle card of the
   Actions with a glossary entry show its rules text, else Demiplane's text.
 - R6.5 Players track their own HP: PC tiles don't change (R4.4, R4.5). The GM may type a max HP, shown only
   on the card; imports never overwrite it.
-- R6.6 Show Players for a PC shows only the card back, drawn around the Demiplane portrait.
+- R6.6 On the player screen, a PC's turn shows only its card back, drawn around the Demiplane portrait.
 - R6.7 Demiplane access is set up in the app: sign in through a Demiplane web page (needed for campaigns
   and sheet export, and to renew the token), or paste a token. The token stays in the device's Keychain;
   it is never synced or exported. Linked PCs and their sheets travel with the party like any other data.

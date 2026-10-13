@@ -18,8 +18,8 @@ struct RootView: View {
             }
         }
         .environment(\.padTheme, PadTheme.forGame(model.game))
-        .environment(\.glossary, GlossaryContext(bestiary: model.bestiary))
-        .environment(\.cardArt, CardArtPieces(folder: model.bestiary.cardArtFolder))
+        .battleCardEnvironment(model)
+        .battleCardFullScreenHost()
         .alert("Combat Pad", isPresented: errorBinding) {
             Button("OK") { model.errorMessage = nil }
         } message: {
