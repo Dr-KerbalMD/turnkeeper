@@ -33,6 +33,13 @@ in the style of the Paizo Combat Pad. See `docs/specs/combat-pad/` for the requi
 - **Demo:** launch with `--demo planner`, `--demo setup`, `--demo board` or `--demo starfinder` for an
   in-memory sample that leaves the saved library alone.
 
+## Artwork
+
+The `Artwork/` folder is a private Git submodule ([toolkit-artwork](https://github.com/scooper4711/toolkit-artwork)).
+Clone with `git clone --recursive`, or run `git submodule update --init` after cloning. Its contents are
+licensed and not redistributable. Without access to it, the build still works and falls back to built-in
+artwork.
+
 ## Test
 `make test` and `make lint` (Swift); `make ipad-uitest` (iPad UI tests, against the demo fight);
 `.venv/bin/python -m pytest` and `.venv/bin/ruff check .` (Python). `make cards KEYS="<creature key>[:elite]"`
