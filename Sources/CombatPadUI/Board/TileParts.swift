@@ -29,32 +29,6 @@ struct ConditionChips: View {
     }
 }
 
-enum ConditionLabel {
-    /// "Frightened 2", "Bleed 1d6", or a custom reminder's text.
-    static func short(_ condition: AppliedCondition) -> String {
-        if let damage = condition.persistentDamage { return "\(damage.type.capitalized) \(damage.formula)" }
-        if condition.slug == ConditionSlug.customReminder { return "⏰ " + condition.note }
-        let name = condition.slug.replacingOccurrences(of: "-", with: " ").capitalized
-        return condition.value.map { "\(name) \($0)" } ?? name
-    }
-
-    /// Penalties red, losing actions purple, good things green, the rest gray.
-    static func color(_ condition: AppliedCondition) -> Color {
-        switch condition.slug {
-        case "frightened", "sickened", "clumsy", "enfeebled", "drained", "stupefied", "off-guard", "fatigued":
-            return Color(hex: 0x8E1B1B)
-        case "slowed", "stunned", "paralyzed", "restrained", "grabbed", "immobilized", "prone":
-            return Color(hex: 0x5B2A86)
-        case "quickened", "hidden", "invisible", "concealed":
-            return Color(hex: 0x1F6E3A)
-        case "dying", "unconscious", "persistent-damage", "doomed", "wounded":
-            return .black
-        default:
-            return Color(hex: 0x4A4A4A)
-        }
-    }
-}
-
 /// Long-press or right-click actions on a strip.
 struct TileMenu: View {
     let controller: BoardController
