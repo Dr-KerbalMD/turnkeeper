@@ -38,7 +38,11 @@ in the style of the Paizo Combat Pad. See `docs/specs/combat-pad/` for the requi
 The `Artwork/` folder is a private Git submodule ([toolkit-artwork](https://github.com/scooper4711/toolkit-artwork)).
 Clone with `git clone --recursive`, or run `git submodule update --init` after cloning. Its contents are
 licensed and not redistributable. Without access to it, the build still works and falls back to built-in
-artwork.
+artwork. `make bestiary` copies Paizo's Pathfinder-Icons font from it, unaltered, for the cards' action icons
+(the [Paizo Compatibility License](https://paizo.com/licenses/compatibility)); without it they show stand-in
+symbols.
+
+Pathfinder and Starfinder are registered trademarks and copyrights of Paizo Inc.
 
 ## Test
 `make test` and `make lint` (Swift); `make ipad-uitest` (iPad UI tests, against the demo fight);

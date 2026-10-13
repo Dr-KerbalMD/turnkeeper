@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Converts the pf2e system's web fonts to TrueType, which iOS and macOS can load.
 
-Converts Roboto, Roboto Condensed and the Pathfinder action glyph font from <pf2e>/static/fonts into
-<out> as .ttf files named after the source files.
+Converts Roboto and Roboto Condensed from <pf2e>/static/fonts into <out> as .ttf files named after the
+source files. The action icons' Pathfinder-Icons font is already TrueType, and its license forbids altering it,
+so import-bestiary.sh copies it as it is.
 
 Requirements: combat-pad R5.1, R5.2, R5.4
 """
@@ -12,7 +13,7 @@ from pathlib import Path
 
 from fontTools.ttLib import TTFont
 
-FONT_PREFIXES = ("roboto-v", "roboto-condensed-", "pathfinder-2e-actions")
+FONT_PREFIXES = ("roboto-v", "roboto-condensed-")
 
 
 def main() -> None:
