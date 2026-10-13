@@ -33,16 +33,42 @@ final class NotesUITests: XCTestCase {
             .firstMatch.waitForExistence(timeout: 3))
     }
 
-    /// The flip button shows the GM the art; the next turn turns the card back to its stat block.
+    /// A tap on the card shows the flip icon, which shows the GM the art; the next turn turns the card back to
+    /// its stat block.
     func testFlipCardShowsArtUntilTheTurnMoves() {
-        let flip = app.buttons["Flip Card"]
-        XCTAssertTrue(flip.waitForExistence(timeout: 10))
+        let flip = revealCardIcons(named: "Flip Card")
         flip.tap()
         let back = app.buttons["Show Stat Block"]
         XCTAssertTrue(back.waitForExistence(timeout: 3))
-        XCTAssertFalse(app.staticTexts["Perception"].exists)
+        XCTAssertFalse(perceptionLine.exists)
         app.buttons["Next"].tap()
         XCTAssertTrue(waitUntil { !back.exists })
+    }
+
+    /// The full-screen icon shows the card over the board; a tap there shows its exit icon, which closes it.
+    func testFullScreenCardCoversTheBoard() {
+        revealCardIcons(named: "Full Screen").tap()
+        let next = app.buttons["Next"]
+        XCTAssertTrue(waitUntil { !next.isHittable })
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8)).tap()
+        let exit = app.buttons["Exit Full Screen"]
+        XCTAssertTrue(waitUntil { exit.isHittable })
+        exit.tap()
+        XCTAssertTrue(waitUntil { next.isHittable })
+    }
+
+    private var perceptionLine: XCUIElement {
+        app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Perception'")).firstMatch
+    }
+
+    /// Taps the card's Perception line, which has no links, so the corner icons show.
+    @discardableResult
+    private func revealCardIcons(named name: String) -> XCUIElement {
+        XCTAssertTrue(perceptionLine.waitForExistence(timeout: 10))
+        perceptionLine.tap()
+        let icon = app.buttons[name]
+        XCTAssertTrue(icon.waitForExistence(timeout: 3))
+        return icon
     }
 
     private func describe(_ header: XCUIElement) -> String {

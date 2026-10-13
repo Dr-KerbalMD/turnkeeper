@@ -14,9 +14,7 @@ public struct CombatPadApp: App {
     public init() {
         let model = AppModel.live()
         Fonts.register(from: BestiaryStore.locateGeneratedDirectory())
-        PlayerDisplay.shared.bestiary = model.bestiary
-        PlayerDisplay.shared.artStore = model.artStore
-        PlayerDisplay.shared.creatureArt = model.creatureArt
+        PlayerDisplay.shared.model = model
         _model = State(initialValue: model)
     }
 

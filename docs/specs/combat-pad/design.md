@@ -122,6 +122,13 @@ Ported from the pf2e system, with tests.
   Strike or ability takes the template's damage change.
   Tabletop Kit's `BattleCard` and `CardBack` render them, with the UI art in `Generated/CardArt` passed as the
   `cardArt` environment value (the root view, the player display and card snapshots).
+- **Interactive cards.** `CreatureBattleCard` wraps Tabletop Kit's `InteractiveBattleCard`, with
+  `CreatureCardBack` (the kit's `CardBack` around its `ArtPicture`) as the back. `battleCardEnvironment(_:)`
+  sets what cards take from the app: the glossary, the card UI art, and an `ArtPictureLoader` that calls
+  `AppModel.artPicture(for:maxPixels:)`. The root view and `CreaturePreview` apply
+  `battleCardFullScreenHost()`, so a Mac card fills its window or sheet. The board's card is keyed by
+  combatant (`.id`), so a new turn starts it on its front. Condition tags and `ConditionLabel` are the kit's;
+  the strip chips use the same `ConditionLabel`.
 - **Glossary links.** `BestiaryStore.glossaryEntry(_:)` loads `glossary.json` on first use. Linked words are
   `CardSegment.link` runs, drawn as `Text` links (`tabletop-glossary:<id>`) with a dotted underline in the
   card's ink. `CardLineView` handles the link with an `OpenURLAction` and shows a `GlossaryPopover`
@@ -168,6 +175,13 @@ Ported from the pf2e system, with tests.
 - **Session and token.** `DemiplaneSignInView` is a `WKWebView` on the default persistent data store; the
   app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
   shown, and an expired token is renewed from the session when there is one.
+- **Interactive cards.** `CreatureBattleCard` wraps Tabletop Kit's `InteractiveBattleCard`, with
+  `CreatureCardBack` (the kit's `CardBack` around its `ArtPicture`) as the back. `battleCardEnvironment(_:)`
+  sets what cards take from the app: the glossary, the card UI art, and an `ArtPictureLoader` that calls
+  `AppModel.artPicture(for:maxPixels:)`. The root view and `CreaturePreview` apply
+  `battleCardFullScreenHost()`, so a Mac card fills its window or sheet. The board's card is keyed by
+  combatant (`.id`), so a new turn starts it on its front. Condition tags and `ConditionLabel` are the kit's;
+  the strip chips use the same `ConditionLabel`.
 - **Glossary links.** `CharacterGlossaryLinker` fills the sheet's `LinkTable` by name through
   `BestiaryStore.glossaryID`, falling back to Pathfinder names for Starfinder characters (Starfinder 2e
   shares the Player Core ancestries and feats); action text is replaced by the linked entry's rules text when there is one.

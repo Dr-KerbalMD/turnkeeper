@@ -9,7 +9,6 @@ struct CardPanel: View {
     let controller: BoardController
     @Environment(AppModel.self) private var model
     private var layout = StoredSplitLayout()
-    @State private var isFlipped = false
 
     init(controller: BoardController) {
         self.controller = controller
@@ -27,8 +26,6 @@ struct CardPanel: View {
             }
         }
         .padding(12)
-        // A new turn, or another strip tapped, shows the stat block again.
-        .onChange(of: controller.cardCombatant?.id) { isFlipped = false }
     }
 
     @ViewBuilder
@@ -78,24 +75,23 @@ struct CardPanel: View {
         }
     }
 
+    @ViewBuilder
     private var header: some View {
-        HStack {
-            if controller.pinnedID != nil {
-                Button("Current Turn", systemImage: "arrow.uturn.backward") { controller.pinnedID = nil }
-            }
-            Spacer()
-            ShowPlayersButton(entry: controller.cardCombatant.flatMap { controller.entry(for: $0) })
+        if controller.pinnedID != nil {
+            Button("Current Turn", systemImage: "arrow.uturn.backward") { controller.pinnedID = nil }
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .foregroundStyle(.white)
     }
 
     @ViewBuilder
     private func card(for combatant: Combatant) -> some View {
         if let creature = controller.creature(for: combatant) {
             VStack(spacing: 6) {
-                FlippableCard(entry: controller.entry(for: combatant), isFlipped: $isFlipped) {
-                    BattleCard(creature: creature, template: combatant.template, conditions: combatant.conditions)
-                }
+                // A new turn, or another strip tapped, shows the stat block again.
+                CreatureBattleCard(entry: controller.entry(for: combatant), front: BattleCard(
+                    creature: creature, template: combatant.template, conditions: combatant.conditions))
+                    .id(combatant.id)
                 MissingArtNote(key: combatant.creatureKey).foregroundStyle(.white.opacity(0.7))
             }
         } else {

@@ -1,7 +1,5 @@
-import BattleCards
 import Bestiary
 import CombatPadKit
-import CreatureArt
 import Observation
 import SwiftUI
 #if os(iOS)
@@ -22,10 +20,8 @@ final class PlayerDisplay {
     /// The handout on show, as its name and image path.
     private(set) var handout: (name: String, imagePath: String)?
     var hasSecondScreen = false
-    /// The bestiary and art stores, so the second screen can load art without the app model.
-    var bestiary = BestiaryStore()
-    var artStore: ArtStore?
-    var creatureArt: CreatureArtStore?
+    /// The app's model, so the second screen finds creatures, art and handouts the way the GM's screen does.
+    var model: AppModel?
 
     private init() {}
 
@@ -48,18 +44,17 @@ struct PlayerScreen: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            if let entry = display.entry {
-                CardBackView(entry: entry)
-                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore,
-                                          creatureArt: display.creatureArt))
-                    .environment(\.cardArt, CardArtPieces(folder: display.bestiary.cardArtFolder))
-                    .transition(.opacity)
-            } else if let handout = display.handout {
-                HandoutPlayerView(name: handout.name, imagePath: handout.imagePath)
-                    .environment(AppModel(bestiary: display.bestiary, artStore: display.artStore,
-                                          creatureArt: display.creatureArt))
-                    .environment(\.cardArt, CardArtPieces(folder: display.bestiary.cardArtFolder))
-                    .transition(.opacity)
+            if let model = display.model {
+                Group {
+                    if let entry = display.entry {
+                        CardBackView(entry: entry)
+                    } else if let handout = display.handout {
+                        HandoutPlayerView(name: handout.name, imagePath: handout.imagePath)
+                    }
+                }
+                .environment(model)
+                .battleCardEnvironment(model)
+                .transition(.opacity)
             }
         }
         .animation(.easeInOut, value: display.entry?.key)
@@ -101,37 +96,6 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 }
 #endif
-
-/// "Show Players": puts the creature on the second screen when there is one, otherwise full screen here.
-struct ShowPlayersButton: View {
-    let entry: BestiaryIndexEntry?
-    @State private var isPresentingHere = false
-    #if os(macOS)
-    @Environment(\.openWindow) private var openWindow
-    #endif
-
-    var body: some View {
-        Menu {
-            Button("Hide from Players", systemImage: "eye.slash") { PlayerDisplay.shared.hide() }
-            #if os(macOS)
-            Button("Open Players Window", systemImage: "macwindow") { openWindow(id: PlayerWindow.id) }
-            #endif
-        } label: {
-            Label("Show Players", systemImage: "eye")
-        } primaryAction: {
-            show()
-        }
-        .disabled(entry == nil)
-        .playerPresentation(isPresented: $isPresentingHere) {
-            if let entry { PlayerViewSheet(entry: entry) }
-        }
-    }
-
-    private func show() {
-        PlayerDisplay.shared.entry = entry
-        if !PlayerDisplay.shared.hasSecondScreen { isPresentingHere = true }
-    }
-}
 
 extension View {
     /// The player view takes the whole screen on the iPad, so it can be held up to the table. The Mac shows it

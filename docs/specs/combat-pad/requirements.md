@@ -79,9 +79,13 @@ ladder, and the right half is the notes side, which shows the battle card of the
   encounter's notes. On the board the card, creature notes and encounter notes are a split resized by
   dragging grips; a notes pane dragged small collapses to its header, a tap reopens it, a double-tap on a
   grip resets the split, and the split is remembered on each device.
-- R3.5f A battle card, in planning and on the board, has a flip button (the circling-arrows symbol) that
-  turns it over to show the GM the creature's art privately. On the board it turns back when the card
-  changes to another combatant.
+- R3.5f A battle card, in planning and on the board, is Tabletop Kit's interactive card (shared with Field
+  Guide). Tapping an empty part of the card shows its corner icons and a second tap hides them; with a
+  pointer, each icon shows while the pointer is over its corner. Taps on linked words and trait or condition
+  tags open their popovers instead. The top-right icon turns the card over to show the GM the creature's art
+  privately (only when it has a bestiary entry); on the board it turns back when the card changes to another
+  combatant. The bottom-right icon, or a pinch out, shows the face that's showing full screen (filling the
+  window on the Mac); the same icons work there, and the bottom-right one, a pinch in or Escape exits.
 - R3.6 The encounter budget shows the XP total and threat for the party's level and size.
 - R3.7 The scenario page shows every encounter against every variant, with each cell's XP and threat.
 - R3.8 Planned events trigger at an initiative count, at the start or end of a round, or at the start or
@@ -158,6 +162,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R5.3c A card lists the immunities a creature's traits grant even when the Foundry data leaves them out:
   construct, mindless and swarm (Tabletop Kit's `TraitImmunities`). Hardness can't be derived, so a creature
   whose hardness is missing upstream has none on its card.
+- R5.3d A creature's conditions show as colored tags under its traits, labeled and colored as on its strip
+  ("Frightened 2"). A tap on a tag shows the condition's rules text in a popover.
 - R5.4 The card fronts are drawn in code, with free fonts. Paizo art comes only from the user's own purchased
   PDFs, read on the device, and is never bundled or committed.
 - R5.5 Card backs show the creature in a landscape picked by its traits (Pathfinder) or glowing on a dark texture

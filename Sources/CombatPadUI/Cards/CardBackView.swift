@@ -3,42 +3,38 @@ import Bestiary
 import CombatPadKit
 import SwiftUI
 
-/// What the players see: the creature's art from the user's PDFs on a card back (Tabletop Kit's `CardBack`), with
-/// its name.
+/// What the players see: the creature's card back on black, filling the screen.
 struct CardBackView: View {
     let entry: BestiaryIndexEntry
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            CardBack(name: entry.name, game: entry.game, traits: entry.traits.traits) {
-                let path = entry.art.portrait.isEmpty ? entry.art.token : entry.art.portrait
-                if !path.isEmpty { FullArt(path: path) }
-            }
-            .padding(24)
+            CreatureCardBack(entry: entry).padding(24)
         }
     }
 }
 
-/// An image at full resolution, fitted to the space.
-private struct FullArt: View {
-    let path: String
-    @Environment(AppModel.self) private var model
-    @State private var image: CGImage?
+/// The creature's art from the user's PDFs on a card back (Tabletop Kit's `CardBack`), with its name. The back of
+/// a battle card, and what the player screen shows.
+struct CreatureCardBack: View {
+    let entry: BestiaryIndexEntry
 
     var body: some View {
-        Group {
-            if let image {
-                // Smooth scaling: a small token's art may be enlarged.
-                Image(decorative: image, scale: 1).resizable().interpolation(.high).scaledToFit()
-            } else {
-                ProgressView()
-            }
-        }
-        .task(id: path) {
-            image = await model.artPicture(for: path, maxPixels: 0)
+        CardBack(name: entry.name, game: entry.game, traits: entry.traits.traits) {
+            let path = entry.art.portrait.isEmpty ? entry.art.token : entry.art.portrait
+            if !path.isEmpty { ArtPicture(path: path) }
         }
     }
 }
 
-/// A Pathfinder Bestiary card back: a scorched parchment border around a deep red field with the portrait.
+extension View {
+    /// What battle cards take from the app: the glossary for links, the card UI art and the creatures' art.
+    func battleCardEnvironment(_ model: AppModel) -> some View {
+        environment(\.glossary, GlossaryContext(bestiary: model.bestiary))
+            .environment(\.cardArt, CardArtPieces(folder: model.bestiary.cardArtFolder))
+            .environment(\.artPictureLoader, ArtPictureLoader { [model] path in
+                await model.artPicture(for: path, maxPixels: 0)
+            })
+    }
+}
