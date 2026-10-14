@@ -61,11 +61,12 @@ final class NotesUITests: XCTestCase {
         app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Perception'")).firstMatch
     }
 
-    /// Taps the card's Perception line, which has no links, so the corner icons show.
+    /// Taps the start of the card's Perception line, the word "Perception", so the corner icons show. The rest of
+    /// the line can hold links, such as a sense's, which open their popover instead.
     @discardableResult
     private func revealCardIcons(named name: String) -> XCUIElement {
         XCTAssertTrue(perceptionLine.waitForExistence(timeout: 10))
-        perceptionLine.tap()
+        perceptionLine.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.5)).tap()
         let icon = app.buttons[name]
         XCTAssertTrue(icon.waitForExistence(timeout: 3))
         return icon
