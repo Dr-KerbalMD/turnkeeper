@@ -13,9 +13,9 @@ DEVICE="$(scripts/ipad-simulator-id.sh)"
 [ -n "$DEVICE" ] || { echo "Running the UI tests failed: no iPad simulator is installed." >&2; exit 1; }
 echo "Running the UI tests on simulator $DEVICE..."
 
-set -- -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
+set -- -project ios/Turnkeeper.xcodeproj -scheme Turnkeeper-iPad \
     -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath ios/build -skipPackageUpdates
-for test in ${ONLY:-}; do set -- "$@" -only-testing:"CombatPadUITests/$test"; done
+for test in ${ONLY:-}; do set -- "$@" -only-testing:"TurnkeeperUITests/$test"; done
 
 LOG="$(mktemp)"
 trap 'rm -f "$LOG"' EXIT

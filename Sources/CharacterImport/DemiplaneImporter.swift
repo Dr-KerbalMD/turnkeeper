@@ -1,5 +1,5 @@
 import Bestiary
-import CombatPadKit
+import TurnkeeperKit
 import Foundation
 
 /// An imported character: its linked sheet, where it came from, and its portrait.

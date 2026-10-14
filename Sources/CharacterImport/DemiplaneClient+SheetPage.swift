@@ -1,5 +1,5 @@
 import Bestiary
-import CombatPadKit
+import TurnkeeperKit
 import Foundation
 
 /// Characters shared with the GM, read from their sheet page. The GraphQL API only returns a user's own

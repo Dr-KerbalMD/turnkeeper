@@ -1,5 +1,5 @@
 import Bestiary
-import CombatPadKit
+import TurnkeeperKit
 import Foundation
 
 /// A Demiplane campaign: its name and the IDs of its characters.

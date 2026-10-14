@@ -1,5 +1,5 @@
 import Bestiary
-import CombatPadKit
+import TurnkeeperKit
 import Foundation
 
 /// Reads Demiplane's exported character sheet PDF, a fillable form holding the computed numbers, into a

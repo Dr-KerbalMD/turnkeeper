@@ -6,7 +6,7 @@ public struct KeychainTokenStore: Sendable {
     public var service: String
     public var account: String
 
-    public init(service: String = "io.github.scooper4711.combatpad.demiplane", account: String = "graphql-token") {
+    public init(service: String = "io.github.scooper4711.turnkeeper.demiplane", account: String = "graphql-token") {
         self.service = service
         self.account = account
     }

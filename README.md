@@ -1,7 +1,7 @@
-# Combat Pad
+# Turnkeeper
 
-A private iPad and Mac encounter builder and initiative tracker for Pathfinder 2e and Starfinder 2e,
-in the style of the Paizo Combat Pad. See `docs/specs/combat-pad/` for the requirements and design.
+A private iPad and Mac encounter builder and initiative tracker for Pathfinder 2e and Starfinder 2e.
+See `docs/specs/turnkeeper/` for the requirements and design.
 
 ## Build
 - `make bestiary` imports creatures, conditions and the glossary from `~/git/pf2e` into `Generated/` (needed
@@ -28,7 +28,7 @@ in the style of the Paizo Combat Pad. See `docs/specs/combat-pad/` for the requi
   Reminders block Next until dismissed.
 - **Show players:** the eye button shows the creature's card back, with its art, on an external display or
   AirPlay screen (iPad), in the Players window (Mac), or full screen.
-- **Share:** export a campaign as a `.combatpad` file (AirDrop, Files, Finder) and open it on the other
+- **Share:** export a campaign as a `.turnkeeper` file (AirDrop, Files, Finder) and open it on the other
   device, or use Sync with Nearby Device on both. Edits made on both sides are kept as conflict copies.
 - **Demo:** launch with `--demo planner`, `--demo setup`, `--demo board` or `--demo starfinder` for an
   in-memory sample that leaves the saved library alone.
@@ -44,9 +44,9 @@ symbols.
 
 ## Paizo notices
 
-Combat Pad uses trademarks and/or copyrights owned by Paizo Inc., used under Paizo's Community Use Policy
+Turnkeeper uses trademarks and/or copyrights owned by Paizo Inc., used under Paizo's Community Use Policy
 ([paizo.com/licenses/communityuse](https://paizo.com/licenses/communityuse)). We are expressly prohibited from
-charging you to use or access this content. Combat Pad is not published, endorsed, or specifically approved by
+charging you to use or access this content. Turnkeeper is not published, endorsed, or specifically approved by
 Paizo. For more information about Paizo Inc. and Paizo products, visit [paizo.com](https://paizo.com).
 
 Pathfinder and Starfinder are registered trademarks and copyrights of Paizo Inc.
@@ -62,7 +62,7 @@ screen (the app menu on the Mac, the campaign sidebar's About button on the iPad
 renders battle cards to `tmp/cards` for comparing with the printed decks.
 
 ## Layout
-- `Sources/CombatPadKit`: models and rules
-- `Sources/CombatPadUI`: SwiftUI shared by iPad and Mac
-- `Sources/CombatPad`: Mac entry point; `ios/`: iPad project
+- `Sources/TurnkeeperKit`: models and rules
+- `Sources/TurnkeeperUI`: SwiftUI shared by iPad and Mac
+- `Sources/Turnkeeper`: Mac entry point; `ios/`: iPad project
 - `Sources/BestiaryImport`, `scripts/extract_pdf_art.py`: the bestiary import

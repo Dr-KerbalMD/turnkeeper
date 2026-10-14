@@ -7,8 +7,8 @@
 //
 // If Xcode reports that the bundle identifier is taken, set your own there as well:
 //
-//     PRODUCT_BUNDLE_IDENTIFIER = com.example.CombatPad
+//     PRODUCT_BUNDLE_IDENTIFIER = com.example.Turnkeeper
 DEVELOPMENT_TEAM =
-PRODUCT_BUNDLE_IDENTIFIER = io.github.scooper4711.CombatPad
+PRODUCT_BUNDLE_IDENTIFIER = io.github.scooper4711.Turnkeeper
 
 #include? "Local.xcconfig"

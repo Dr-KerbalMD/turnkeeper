@@ -18,16 +18,16 @@ app:
 	scripts/build-app.sh
 
 run: app
-	open "build/Combat Pad.app"
+	open "build/Turnkeeper.app"
 
 # Moves the built app into /Applications, replacing an earlier copy. The build copy is unregistered and
 # removed so Finder and Spotlight launch the installed one.
 LSREGISTER = /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 install: app
-	rm -rf "/Applications/Combat Pad.app"
-	ditto "build/Combat Pad.app" "/Applications/Combat Pad.app"
-	-$(LSREGISTER) -u "build/Combat Pad.app" 2>/dev/null  # Fails when it was never registered, which is fine.
-	rm -rf "build/Combat Pad.app"
+	rm -rf "/Applications/Turnkeeper.app"
+	ditto "build/Turnkeeper.app" "/Applications/Turnkeeper.app"
+	-$(LSREGISTER) -u "build/Turnkeeper.app" 2>/dev/null  # Fails when it was never registered, which is fine.
+	rm -rf "build/Turnkeeper.app"
 
 # Builds the iPad app and starts it in a simulator. IPAD_SIMULATOR names the simulator.
 ipad-simulator:

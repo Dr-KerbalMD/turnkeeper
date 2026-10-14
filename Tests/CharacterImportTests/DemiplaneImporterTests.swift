@@ -1,4 +1,4 @@
-import CombatPadKit
+import TurnkeeperKit
 import Foundation
 import Testing
 @testable import CharacterImport
@@ -122,7 +122,7 @@ struct DemiplaneTokenTests {
 
     @Test("The Keychain keeps one token per account")
     func keychain() throws {
-        let store = KeychainTokenStore(service: "io.github.scooper4711.combatpad.tests", account: UUID().uuidString)
+        let store = KeychainTokenStore(service: "io.github.scooper4711.turnkeeper.tests", account: UUID().uuidString)
         defer { store.delete() }
         #expect(store.read() == nil)
         try store.save("first")

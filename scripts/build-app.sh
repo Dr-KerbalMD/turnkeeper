@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds "build/Combat Pad.app" from the Swift package.
+# Builds "build/Turnkeeper.app" from the Swift package.
 #
 # VERSION    version written to the bundle (default 0.0.0)
 # UNIVERSAL  set to 1 to build for both Apple silicon and Intel
@@ -8,8 +8,8 @@ set -eu
 cd "$(dirname "$0")/.."
 
 VERSION="${VERSION:-0.0.0}"
-APP="build/Combat Pad.app"
-EXECUTABLE="CombatPad"
+APP="build/Turnkeeper.app"
+EXECUTABLE="Turnkeeper"
 
 if [ "${UNIVERSAL:-0}" = "1" ]; then
     swift build -c release --arch arm64 --arch x86_64
@@ -38,17 +38,17 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleDisplayName</key>
-    <string>Combat Pad</string>
+    <string>Turnkeeper</string>
     <key>CFBundleExecutable</key>
     <string>$EXECUTABLE</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
-    <string>io.github.scooper4711.CombatPad</string>
+    <string>io.github.scooper4711.Turnkeeper</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Combat Pad</string>
+    <string>Turnkeeper</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -62,27 +62,27 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Combat Pad listens while you hold Hold to Say Initiative, so you can say the initiative total.</string>
+    <string>Turnkeeper listens while you hold Hold to Say Initiative, so you can say the initiative total.</string>
     <key>NSSpeechRecognitionUsageDescription</key>
-    <string>Combat Pad turns the initiative you say into a number, on this device when it can.</string>
+    <string>Turnkeeper turns the initiative you say into a number, on this device when it can.</string>
     <key>NSLocalNetworkUsageDescription</key>
-    <string>Combat Pad syncs encounters with your other devices on this network.</string>
+    <string>Turnkeeper syncs encounters with your other devices on this network.</string>
     <key>NSBonjourServices</key>
     <array>
-        <string>_combatpad._tcp</string>
+        <string>_turnkeeper._tcp</string>
     </array>
     <key>CFBundleDocumentTypes</key>
     <array>
         <dict>
             <key>CFBundleTypeName</key>
-            <string>Combat Pad Library</string>
+            <string>Turnkeeper Library</string>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>LSHandlerRank</key>
             <string>Owner</string>
             <key>LSItemContentTypes</key>
             <array>
-                <string>io.github.scooper4711.combatpad.library</string>
+                <string>io.github.scooper4711.turnkeeper.library</string>
             </array>
         </dict>
     </array>
@@ -90,9 +90,9 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <array>
         <dict>
             <key>UTTypeIdentifier</key>
-            <string>io.github.scooper4711.combatpad.library</string>
+            <string>io.github.scooper4711.turnkeeper.library</string>
             <key>UTTypeDescription</key>
-            <string>Combat Pad Library</string>
+            <string>Turnkeeper Library</string>
             <key>UTTypeConformsTo</key>
             <array>
                 <string>public.json</string>
@@ -101,7 +101,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
             <dict>
                 <key>public.filename-extension</key>
                 <array>
-                    <string>combatpad</string>
+                    <string>turnkeeper</string>
                 </array>
             </dict>
         </dict>
