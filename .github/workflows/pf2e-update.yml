@@ -1,7 +1,8 @@
 name: pf2e update
 
-# Weekly, switches pf2e.release to pf2e's newest release when there is one. Once the app has a release, it also
-# tags the next patch version and builds its disk image into a draft release, ready to publish.
+# Weekly, switches pf2e.release to pf2e's newest release when there is one. When the new release changes what
+# Turnkeeper imports (its fingerprint in import.sha256) and the app has a release, it also tags the next patch
+# version and builds its disk image into a draft release, ready to publish.
 on:
   schedule:
     - cron: '0 9 * * 1'
@@ -10,35 +11,85 @@ on:
 permissions:
   contents: write
 
+env:
+  GH_TOKEN: ${{ github.token }}
+  # The parts of the pf2e repository the import reads.
+  PF2E_PATHS: packs static/lang static/fonts
+
 jobs:
-  update:
-    name: Switch to pf2e's newest release
+  look:
+    name: Look for a newer pf2e release
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.update.outputs.tag }}
-    env:
-      GH_TOKEN: ${{ github.token }}
+      latest: ${{ steps.look.outputs.latest }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
-      - name: Update pf2e.release and tag the next version
-        id: update
+      - name: Compare pf2e's newest release with pf2e.release
+        id: look
         run: |
           LATEST="$(scripts/latest-pf2e-release.sh)"
           if [ "$LATEST" = "$(cat pf2e.release)" ]; then
             echo "Already on pf2e's newest release: $LATEST"
             exit 0
           fi
+          # Only the two commits' file lists are downloaded, not the files.
+          git init --quiet "$RUNNER_TEMP/pf2e"
+          git -C "$RUNNER_TEMP/pf2e" fetch --quiet --depth 1 --filter=blob:none \
+            https://github.com/foundryvtt/pf2e.git "$(cut -d ' ' -f 1 pf2e.release)" "${LATEST%% *}"
+          # shellcheck disable=SC2086 # PF2E_PATHS is a list of paths.
+          CHANGED="$(git -C "$RUNNER_TEMP/pf2e" diff --name-only "$(cut -d ' ' -f 1 pf2e.release)" "${LATEST%% *}" \
+            -- $PF2E_PATHS | wc -l | tr -d ' ')"
           NAMES="$(echo "$LATEST" | cut -d ' ' -f 2- | sed 's/ / and /')"
-          # Committed through the API, so GitHub signs the commit.
-          COMMIT="$(gh api -X PUT "repos/$GITHUB_REPOSITORY/contents/pf2e.release" \
-            -f message="chore: Update pf2e to $NAMES" \
-            -f content="$(echo "$LATEST" | base64 -w 0)" \
-            -f sha="$(git hash-object pf2e.release)" \
-            -f branch="${{ github.event.repository.default_branch }}" --jq .commit.sha)"
-          echo "Switched to $NAMES in $COMMIT"
+          if [ "$CHANGED" = 0 ]; then
+            echo "$LATEST" > pf2e.release
+            scripts/commit-to-github.sh "chore: Update pf2e to $NAMES" pf2e.release
+            echo "$NAMES changes nothing Turnkeeper imports; switched without a release."
+            exit 0
+          fi
+          echo "$NAMES changes $CHANGED files Turnkeeper imports from."
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+
+  import:
+    name: Import the new release
+    needs: look
+    if: needs.look.outputs.latest != ''
+    runs-on: macos-26
+    outputs:
+      tag: ${{ steps.switch.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Fetch artwork
+        env:
+          ARTWORK_SSH_KEY: ${{ secrets.ARTWORK_SSH_KEY }}
+        run: |
+          printf '%s\n' "$ARTWORK_SSH_KEY" > "$RUNNER_TEMP/artwork_key"
+          chmod 600 "$RUNNER_TEMP/artwork_key"
+          GIT_SSH_COMMAND="ssh -i $RUNNER_TEMP/artwork_key -o IdentitiesOnly=yes" \
+            git submodule update --init --depth 1 Artwork
+
+      - name: Import the bestiary
+        env:
+          LATEST: ${{ needs.look.outputs.latest }}
+        run: |
+          echo "$LATEST" > pf2e.release
+          REXARD_PACKS=Artwork/rexard scripts/import-bestiary.sh
+
+      - name: Switch, and tag the next version if the bestiary changed
+        id: switch
+        env:
+          LATEST: ${{ needs.look.outputs.latest }}
+        run: |
+          NAMES="$(echo "$LATEST" | cut -d ' ' -f 2- | sed 's/ / and /')"
+          if git diff --quiet import.sha256; then
+            scripts/commit-to-github.sh "chore: Update pf2e to $NAMES" pf2e.release
+            echo "$NAMES leaves Turnkeeper's bestiary as it was; switched without a release."
+            exit 0
+          fi
+          COMMIT="$(scripts/commit-to-github.sh "chore: Update pf2e to $NAMES" pf2e.release import.sha256)"
           PREVIOUS="$(git tag --list 'v*' --sort=-v:refname | head -1)"
           if [ -z "$PREVIOUS" ]; then
             echo "No release yet, so no automatic one; the first release you tag will use $NAMES."
@@ -52,9 +103,9 @@ jobs:
 
   release:
     name: Release
-    needs: update
-    if: needs.update.outputs.tag != ''
+    needs: import
+    if: needs.import.outputs.tag != ''
     uses: ./.github/workflows/release.yml
     with:
-      tag: ${{ needs.update.outputs.tag }}
+      tag: ${{ needs.import.outputs.tag }}
     secrets: inherit
