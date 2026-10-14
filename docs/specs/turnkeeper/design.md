@@ -28,9 +28,16 @@ checkout for development. `scripts/latest-pf2e-release.sh` finds the newest `pf2
   deploy key, runs the import with `REXARD_PACKS=Artwork/rexard`, tests, builds the universal app and attaches
   `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release, creating a draft if there is none. The
   app is signed ad hoc, as a local build is.
-- **pf2e update workflow** (Mondays, or by hand): when pf2e has a newer release, commits `pf2e.release`
-  through the API (so GitHub signs it). If the app has a `v*` tag, it tags the next patch version on that
-  commit and calls the release workflow; tags made with the workflow's token don't start workflows themselves.
+- **Fingerprint.** `make bestiary` writes `import.sha256`, a SHA-256 of `Generated/Bestiary`
+  (`scripts/fingerprint.sh`); fonts and pictures are left out, since tool versions change their bytes. The
+  release workflow warns when its import doesn't match it.
+- **pf2e update workflow** (Mondays, or by hand): when pf2e has a newer release, a Linux job lists the files
+  changed between the two commits (fetched without their contents). If none is under `packs`, `static/lang`
+  or `static/fonts`, it commits `pf2e.release` alone. Otherwise a macOS job imports the new release; an
+  unchanged fingerprint commits `pf2e.release` alone, and a changed one commits it with `import.sha256` and,
+  if the app has a `v*` tag, tags the next patch version and calls the release workflow. Commits go through
+  the GraphQL API (`scripts/commit-to-github.sh`) so GitHub signs them; tags made with the workflow's token
+  don't start workflows themselves.
 
 ## Creature art
 - Tabletop Kit's `CreatureArtStore` (an actor, in its `CreatureArt` product) owns the kit's `ArtLibrary`;

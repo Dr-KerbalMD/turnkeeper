@@ -2,8 +2,9 @@ name: Release
 
 # Builds the app and attaches a disk image to the GitHub release for a version tag, creating a draft release if
 # none exists yet. It runs when a tag is pushed, and from the weekly pf2e update. Run by hand, it builds the
-# branch and keeps the disk image as a workflow artifact instead, to try the build without releasing. The bestiary is imported from
-# the pf2e release in pf2e.release and the Artwork submodule, as a local "make bestiary" does.
+# branch and keeps the disk image as a workflow artifact instead, to try the build without releasing. The
+# bestiary is imported from the pf2e release in pf2e.release and the Artwork submodule, as a local "make
+# bestiary" does.
 on:
   push:
     tags: ['v*']
@@ -47,6 +48,12 @@ jobs:
 
       - name: Import the bestiary
         run: REXARD_PACKS=Artwork/rexard scripts/import-bestiary.sh
+
+      - name: Check the bestiary matches a local import
+        run: |
+          if ! git diff --quiet import.sha256; then
+            echo "::warning::The imported bestiary differs from import.sha256: run make bestiary and commit it."
+          fi
 
       - name: Test
         run: swift test
