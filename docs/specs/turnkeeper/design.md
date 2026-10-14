@@ -1,28 +1,28 @@
-# Combat Pad: design
+# Turnkeeper: design
 
 ## Layout
 A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pattern.
 
 | Path | Contents |
 |---|---|
-| `Sources/CombatPadKit` | Models and rules, with no UI: Bestiary, Rules, Library, Combat, Sharing, Text. |
-| `Sources/CombatPadUI` | SwiftUI shared by iPad and Mac: themes, board, battle cards, planning, bestiary browser. |
-| `Sources/CombatPad` | Mac app entry point. |
+| `Sources/TurnkeeperKit` | Models and rules, with no UI: Bestiary, Rules, Library, Combat, Sharing, Text. |
+| `Sources/TurnkeeperUI` | SwiftUI shared by iPad and Mac: themes, board, battle cards, planning, bestiary browser. |
+| `Sources/Turnkeeper` | Mac app entry point. |
 | `Sources/FoundryImport` | Library that parses Foundry documents, converts rules text and matches art. |
 | `Sources/BestiaryImport` | CLI around FoundryImport that writes `Generated/`. |
 | `Sources/CharacterImport` | Demiplane character import: links and QR codes, the sheet PDF reader, the client and the token. |
-| `ios/CombatPad.xcodeproj` | iPad app. It references the package as `..` and bundles `Generated/` as a folder reference. |
+| `ios/Turnkeeper.xcodeproj` | iPad app. It references the package as `..` and bundles `Generated/` as a folder reference. |
 | `scripts/extract_pdf_art.py`, `scripts/pdfart/` | PyMuPDF extractor for token, pawn and card art from the Paizo PDFs, run in the project `.venv`. |
 | `Generated/` | Import output, gitignored and bundled into both apps. |
 
 ## Bestiary import
 The creature model, stat-block presentation, conditions and the pf2e import live in
 [Tabletop Kit](https://github.com/scooper4711/tabletop-kit) (`Bestiary` and `CreatureImport`), shared with Field
-Guide; its spec describes the import pipeline. `make bestiary` runs Combat Pad's `BestiaryImport` executable on it.
+Guide; its spec describes the import pipeline. `make bestiary` runs Turnkeeper's `BestiaryImport` executable on it.
 
 ## Creature art
-- Tabletop Kit's `CreatureArtStore` (an actor, in its `CreatureArt` product) owns the kit's `ArtLibrary`; Combat
-  Pad's `standard()` puts it in Application Support/Combat Pad/Creature Art (apart from
+- Tabletop Kit's `CreatureArtStore` (an actor, in its `CreatureArt` product) owns the kit's `ArtLibrary`;
+  Turnkeeper's `standard()` puts it in Application Support/Turnkeeper/Creature Art (apart from
   pasted art's `Art` folder, whose unused files are swept at launch). Import
   from Scrollkeeper watches the chosen folder and runs `addNewFiles`, by reference; Add PDFs… commits each file
   kept. At launch the store refreshes the PDFs' statuses and adds new files from the watched folders. Pictures
@@ -81,7 +81,7 @@ Ported from the pf2e system, with tests.
   anything it can't read is kept as ability text and reported. `StatBlockImport` plans the import: one
   custom creature per block, placed in the variant whose label names the block's subtier.
 - **Pasted artwork.** A `CustomArt` record points a creature key at an image file in the `ArtStore`
-  (`Application Support/Combat Pad/Art/`); `library.json` never holds image bytes. Images are downscaled to
+  (`Application Support/Turnkeeper/Art/`); `library.json` never holds image bytes. Images are downscaled to
   2048 px (`PreparedImage`) and saved as JPEG, or PNG with transparency. A new image gets a new file; files
   no live record points to are swept at launch. `LibraryPackage.images` carries the bytes of the packaged
   records' files, written to the store before the library is merged. `AppModel.entry` swaps pasted art in as
@@ -103,12 +103,12 @@ Ported from the pf2e system, with tests.
 - **Merging.** `LibraryMerger` compares each record with the other device's copy. If one side is unchanged
   since the shared version, the other side's change wins. If both changed, the newer one wins, and for
   scenarios and encounters the other is kept as a "(conflict copy)". Deletions merge like any change.
-- **Sharing.** `LibraryPackage` is the `.combatpad` file (UTType
-  `io.github.scooper4711.combatpad.library`) and the nearby-sync payload. `NearbySync` uses
-  Network.framework with Bonjour `_combatpad._tcp` and a 4-digit pairing code.
+- **Sharing.** `LibraryPackage` is the `.turnkeeper` file (UTType
+  `io.github.scooper4711.turnkeeper.library`) and the nearby-sync payload. `NearbySync` uses
+  Network.framework with Bonjour `_turnkeeper._tcp` and a 4-digit pairing code.
 
 ## UI
-- **Themes.** `PadTheme` defines a Pathfinder look (parchment and red) and a Starfinder look (teal,
+- **Themes.** `BoardTheme` defines a Pathfinder look (parchment and red) and a Starfinder look (teal,
   neon cyan and a starfield). Magnet colors are shared by both.
 - **Board.** The left half holds the ladder, the bench and event tiles.
   The ladder is a scroll view, so strips use `SwipeableStrip`: a sideways `DragGesture` (ignored when the
@@ -152,7 +152,7 @@ Ported from the pf2e system, with tests.
   Pathfinder-Icons font for the action icons, which `make bestiary` copies unaltered from the private `Artwork`
   submodule (Tabletop Kit's `ActionIcons` maps costs to its code points).
 - **About.** Tabletop Kit's `AppNotices`: `AboutCommands` on the Mac, an `AboutSheet` from the campaign
-  sidebar's toolbar on the iPad, both with `AboutInfo.combatPad` (`App/About.swift`).
+  sidebar's toolbar on the iPad, both with `AboutInfo.turnkeeper` (`App/About.swift`).
 
 ## Character import
 - **Sheet.** A PC's sheet is a `Creature` of kind `character`, with `PlayerDetails` (ancestry, heritage,
@@ -180,7 +180,7 @@ Ported from the pf2e system, with tests.
   with the link's game and the sheet's name and level.
 - **Refresh.** Every request to Demiplane skips the URL cache (`reloadIgnoringLocalCacheData`): signed out,
   the sheet's address never changes, so a cached PDF would hide a rebuild. `Party.apply(_:link:to:)`
-  (CombatPadKit) puts an imported sheet on its member and returns a `SheetUpdate`: `added`, `unchanged` (the
+  (TurnkeeperKit) puts an imported sheet on its member and returns a `SheetUpdate`: `added`, `unchanged` (the
   same sheet as before) or `updated` with the changes a GM cares about (level, AC, saves, Perception, class DC,
   then skills, Strikes, spells, feats and items). The status message reports it, and says when the import was
   signed out and so read Demiplane's last export. The party row shows progress while its refresh runs.
@@ -210,7 +210,7 @@ Ported from the pf2e system, with tests.
 - The iPad build uses a free personal team, so it must be reinstalled every 7 days.
 - PDF art is 192–330 px, so it looks soft when shown full screen.
 - Pasted art is newest-wins when both devices paste art for the same creature; there are no conflict copies.
-- Creatures in a `.combatpad` file are referenced by bestiary key, so both devices should run the same
+- Creatures in a `.turnkeeper` file are referenced by bestiary key, so both devices should run the same
   bestiary import.
 - Demiplane's sheet PDF has the wrong max HP, so PCs show only a max HP the GM types.
 - The Demiplane API is undocumented and may change without notice.

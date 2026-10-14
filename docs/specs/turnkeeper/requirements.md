@@ -1,12 +1,12 @@
-# Combat Pad: requirements
+# Turnkeeper: requirements
 
-Combat Pad is a private iPad and Mac app for running Pathfinder 2e and Starfinder 2e encounters at an
-in-person table. It replaces the paper Paizo Combat Pad. The left half of the screen is the initiative
+Turnkeeper is a private iPad and Mac app for running Pathfinder 2e and Starfinder 2e encounters at an
+in-person table. It replaces a paper initiative tracker. The left half of the screen is the initiative
 ladder, and the right half is the notes side, which shows the battle card of the active creature.
 
 ## R1 Platforms and sharing
 - R1.1 The same app runs on iPad and Mac, with every feature available on both.
-- R1.2 Planning data moves between devices in both directions as `.combatpad` files, through AirDrop,
+- R1.2 Planning data moves between devices in both directions as `.turnkeeper` files, through AirDrop,
   Files or Finder.
 - R1.3 "Sync with nearby device" merges the libraries of two devices over the local network.
 - R1.4 Merging never loses edits silently. When both sides changed the same record, the newer one wins
@@ -203,7 +203,7 @@ ladder, and the right half is the notes side, which shows the battle card of the
   it is never synced or exported. Linked PCs and their sheets travel with the party like any other data.
 
 ## R7 About
-- R7.1 An About screen (the app menu's About Combat Pad on the Mac, the sidebar's About button on the iPad)
+- R7.1 An About screen (the app menu's About Turnkeeper on the Mac, the sidebar's About button on the iPad)
   shows the notice Paizo's Community Use Policy requires, the Paizo Compatibility License's trademark line,
   credits for the creature text, the Rexard art and the action icon font, and a link for reaching the author.
   The README carries the same notices.
