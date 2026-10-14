@@ -11,7 +11,9 @@ extension AboutInfo {
                 + "and the Open Game License 1.0a.",
             "The battle cards' parchment, frames and panels are Rexard game dev assets, used under license.",
             "The action icons are Paizo's Pathfinder-Icons font, used unaltered under the Paizo Compatibility "
-                + "License."
+                + "License.",
+            "The condition icons are from game-icons.net, by DarkZaitzev, Delapouite, Lorc, Sbed, Skoll and "
+                + "Zeromancer, used under the Creative Commons Attribution 3.0 license."
         ],
         // A literal URL that is known to parse. The repository is private, so this is the author's profile.
         // swiftlint:disable:next force_unwrapping

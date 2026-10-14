@@ -129,13 +129,13 @@ struct ConditionEditor: View {
     }
 }
 
-/// A condition's icon from the system art, with its name.
+/// A condition's icon, from game-icons.net, with its name.
 private struct ConditionButtonLabel: View {
     let definition: ConditionDefinition
 
     var body: some View {
         HStack(spacing: 6) {
-            ArtImage(path: "Conditions/\(definition.slug).webp", size: 22, shape: .circle, contentMode: .fit)
+            ArtImage(path: "Conditions/\(definition.slug).png", size: 22, contentMode: .fit)
             Text(definition.name).font(.callout).lineLimit(1)
             Spacer(minLength: 0)
         }
