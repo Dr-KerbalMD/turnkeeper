@@ -215,9 +215,10 @@ ladder, and the right half is the notes side, which shows the battle card of the
   it is never synced or exported. Linked PCs and their sheets travel with the party like any other data.
 
 ## R7 About
-- R7.1 An About screen (the app menu's About Turnkeeper on the Mac, the sidebar's About button on the iPad)
-  shows the notice Paizo's Community Use Policy requires, the Paizo Compatibility License's trademark line,
-  credits for the creature text, the Rexard art, the action icon font and the condition icons, and a link for
-  reaching the author.
-  The README carries the same notices.
+- R7.1 An About screen (the app menu's About Turnkeeper on the Mac, the sidebar's About button on the iPad) shows
+  the notice Paizo's Community Use Policy requires, the Paizo Compatibility License's trademark line, credits for
+  the creature text, the Rexard art, the action icon font and the condition icons, and a link for reaching the
+  author. It also lists the full texts of the licenses the bundled content requires: the Open Game License and the
+  ORC License (the creature and rules text), the Apache License for the Roboto fonts, and the condition icons'
+  credits. The README carries the same notices.
 
