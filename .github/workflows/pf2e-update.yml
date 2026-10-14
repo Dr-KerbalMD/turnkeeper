@@ -1,0 +1,60 @@
+name: pf2e update
+
+# Weekly, switches pf2e.release to pf2e's newest release when there is one. Once the app has a release, it also
+# tags the next patch version and builds its disk image into a draft release, ready to publish.
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Switch to pf2e's newest release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.update.outputs.tag }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Update pf2e.release and tag the next version
+        id: update
+        run: |
+          LATEST="$(scripts/latest-pf2e-release.sh)"
+          if [ "$LATEST" = "$(cat pf2e.release)" ]; then
+            echo "Already on pf2e's newest release: $LATEST"
+            exit 0
+          fi
+          NAMES="$(echo "$LATEST" | cut -d ' ' -f 2- | sed 's/ / and /')"
+          # Committed through the API, so GitHub signs the commit.
+          COMMIT="$(gh api -X PUT "repos/$GITHUB_REPOSITORY/contents/pf2e.release" \
+            -f message="chore: Update pf2e to $NAMES" \
+            -f content="$(echo "$LATEST" | base64 -w 0)" \
+            -f sha="$(git hash-object pf2e.release)" \
+            -f branch="${{ github.event.repository.default_branch }}" --jq .commit.sha)"
+          echo "Switched to $NAMES in $COMMIT"
+          PREVIOUS="$(git tag --list 'v*' --sort=-v:refname | head -1)"
+          if [ -z "$PREVIOUS" ]; then
+            echo "No release yet, so no automatic one; the first release you tag will use $NAMES."
+            exit 0
+          fi
+          VERSION="${PREVIOUS#v}"
+          TAG="v${VERSION%.*}.$(( ${VERSION##*.} + 1 ))"
+          gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$TAG" -f sha="$COMMIT" >/dev/null
+          echo "Tagged $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+  release:
+    name: Release
+    needs: update
+    if: needs.update.outputs.tag != ''
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ needs.update.outputs.tag }}
+    secrets: inherit
