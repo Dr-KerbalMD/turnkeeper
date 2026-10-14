@@ -20,7 +20,8 @@ final class PlayerCharacterUITests: XCTestCase {
         XCTAssertFalse(strip.label.contains("Perc"), "the strip reads \(strip.label)")
         strip.tap()
 
-        XCTAssertTrue(text(containing: "PC 3").waitForExistence(timeout: 5))
+        // His card opens: no one else in the demo fight is human.
+        XCTAssertTrue(app.buttons["HUMAN"].waitForExistence(timeout: 5))
         let charge = app.links["Sudden Charge"].firstMatch
         XCTAssertTrue(charge.waitForExistence(timeout: 5))
         charge.tap()
