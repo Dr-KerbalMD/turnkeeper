@@ -1,3 +1,4 @@
+import AppNotices
 import Bestiary
 import CombatPadKit
 import SwiftUI
@@ -11,6 +12,7 @@ struct CampaignSidebar: View {
     @State private var isSyncing = false
     @State private var isShowingDemiplane = false
     @State private var isShowingCreatureArt = false
+    @State private var isShowingAbout = false
     @State private var exportDocument: LibraryDocument?
     @State private var renaming: Campaign?
 
@@ -35,12 +37,17 @@ struct CampaignSidebar: View {
                 Button("Creature Art", systemImage: "photo.on.rectangle.angled") { isShowingCreatureArt = true }
                     .badge(model.artCatalog.missingSources.count)
             }
+            // The Mac has About in the app menu.
+            #if os(iOS)
+            ToolbarItem { Button("About", systemImage: "info.circle") { isShowingAbout = true } }
+            #endif
         }
         .sheet(isPresented: $isAdding) { CampaignSheet(campaign: nil) }
         .sheet(item: $renaming) { campaign in CampaignSheet(campaign: campaign) }
         .sheet(isPresented: $isSyncing) { NearbySyncSheet() }
         .sheet(isPresented: $isShowingDemiplane) { DemiplaneSettingsView() }
         .sheet(isPresented: $isShowingCreatureArt) { CreatureArtView() }
+        .sheet(isPresented: $isShowingAbout) { AboutSheet(info: .combatPad) }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.combatPadLibrary, .json]) { result in
             if case let .success(url) = result { model.importLibraryFile(url) }
         }

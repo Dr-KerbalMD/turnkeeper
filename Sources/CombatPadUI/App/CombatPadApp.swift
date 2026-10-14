@@ -1,3 +1,4 @@
+import AppNotices
 import BattleCards
 import Bestiary
 import CombatPadKit
@@ -28,6 +29,9 @@ public struct CombatPadApp: App {
                 }
         }
         .defaultSize(width: 1280, height: 860)
+        #if os(macOS)
+        .commands { AboutCommands(info: .combatPad) }
+        #endif
         #if os(macOS)
         Window("Players", id: PlayerWindow.id) {
             PlayerScreen()
