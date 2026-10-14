@@ -53,3 +53,5 @@ done
 echo "Importing the bestiary from $PF2E_REPO..."
 swift build -c release --product BestiaryImport
 "$(swift build -c release --show-bin-path)/BestiaryImport" --pf2e "$PF2E_REPO" --out Generated --config .
+# The weekly pf2e update compares this to decide whether a new pf2e release changes anything Turnkeeper shows.
+scripts/fingerprint.sh > import.sha256
