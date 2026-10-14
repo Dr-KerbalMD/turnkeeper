@@ -22,7 +22,8 @@ add creatures. See `docs/specs/turnkeeper/` for the requirements and design.
   Check `Generated/import-report.md` afterwards.
 - `make run` builds and opens the Mac app; `make install` moves it to /Applications (the build copy is removed so Finder launches the installed one).
 - `make update-pf2e` switches to pf2e's newest release and re-imports. GitHub does this every Monday, and
-  once Turnkeeper has a release it also builds the next patch version into a draft release.
+  when the new release changes the bestiary and Turnkeeper has a release, it builds the next patch version into
+  a draft release. Commit `pf2e.release` and `import.sha256` after a local import.
 - `make dmg` builds `build/Turnkeeper-<version>.dmg`. Pushing a `v*` tag builds the universal app on GitHub
   from the same pf2e release and the `Artwork` submodule, and attaches its disk image to the release.
 - `make ipad-simulator` runs the iPad app in a simulator.
