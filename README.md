@@ -1,18 +1,28 @@
 # Turnkeeper
 
-Running a Pathfinder or Starfinder fight at the table means keeping a lot in your head: the initiative order,
-hit points, conditions that change every round, who is delaying, the persistent damage and frightened values
-that tick at the end of a turn, and the stat block of whoever is up, open in a book or a PDF somewhere.
+Running a Pathfinder or Starfinder fight at the table means keeping a lot in your head: the initiative order, hit
+points, conditions that change every round, who is delaying, the persistent damage and frightened values that tick
+at the end of a turn, the stat block of whoever is up, open in a book or a PDF somewhere, and the rules for
+whatever spell or condition just came up.
 
 Turnkeeper is an encounter builder and initiative tracker for the iPad and the Mac that puts all of it on one
 screen. The left half is the initiative ladder: the creatures roll their own initiative, you say the players'
-numbers aloud or tap them in, and Next passes the turn. The right half shows the battle card of whoever's turn
-it is, with its conditions applied, and your notes. Reminders hold the turn until persistent damage and the
-like are dealt with, and the players can watch the creature's art on a second screen.
+numbers aloud or tap them in, and Next passes the turn. The right half shows the battle card of whoever's turn it
+is, and your notes. Reminders hold the turn until persistent damage and the like are dealt with, and the players
+can watch the creature's art on a second screen.
 
-Plan ahead, too: build parties and scenarios with an encounter for each difficulty (Pathfinder Society
-challenge-point brackets, Starfinder Society's easier, base and harder), and watch the encounter budget as you
-add creatures. See `docs/specs/turnkeeper/` for the requirements and design.
+The battle card is the creature's whole stat block, and everything on it is linked. Tap a spell, an item, an
+action, a trait or a condition and its rules open right there, so "what's the range of that spell again?" and "what
+does frightened actually do?" are answered without leaving the app or stalling the fight.
+
+Conditions change the numbers for you. Make a creature frightened 2 or clumsy 1 and its card's AC, saves, skills
+and attacks change with it, tinted so you can see what moved, with the breakdown a long-press away.
+
+Plan ahead, too. Build a scenario's encounters once, with a version for each difficulty (Pathfinder Society's
+challenge-point brackets, or Starfinder Society's easier, base and harder), and run them again and again for
+different tables. Turnkeeper adds up the challenge points of the players in front of you and picks the matching
+difficulty, and the encounter budget updates as you add creatures. See `docs/specs/turnkeeper/` for the
+requirements and design.
 
 ## Build
 - `make bestiary` imports creatures, conditions and the glossary into `Generated/` (needed before the first app
