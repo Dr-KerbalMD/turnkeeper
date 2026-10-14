@@ -86,3 +86,8 @@ renders battle cards to `tmp/cards` for comparing with the printed decks.
 - `Sources/TurnkeeperUI`: SwiftUI shared by iPad and Mac
 - `Sources/Turnkeeper`: Mac entry point; `ios/`: iPad project
 - `Sources/BestiaryImport`, `scripts/extract_pdf_art.py`: the bestiary import
+
+## License
+
+The code is under the [MIT License](LICENSE). The game text, art and fonts the app imports or bundles keep their
+own licenses; see Paizo notices above.
