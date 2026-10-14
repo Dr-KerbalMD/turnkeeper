@@ -74,7 +74,7 @@ used under the ORC License and the Open Game License 1.0a. The condition icons a
 [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/);
 [Resources/ConditionIcons/CREDITS.md](Resources/ConditionIcons/CREDITS.md) credits each one. The same notices and
 credits are in the app's About screen (the app menu on the Mac, the campaign sidebar's About button on the iPad).
-Contact: [scooper4711 on GitHub](https://github.com/scooper4711).
+Contact: [Turnkeeper's issues on GitHub](https://github.com/scooper4711/turnkeeper/issues).
 
 ## Test
 `make test` and `make lint` (Swift); `make ipad-uitest` (iPad UI tests, against the demo fight);

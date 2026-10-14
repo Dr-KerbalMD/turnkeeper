@@ -1,6 +1,6 @@
 # Turnkeeper: requirements
 
-Turnkeeper is a private iPad and Mac app for running Pathfinder 2e and Starfinder 2e encounters at an
+Turnkeeper is an iPad and Mac app for running Pathfinder 2e and Starfinder 2e encounters at an
 in-person table. It replaces a paper initiative tracker. The left half of the screen is the initiative
 ladder, and the right half is the notes side, which shows the battle card of the active creature.
 
