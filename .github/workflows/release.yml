@@ -1,0 +1,66 @@
+name: Release
+
+# Builds the app and attaches a disk image to the GitHub release for a version tag, creating a draft release if
+# none exists yet. It runs when a tag is pushed, and from the weekly pf2e update. The bestiary is imported from
+# the pf2e release in pf2e.release and the Artwork submodule, as a local "make bestiary" does.
+on:
+  push:
+    tags: ['v*']
+  workflow_call:
+    inputs:
+      tag:
+        description: The version tag to build, such as v1.2.3.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  dmg:
+    name: Build and attach the disk image
+    runs-on: macos-26
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Fetch artwork
+        env:
+          ARTWORK_SSH_KEY: ${{ secrets.ARTWORK_SSH_KEY }}
+        run: |
+          printf '%s\n' "$ARTWORK_SSH_KEY" > "$RUNNER_TEMP/artwork_key"
+          chmod 600 "$RUNNER_TEMP/artwork_key"
+          GIT_SSH_COMMAND="ssh -i $RUNNER_TEMP/artwork_key -o IdentitiesOnly=yes" \
+            git submodule update --init --depth 1 Artwork
+
+      - name: Derive the version from the tag
+        run: echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+
+      - name: Import the bestiary
+        run: REXARD_PACKS=Artwork/rexard scripts/import-bestiary.sh
+
+      - name: Test
+        run: swift test
+
+      - name: Build the universal app
+        run: UNIVERSAL=1 scripts/build-app.sh
+
+      - name: Make the disk image
+        run: scripts/make-dmg.sh
+
+      - name: Attach the disk image to the release
+        run: |
+          # A release made for a pushed tag normally appears right after the push; give it a moment.
+          for attempt in 1 2 3 4 5 6; do
+            gh release view "$TAG" >/dev/null 2>&1 && break
+            sleep 10
+          done
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" --draft --title "$TAG" --generate-notes \
+              --notes "Creatures and rules from the pf2e system's $(cut -d ' ' -f 2- pf2e.release | sed 's/ / and /') release."
+          fi
+          gh release upload "$TAG" "build/Turnkeeper-$VERSION.dmg" --clobber
