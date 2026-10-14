@@ -2,7 +2,7 @@
 // ios/App/Assets.xcassets/AppIcon.appiconset/icon-1024.png for the iPad.
 // Usage: swift scripts/make-icon.swift
 //
-// The artwork is original: initiative magnets on a combat pad, a turn arrow and a twenty-sided die.
+// The artwork is original: initiative magnets on a board, a turn arrow and a twenty-sided die.
 // It uses no Paizo logos, lettering or artwork.
 import AppKit
 
@@ -45,12 +45,12 @@ func drawText(_ context: CGContext, _ text: String, center: CGPoint, style: Lett
     CTLineDraw(line, context)
 }
 
-/// The pad: a dark slate board with a faint grid, like the dry-erase surface of the paper combat pad.
+/// The board: dark slate with a faint grid, like a dry-erase surface.
 func drawPad(_ context: CGContext, in rect: CGRect, corner: CGFloat) {
-    let pad = CGPath(roundedRect: rect, cornerWidth: corner, cornerHeight: corner, transform: nil)
-    fillGradient(context, in: pad, from: 0x2A3442, to: 0x0E131B)
+    let board = CGPath(roundedRect: rect, cornerWidth: corner, cornerHeight: corner, transform: nil)
+    fillGradient(context, in: board, from: 0x2A3442, to: 0x0E131B)
     context.saveGState()
-    context.addPath(pad)
+    context.addPath(board)
     context.clip()
     context.setStrokeColor(color(0xFFFFFF, alpha: 0.05))
     context.setLineWidth(3)

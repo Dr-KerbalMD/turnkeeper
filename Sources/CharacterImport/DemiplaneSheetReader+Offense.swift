@@ -1,5 +1,5 @@
 import Bestiary
-import CombatPadKit
+import TurnkeeperKit
 import Foundation
 
 /// Strikes, actions, reactions and spells from the sheet's numbered fields.

@@ -31,12 +31,12 @@ PYTHON
 )}"
 [ -n "$IPAD" ] || { echo "Installing failed: no iPad is connected." >&2; exit 1; }
 
-BUNDLE_ID="$(xcodebuild -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
+BUNDLE_ID="$(xcodebuild -project ios/Turnkeeper.xcodeproj -scheme Turnkeeper-iPad \
     -showBuildSettings 2>/dev/null | sed -n 's/^ *PRODUCT_BUNDLE_IDENTIFIER = //p' | head -n 1)"
 
 echo "Building for ${IPAD}..."
 # A failed build must stop here: the app left by an earlier build would install with its old signature.
-if ! xcodebuild -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
+if ! xcodebuild -project ios/Turnkeeper.xcodeproj -scheme Turnkeeper-iPad \
     -destination 'generic/platform=iOS' -derivedDataPath ios/build -allowProvisioningUpdates build \
     >"$BUILD_LOG" 2>&1; then
     grep -E 'error:' "$BUILD_LOG" >&2 || tail -n 20 "$BUILD_LOG" >&2
@@ -45,7 +45,7 @@ if ! xcodebuild -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
 fi
 grep -E 'warning: .*[Pp]rovision|BUILD' "$BUILD_LOG" || true
 
-APP="ios/build/Build/Products/Debug-iphoneos/CombatPad.app"
+APP="ios/build/Build/Products/Debug-iphoneos/Turnkeeper.app"
 [ -d "$APP" ] || { echo "Installing failed: the build did not produce the app." >&2; exit 1; }
 
 xcrun devicectl device install app --device "$IPAD" "$APP" >/dev/null

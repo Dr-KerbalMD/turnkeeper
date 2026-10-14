@@ -1,5 +1,5 @@
 import Bestiary
-import CombatPadKit
+import TurnkeeperKit
 import Foundation
 
 /// A character as Demiplane's GraphQL API describes it: identity only, no computed statistics.
@@ -18,7 +18,7 @@ public struct SheetExport: Sendable, Equatable {
 }
 
 /// Talks to Demiplane: the GraphQL API with the bearer token, and the web app's own endpoints with the
-/// signed-in session's cookies. Undocumented; see `docs/specs/combat-pad/design.md`.
+/// signed-in session's cookies. Undocumented; see `docs/specs/turnkeeper/design.md`.
 public struct DemiplaneClient: Sendable {
     public var transport: any HTTPTransport
     public var token: String?

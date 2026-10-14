@@ -1,6 +1,6 @@
 import Bestiary
-import CombatPadKit
-import CombatPadUI
+import TurnkeeperKit
+import TurnkeeperUI
 import Foundation
 
 /// `CardSnapshots OUTPUT_FOLDER KEY[:elite|:weak][:condition=value]...`

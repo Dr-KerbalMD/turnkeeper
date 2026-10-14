@@ -5,7 +5,7 @@ Converts Roboto and Roboto Condensed from <pf2e>/static/fonts into <out> as .ttf
 source files. The action icons' Pathfinder-Icons font is already TrueType, and its license forbids altering it,
 so import-bestiary.sh copies it as it is.
 
-Requirements: combat-pad R5.1, R5.2, R5.4
+Requirements: turnkeeper R5.1, R5.2, R5.4
 """
 
 import argparse

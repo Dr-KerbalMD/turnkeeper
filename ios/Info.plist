@@ -4,7 +4,7 @@
 <dict>
     <key>NSBonjourServices</key>
     <array>
-        <string>_combatpad._tcp</string>
+        <string>_turnkeeper._tcp</string>
     </array>
     <key>UIAppFonts</key>
     <array/>
@@ -12,14 +12,14 @@
     <array>
         <dict>
             <key>CFBundleTypeName</key>
-            <string>Combat Pad Library</string>
+            <string>Turnkeeper Library</string>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>LSHandlerRank</key>
             <string>Owner</string>
             <key>LSItemContentTypes</key>
             <array>
-                <string>io.github.scooper4711.combatpad.library</string>
+                <string>io.github.scooper4711.turnkeeper.library</string>
             </array>
         </dict>
     </array>
@@ -27,9 +27,9 @@
     <array>
         <dict>
             <key>UTTypeIdentifier</key>
-            <string>io.github.scooper4711.combatpad.library</string>
+            <string>io.github.scooper4711.turnkeeper.library</string>
             <key>UTTypeDescription</key>
-            <string>Combat Pad Library</string>
+            <string>Turnkeeper Library</string>
             <key>UTTypeConformsTo</key>
             <array>
                 <string>public.json</string>
@@ -38,7 +38,7 @@
             <dict>
                 <key>public.filename-extension</key>
                 <array>
-                    <string>combatpad</string>
+                    <string>turnkeeper</string>
                 </array>
             </dict>
         </dict>

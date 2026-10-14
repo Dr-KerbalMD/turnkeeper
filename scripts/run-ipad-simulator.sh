@@ -10,12 +10,12 @@ mkdir -p Generated
 DEVICE="$(scripts/ipad-simulator-id.sh)"
 [ -n "$DEVICE" ] || { echo "Starting the simulator failed: no iPad simulator is installed." >&2; exit 1; }
 
-xcodebuild -project ios/CombatPad.xcodeproj -scheme CombatPad-iPad \
+xcodebuild -project ios/Turnkeeper.xcodeproj -scheme Turnkeeper-iPad \
     -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath ios/build \
     CODE_SIGNING_ALLOWED=NO build | tail -n 3
 
-APP="ios/build/Build/Products/Debug-iphonesimulator/CombatPad.app"
+APP="ios/build/Build/Products/Debug-iphonesimulator/Turnkeeper.app"
 xcrun simctl boot "$DEVICE" 2>/dev/null || true
 open -a Simulator
 xcrun simctl install "$DEVICE" "$APP"
-xcrun simctl launch "$DEVICE" io.github.scooper4711.CombatPad
+xcrun simctl launch "$DEVICE" io.github.scooper4711.Turnkeeper
