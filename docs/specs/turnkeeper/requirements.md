@@ -13,12 +13,15 @@ ladder, and the right half is the notes side, which shows the battle card of the
   and the other is kept as a conflict copy.
 - R1.5 Nothing requires a paid Apple developer account. There is no iCloud or CloudKit.
 - R1.6 Pushing a version tag makes GitHub build the universal Mac app and attach its disk image to the tag's
-  release. It bundles the same data as a local build: `make bestiary` records the pf2e commit it read in
-  `pf2e.commit`, and the release imports from that commit and the `Artwork` submodule.
+  release. It bundles the same data as a local build: both import the pf2e release named in `pf2e.release`
+  and the art in the `Artwork` submodule.
+- R1.7 pf2e updates need no work: weekly, GitHub switches `pf2e.release` to pf2e's newest release and, once
+  the app has a release, tags the next patch version and builds it into a draft release to publish.
+  `make update-pf2e` does the switch locally.
 
 ## R2 Bestiary
-- R2.1 The bundled bestiary contains every NPC and every complex hazard from the pf2e and sf2e packs in
-  `~/git/pf2e`. Simple hazards are excluded.
+- R2.1 The bundled bestiary contains every NPC and every complex hazard from the pf2e and sf2e packs of the
+  pf2e release in `pf2e.release`. Simple hazards are excluded.
 - R2.2 `make bestiary` re-imports the bestiary. Running it twice on the same input produces identical
   output.
 - R2.3 Creature art comes only from the user's own Paizo pawn, token and Battle Cards PDFs, read on the

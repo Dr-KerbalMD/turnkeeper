@@ -15,11 +15,16 @@ challenge-point brackets, Starfinder Society's easier, base and harder), and wat
 add creatures. See `docs/specs/turnkeeper/` for the requirements and design.
 
 ## Build
-- `make bestiary` imports creatures, conditions and the glossary from `~/git/pf2e` into `Generated/` (needed
-  before the first app build). Font conversion runs in a project venv (`.venv`, from `requirements.txt`),
-  created on first use. `art-overrides.json` (optional) maps a creature name to the name its art has in a
-  PDF. Check `Generated/import-report.md` afterwards.
+- `make bestiary` imports creatures, conditions and the glossary into `Generated/` (needed before the first app
+  build) from the pf2e release named in `pf2e.release`, which it downloads into `build/pf2e`; set `PF2E_REPO` to
+  read your own pf2e checkout instead. Font conversion runs in a project venv (`.venv`, from `requirements.txt`),
+  created on first use. `art-overrides.json` (optional) maps a creature name to the name its art has in a PDF.
+  Check `Generated/import-report.md` afterwards.
 - `make run` builds and opens the Mac app; `make install` moves it to /Applications (the build copy is removed so Finder launches the installed one).
+- `make update-pf2e` switches to pf2e's newest release and re-imports. GitHub does this every Monday, and
+  once Turnkeeper has a release it also builds the next patch version into a draft release.
+- `make dmg` builds `build/Turnkeeper-<version>.dmg`. Pushing a `v*` tag builds the universal app on GitHub
+  from the same pf2e release and the `Artwork` submodule, and attaches its disk image to the release.
 - `make ipad-simulator` runs the iPad app in a simulator.
 - `make ipad-install` installs on a connected iPad. Put your team in `ios/Local.xcconfig`
   (`DEVELOPMENT_TEAM = …`). A free team's signature lasts 7 days, so reinstall weekly.

@@ -21,12 +21,16 @@ The creature model, stat-block presentation, conditions and the pf2e import live
 Guide; its spec describes the import pipeline. `make bestiary` runs Turnkeeper's `BestiaryImport` executable on it.
 
 ## Release
-`make bestiary` writes the pf2e repository's commit to `pf2e.commit` and warns when that repository has
-uncommitted changes, which a release couldn't reproduce. The Release workflow (on `v*` tags) fetches the
-`Artwork` submodule with the `ARTWORK_SSH_KEY` deploy key, fetches that one pf2e commit from
-`foundryvtt/pf2e` (`scripts/fetch-pf2e.sh`), runs `make bestiary` with `REXARD_PACKS=Artwork/rexard`, tests,
-builds the universal app and attaches `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release,
-creating a draft if there is none. The app is signed ad hoc, as a local build is.
+`pf2e.release` holds a pf2e commit and the system release tags on it. `make bestiary` fetches that one commit
+from `foundryvtt/pf2e` into `build/pf2e` (`scripts/fetch-pf2e.sh`) and imports it; `PF2E_REPO` reads another
+checkout for development. `scripts/latest-pf2e-release.sh` finds the newest `pf2e-*` or `sf2e-*` release.
+- **Release workflow** (on `v*` tags, or called): fetches the `Artwork` submodule with the `ARTWORK_SSH_KEY`
+  deploy key, runs the import with `REXARD_PACKS=Artwork/rexard`, tests, builds the universal app and attaches
+  `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release, creating a draft if there is none. The
+  app is signed ad hoc, as a local build is.
+- **pf2e update workflow** (Mondays, or by hand): when pf2e has a newer release, commits `pf2e.release`
+  through the API (so GitHub signs it). If the app has a `v*` tag, it tags the next patch version on that
+  commit and calls the release workflow; tags made with the workflow's token don't start workflows themselves.
 
 ## Creature art
 - Tabletop Kit's `CreatureArtStore` (an actor, in its `CreatureArt` product) owns the kit's `ArtLibrary`;
