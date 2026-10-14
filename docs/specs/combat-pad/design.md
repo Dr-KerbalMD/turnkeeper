@@ -151,6 +151,8 @@ Ported from the pf2e system, with tests.
 - **Fonts.** Roboto Condensed and Roboto, converted from the pf2e system's woff2 files, plus Paizo's
   Pathfinder-Icons font for the action icons, which `make bestiary` copies unaltered from the private `Artwork`
   submodule (Tabletop Kit's `ActionIcons` maps costs to its code points).
+- **About.** Tabletop Kit's `AppNotices`: `AboutCommands` on the Mac, an `AboutSheet` from the campaign
+  sidebar's toolbar on the iPad, both with `AboutInfo.combatPad` (`App/About.swift`).
 
 ## Character import
 - **Sheet.** A PC's sheet is a `Creature` of kind `character`, with `PlayerDetails` (ancestry, heritage,

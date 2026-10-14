@@ -42,7 +42,19 @@ artwork. `make bestiary` copies Paizo's Pathfinder-Icons font from it, unaltered
 (the [Paizo Compatibility License](https://paizo.com/licenses/compatibility)); without it they show stand-in
 symbols.
 
+## Paizo notices
+
+Combat Pad uses trademarks and/or copyrights owned by Paizo Inc., used under Paizo's Community Use Policy
+([paizo.com/licenses/communityuse](https://paizo.com/licenses/communityuse)). We are expressly prohibited from
+charging you to use or access this content. Combat Pad is not published, endorsed, or specifically approved by
+Paizo. For more information about Paizo Inc. and Paizo products, visit [paizo.com](https://paizo.com).
+
 Pathfinder and Starfinder are registered trademarks and copyrights of Paizo Inc.
+
+The creature and rules text comes from the [pf2e system for Foundry VTT](https://github.com/foundryvtt/pf2e) and
+is used under the ORC License and the Open Game License 1.0a. The same notices and credits are in the app's About
+screen (the app menu on the Mac, the campaign sidebar's About button on the iPad). Contact:
+[scooper4711 on GitHub](https://github.com/scooper4711).
 
 ## Test
 `make test` and `make lint` (Swift); `make ipad-uitest` (iPad UI tests, against the demo fight);

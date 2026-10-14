@@ -201,3 +201,10 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R6.7 Demiplane access is set up in the app: sign in through a Demiplane web page (needed for campaigns
   and sheet export, and to renew the token), or paste a token. The token stays in the device's Keychain;
   it is never synced or exported. Linked PCs and their sheets travel with the party like any other data.
+
+## R7 About
+- R7.1 An About screen (the app menu's About Combat Pad on the Mac, the sidebar's About button on the iPad)
+  shows the notice Paizo's Community Use Policy requires, the Paizo Compatibility License's trademark line,
+  credits for the creature text, the Rexard art and the action icon font, and a link for reaching the author.
+  The README carries the same notices.
+
