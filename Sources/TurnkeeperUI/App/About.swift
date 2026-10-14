@@ -15,8 +15,8 @@ extension AboutInfo {
             "The condition icons are from game-icons.net, by DarkZaitzev, Delapouite, Lorc, Sbed, Skoll and "
                 + "Zeromancer, used under the Creative Commons Attribution 3.0 license."
         ],
-        // A literal URL that is known to parse. The repository is private, so this is the author's profile.
+        // A literal URL that is known to parse.
         // swiftlint:disable:next force_unwrapping
-        contactURL: URL(string: "https://github.com/scooper4711")!
+        contactURL: URL(string: "https://github.com/scooper4711/turnkeeper/issues")!
     )
 }
