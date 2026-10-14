@@ -117,6 +117,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   already taken.
 - R4.7 Conditions are applied from a palette, shown as chips, and change the battle card's numbers.
   Changed numbers are tinted and show their breakdown on long-press or hover.
+- R4.7d Each condition in the palette has an icon from game-icons.net, used under CC BY 3.0 and credited
+  to its authors. Turnkeeper takes no condition icons from the pf2e system.
 - R4.7a In combat, swiping a strip left to right delays it (asking first, for now), and right to left
   knocks it out (dying 1 plus wounded) or, on a delaying strip, brings it back where it is. The context
   menu has the same actions for the Mac and accessibility. There are no Delay or Dying drop zones.
@@ -205,6 +207,7 @@ ladder, and the right half is the notes side, which shows the battle card of the
 ## R7 About
 - R7.1 An About screen (the app menu's About Turnkeeper on the Mac, the sidebar's About button on the iPad)
   shows the notice Paizo's Community Use Policy requires, the Paizo Compatibility License's trademark line,
-  credits for the creature text, the Rexard art and the action icon font, and a link for reaching the author.
+  credits for the creature text, the Rexard art, the action icon font and the condition icons, and a link for
+  reaching the author.
   The README carries the same notices.
 

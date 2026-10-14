@@ -151,6 +151,9 @@ Ported from the pf2e system, with tests.
 - **Fonts.** Roboto Condensed and Roboto, converted from the pf2e system's woff2 files, plus Paizo's
   Pathfinder-Icons font for the action icons, which `make bestiary` copies unaltered from the private `Artwork`
   submodule (Tabletop Kit's `ActionIcons` maps costs to its code points).
+- **Condition icons.** The game-icons.net SVGs, unaltered but named by condition slug, live in
+  `Resources/ConditionIcons` with `CREDITS.md` naming each icon's author. `make bestiary` renders them with
+  `sips` to `Generated/Conditions/<slug>.png`, which the palette shows.
 - **About.** Tabletop Kit's `AppNotices`: `AboutCommands` on the Mac, an `AboutSheet` from the campaign
   sidebar's toolbar on the iPad, both with `AboutInfo.turnkeeper` (`App/About.swift`).
 
