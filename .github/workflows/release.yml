@@ -1,7 +1,8 @@
 name: Release
 
 # Builds the app and attaches a disk image to the GitHub release for a version tag, creating a draft release if
-# none exists yet. It runs when a tag is pushed, and from the weekly pf2e update. The bestiary is imported from
+# none exists yet. It runs when a tag is pushed, and from the weekly pf2e update. Run by hand, it builds the
+# branch and keeps the disk image as a workflow artifact instead, to try the build without releasing. The bestiary is imported from
 # the pf2e release in pf2e.release and the Artwork submodule, as a local "make bestiary" does.
 on:
   push:
@@ -12,6 +13,7 @@ on:
         description: The version tag to build, such as v1.2.3.
         required: true
         type: string
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -23,6 +25,8 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ inputs.tag || github.ref_name }}
+      # False for a trial build of a branch, run by hand.
+      RELEASING: ${{ startsWith(github.ref, 'refs/tags/') || inputs.tag != '' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -38,6 +42,7 @@ jobs:
             git submodule update --init --depth 1 Artwork
 
       - name: Derive the version from the tag
+        if: env.RELEASING == 'true'
         run: echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
 
       - name: Import the bestiary
@@ -52,10 +57,18 @@ jobs:
       - name: Make the disk image
         run: scripts/make-dmg.sh
 
+      - name: Keep the disk image of a trial build
+        if: env.RELEASING != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: disk-image
+          path: build/Turnkeeper-*.dmg
+
       - name: Attach the disk image to the release
+        if: env.RELEASING == 'true'
         run: |
           # A release made for a pushed tag normally appears right after the push; give it a moment.
-          for attempt in 1 2 3 4 5 6; do
+          for _ in 1 2 3 4 5 6; do
             gh release view "$TAG" >/dev/null 2>&1 && break
             sleep 10
           done
