@@ -59,6 +59,27 @@ artwork. `make bestiary` copies Paizo's Pathfinder-Icons font from it, unaltered
 (the [Paizo Compatibility License](https://paizo.com/licenses/compatibility)); without it they show stand-in
 symbols.
 
+## Society Toolkit
+
+Turnkeeper is part of the Society Toolkit, free apps for Pathfinder and Starfinder players and GMs, for the Mac and
+(Turnkeeper and Field Guide) the iPad. Like the toolkits in the game, each one grants a +1 item bonus to game prep.
+
+- [Scrollkeeper](https://github.com/scooper4711/scrollkeeper) keeps your Paizo library in order and downloads your
+  purchases.
+- [Pluck](https://github.com/scooper4711/pluck) gets the art, text and stat blocks out of a PDF.
+- [Pawn Shop](https://github.com/scooper4711/pawn-shop) prints just the pawns you need, single-sided, from your
+  pawn PDFs.
+- [Mapsmith](https://github.com/scooper4711/mapsmith) prints battle maps at true scale on ordinary paper.
+- **Turnkeeper** builds encounters and runs initiative at the table, with the battle card of whoever's turn it is,
+  on the iPad and the Mac.
+- [Field Guide](https://github.com/scooper4711/field-guide) carries the Pathfinder and Starfinder compendium,
+  offline, on the iPad and the Mac.
+
+## Supporting the project
+
+The app is free and always will be. If it saves you time and you would like to say thanks, you can leave a
+tip on [Ko-fi](https://ko-fi.com/coop207627). A donation is entirely optional and unlocks nothing.
+
 ## Paizo notices
 
 Turnkeeper uses trademarks and/or copyrights owned by Paizo Inc., used under Paizo's Community Use Policy
