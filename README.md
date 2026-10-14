@@ -62,10 +62,13 @@ Paizo. For more information about Paizo Inc. and Paizo products, visit [paizo.co
 
 Pathfinder and Starfinder are registered trademarks and copyrights of Paizo Inc.
 
-The creature and rules text comes from the [pf2e system for Foundry VTT](https://github.com/foundryvtt/pf2e) and
-is used under the ORC License and the Open Game License 1.0a. The same notices and credits are in the app's About
-screen (the app menu on the Mac, the campaign sidebar's About button on the iPad). Contact:
-[scooper4711 on GitHub](https://github.com/scooper4711).
+The creature and rules text comes from the [pf2e system for Foundry VTT](https://github.com/foundryvtt/pf2e) and is
+used under the ORC License and the Open Game License 1.0a. The condition icons are from
+[game-icons.net](https://game-icons.net), by DarkZaitzev, Delapouite, Lorc, Sbed, Skoll and Zeromancer, used under
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/);
+[Resources/ConditionIcons/CREDITS.md](Resources/ConditionIcons/CREDITS.md) credits each one. The same notices and
+credits are in the app's About screen (the app menu on the Mac, the campaign sidebar's About button on the iPad).
+Contact: [scooper4711 on GitHub](https://github.com/scooper4711).
 
 ## Test
 `make test` and `make lint` (Swift); `make ipad-uitest` (iPad UI tests, against the demo fight);

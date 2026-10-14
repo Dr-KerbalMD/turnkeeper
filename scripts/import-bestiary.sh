@@ -35,9 +35,14 @@ else
     echo "Warning: $ARTWORK has no Pathfinder-Icons font (git submodule update --init); cards show stand-in symbols." >&2
 fi
 
-echo "Copying condition icons..."
+echo "Rendering condition icons..."
+# The game-icons.net SVGs in Resources/ConditionIcons; the pf2e icons from earlier imports go.
+rm -rf Generated/Conditions
 mkdir -p Generated/Conditions
-cp "$PF2E_REPO"/static/icons/conditions/*.webp Generated/Conditions/
+for icon in Resources/ConditionIcons/*.svg; do
+    sips --setProperty format png --resampleHeightWidthMax 128 "$icon" \
+        --out "Generated/Conditions/$(basename "$icon" .svg).png" >/dev/null
+done
 
 echo "Importing the bestiary from $PF2E_REPO..."
 swift build -c release --product BestiaryImport
