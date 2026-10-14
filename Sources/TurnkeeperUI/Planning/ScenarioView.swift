@@ -132,16 +132,17 @@ private struct ScenarioGrid: View {
     }
 }
 
-/// "Party: 16 CP → 16–18 CP", or why challenge points can't be worked out.
+/// "Challenge points: 16 CP → 16–18 CP" (or "Party points: 12 points → Base" for Easier, Base and Harder), or why
+/// the points can't be worked out.
 struct ChallengePointsLine: View {
     let scenario: Scenario?
     let party: Party?
 
     var body: some View {
-        if let scenario, let party, scenario.variantLabels.contains(where: { ChallengePoints.range(of: $0) != nil }) {
-            if let points = party.challengePoints(levelRange: scenario.levelRange) {
-                let label = ChallengePoints.label(for: points, among: scenario.variantLabels)
-                LabeledContent("Challenge points", value: "\(points) CP" + (label.map { " → \($0)" } ?? ""))
+        if let scenario, let party, let scheme = scenario.pointScheme {
+            if let pick = scenario.difficulty(for: party) {
+                LabeledContent(scheme == .challengePoints ? "Challenge points" : "Party points",
+                               value: pick.pointsText + (pick.label.map { " → \($0)" } ?? ""))
             } else {
                 Text("Set the scenario's levels (such as 3–6) to work out challenge points.")
                     .font(.footnote).foregroundStyle(.secondary)

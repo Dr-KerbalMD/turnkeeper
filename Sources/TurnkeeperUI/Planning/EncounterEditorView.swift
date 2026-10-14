@@ -35,7 +35,7 @@ struct EncounterEditorView: View {
         .toolbar { runButton(current) }
         .onAppear { setUp(scenario) }
         .onChange(of: encounter.id) { setUp(scenario) }
-        .onChange(of: partyID) { if let label = challengePointLabel(scenario) { self.label = label } }
+        .onChange(of: partyID) { if let label = pickedLabel(scenario) { self.label = label } }
         .sheet(isPresented: $isBrowsing) {
             BestiaryBrowser(game: model.game, partyLevel: model.party(partyID)?.level) { key in addCreature(key) }
         }
@@ -110,17 +110,16 @@ struct EncounterEditorView: View {
         }
     }
 
-    /// Picks the difficulty: the one the party's challenge points call for, else the last one run.
+    /// Picks the difficulty: the one the party's points call for, else the last one run.
     private func setUp(_ scenario: Scenario?) {
         partyID = partyID ?? model.defaultParty(for: scenario?.campaignID)?.id
-        label = challengePointLabel(scenario)
+        label = pickedLabel(scenario)
             ?? scenario?.startingVariantLabel(for: encounter) ?? VariantScheme.single.labels[0]
     }
 
-    private func challengePointLabel(_ scenario: Scenario?) -> String? {
-        guard let scenario, let points = model.party(partyID)?.challengePoints(levelRange: scenario.levelRange)
-        else { return nil }
-        return ChallengePoints.label(for: points, among: scenario.variantLabels)
+    private func pickedLabel(_ scenario: Scenario?) -> String? {
+        guard let scenario, let party = model.party(partyID) else { return nil }
+        return scenario.difficulty(for: party)?.label
     }
 
     // MARK: Changes
