@@ -50,6 +50,15 @@ for icon in Resources/ConditionIcons/*.svg; do
         --out "Generated/Conditions/$(basename "$icon" .svg).png" >/dev/null
 done
 
+echo "Copying the licenses the bundled content requires..."
+# The About screen lists every file here (Tabletop Kit's LicenseText.all(in:)), titled by its name.
+rm -rf Generated/Licenses
+mkdir -p Generated/Licenses
+cp Resources/Licenses/* Generated/Licenses/
+cp "$PF2E_REPO/static/licenses/OpenGameLicense.md" "Generated/Licenses/Open Game License.md"
+cp "$PF2E_REPO/static/licenses/ORCLicense.md" "Generated/Licenses/ORC License.md"
+cp Resources/ConditionIcons/CREDITS.md "Generated/Licenses/Condition Icons.md"
+
 echo "Importing the bestiary from $PF2E_REPO..."
 swift build -c release --product BestiaryImport
 "$(swift build -c release --show-bin-path)/BestiaryImport" --pf2e "$PF2E_REPO" --out Generated --config .
