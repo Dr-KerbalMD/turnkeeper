@@ -104,8 +104,9 @@ The creature and rules text comes from the [pf2e system for Foundry VTT](https:/
 used under the ORC License and the Open Game License 1.0a. The condition icons are from
 [game-icons.net](https://game-icons.net), by DarkZaitzev, Delapouite, Lorc, Sbed, Skoll and Zeromancer, used under
 [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/);
-[Resources/ConditionIcons/CREDITS.md](Resources/ConditionIcons/CREDITS.md) credits each one. The same notices and
-credits are in the app's About screen (the app menu on the Mac, the campaign sidebar's About button on the iPad).
+[Resources/ConditionIcons/CREDITS.md](Resources/ConditionIcons/CREDITS.md) credits each one. The Roboto and Roboto
+Condensed fonts are by Google, under the Apache License 2.0. The same notices and credits, with the licenses' full
+texts, are in the app's About screen (the app menu on the Mac, the campaign sidebar's About button on the iPad).
 Contact: [Turnkeeper's issues on GitHub](https://github.com/scooper4711/turnkeeper/issues).
 
 ## Test
