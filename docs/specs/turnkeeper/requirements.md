@@ -12,6 +12,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R1.4 Merging never loses edits silently. When both sides changed the same record, the newer one wins
   and the other is kept as a conflict copy.
 - R1.5 Nothing requires a paid Apple developer account. There is no iCloud or CloudKit.
+- R1.6 Pushing a version tag makes GitHub build the universal Mac app and attach its disk image to the tag's
+  release. It bundles the same data as a local build: `make bestiary` records the pf2e commit it read in
+  `pf2e.commit`, and the release imports from that commit and the `Artwork` submodule.
 
 ## R2 Bestiary
 - R2.1 The bundled bestiary contains every NPC and every complex hazard from the pf2e and sf2e packs in

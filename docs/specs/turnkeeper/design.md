@@ -20,6 +20,14 @@ The creature model, stat-block presentation, conditions and the pf2e import live
 [Tabletop Kit](https://github.com/scooper4711/tabletop-kit) (`Bestiary` and `CreatureImport`), shared with Field
 Guide; its spec describes the import pipeline. `make bestiary` runs Turnkeeper's `BestiaryImport` executable on it.
 
+## Release
+`make bestiary` writes the pf2e repository's commit to `pf2e.commit` and warns when that repository has
+uncommitted changes, which a release couldn't reproduce. The Release workflow (on `v*` tags) fetches the
+`Artwork` submodule with the `ARTWORK_SSH_KEY` deploy key, fetches that one pf2e commit from
+`foundryvtt/pf2e` (`scripts/fetch-pf2e.sh`), runs `make bestiary` with `REXARD_PACKS=Artwork/rexard`, tests,
+builds the universal app and attaches `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release,
+creating a draft if there is none. The app is signed ad hoc, as a local build is.
+
 ## Creature art
 - Tabletop Kit's `CreatureArtStore` (an actor, in its `CreatureArt` product) owns the kit's `ArtLibrary`;
   Turnkeeper's `standard()` puts it in Application Support/Turnkeeper/Creature Art (apart from
