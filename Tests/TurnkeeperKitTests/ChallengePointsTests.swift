@@ -45,6 +45,40 @@ struct ChallengePointsTests {
         #expect(party.challengePoints(levelRange: "") == nil)
     }
 
+    @Test("Starfinder's points: 2 at the lower level or below, 3 at the higher level or above",
+          arguments: [(0, 2), (1, 2), (2, 3), (5, 3)])
+    func starfinderPoints(level: Int, expected: Int) {
+        #expect(StarfinderDifficulty.points(forLevel: level, lowestAllowed: 1) == expected)
+    }
+
+    @Test("Starfinder's tables: up to 10 points Easier, 11–14 Base, 15 or more Harder",
+          arguments: [([1, 1, 1, 1], "Easier"), ([1, 1, 1, 1, 1], "Easier"), ([2, 2, 2, 2], "Base"),
+                      ([1, 1, 1, 1, 1, 1], "Base"), ([2, 2, 2, 2, 2], "Harder"), ([2, 2, 2, 2, 2, 2], "Harder"),
+                      ([1, 1, 2, 2], "Easier"), ([1, 2, 2, 2], "Base")])
+    func starfinderTables(levels: [Int], expected: String) {
+        #expect(StarfinderDifficulty.label(for: StarfinderDifficulty.total(levels: levels, lowestAllowed: 1))
+                == expected)
+    }
+
+    @Test("A scenario picks its difficulty by its labels' scheme")
+    func scenarioPicks() {
+        let party = Party(campaignID: UUID(), name: "Table", level: 2,
+                          members: (1...4).map { PartyMember(name: "PC \($0)") })
+        var starfinder = Scenario(campaignID: UUID(), name: "#1-01",
+                                  variantLabels: VariantScheme.easierBaseHarder.labels)
+        starfinder.levelRange = "1-2"
+        #expect(starfinder.pointScheme == .starfinder)
+        #expect(starfinder.difficulty(for: party) == DifficultyPick(points: 12, pointsText: "12 points", label: "Base"))
+        var pathfinder = Scenario(campaignID: UUID(), name: "#6-01",
+                                  variantLabels: VariantScheme.challengePointsLowTier.labels)
+        pathfinder.levelRange = "1-4"
+        #expect(pathfinder.difficulty(for: party) == DifficultyPick(points: 12, pointsText: "12 CP", label: "12–13 CP"))
+        let single = Scenario(campaignID: UUID(), name: "Quest", variantLabels: VariantScheme.single.labels)
+        #expect(single.pointScheme == nil && single.difficulty(for: party) == nil)
+        starfinder.levelRange = ""
+        #expect(starfinder.difficulty(for: party) == nil)
+    }
+
     @Test("A new encounter opens at Base; one with a plan opens at the difficulty last run")
     func startingVariant() {
         var scenario = Scenario(campaignID: UUID(), name: "#7-01",

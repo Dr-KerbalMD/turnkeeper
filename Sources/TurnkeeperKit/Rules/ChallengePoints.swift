@@ -38,11 +38,79 @@ public enum ChallengePoints {
     }
 }
 
+/// Starfinder Society's Easier, Base and Harder: each PC at the scenario's lower level (or below) gives 2 points
+/// and at its higher level (or above) 3, and the total picks the difficulty. Four lower-level PCs play Easier,
+/// four higher-level or six lower-level Base, and six higher-level Harder.
+public enum StarfinderDifficulty {
+    public static func points(forLevel level: Int, lowestAllowed: Int) -> Int {
+        level <= lowestAllowed ? 2 : 3
+    }
+
+    public static func total(levels: [Int], lowestAllowed: Int) -> Int {
+        levels.reduce(0) { $0 + points(forLevel: $1, lowestAllowed: lowestAllowed) }
+    }
+
+    /// Up to 10 points plays Easier, 11–14 Base, and 15 or more Harder.
+    public static func label(for total: Int) -> String {
+        switch total {
+        case ...10: return "Easier"
+        case 11...14: return VariantScheme.baseLabel
+        default: return "Harder"
+        }
+    }
+}
+
+/// A party's points for a scenario, and the difficulty they pick.
+public struct DifficultyPick: Equatable, Sendable {
+    public var points: Int
+    /// How the points are written: "16 CP", or "12 points" for Starfinder's.
+    public var pointsText: String
+    /// The scenario's difficulty the points pick; nil when none of its labels covers them.
+    public var label: String?
+}
+
+public extension Scenario {
+    /// How the scenario's difficulties follow from the party's points.
+    enum PointScheme: Sendable {
+        /// Labels with point ranges, such as "16–18 CP".
+        case challengePoints
+        /// Easier, Base and Harder.
+        case starfinder
+    }
+
+    /// The scheme its labels use; nil when they use neither, such as one version only.
+    var pointScheme: PointScheme? {
+        if variantLabels.contains(where: { ChallengePoints.range(of: $0) != nil }) { return .challengePoints }
+        if Set(VariantScheme.easierBaseHarder.labels).isSubset(of: variantLabels) { return .starfinder }
+        return nil
+    }
+
+    /// The party's points and the difficulty they pick. Nil when the scenario has no point scheme, its level range
+    /// has no lowest level, or no one is present.
+    func difficulty(for party: Party) -> DifficultyPick? {
+        guard let scheme = pointScheme, let lowest = ChallengePoints.lowestLevel(in: levelRange),
+              !party.presentLevels.isEmpty else { return nil }
+        switch scheme {
+        case .challengePoints:
+            let points = ChallengePoints.total(levels: party.presentLevels, lowestAllowed: lowest)
+            return DifficultyPick(points: points, pointsText: "\(points) CP",
+                                  label: ChallengePoints.label(for: points, among: variantLabels))
+        case .starfinder:
+            let points = StarfinderDifficulty.total(levels: party.presentLevels, lowestAllowed: lowest)
+            return DifficultyPick(points: points, pointsText: "\(points) points",
+                                  label: StarfinderDifficulty.label(for: points))
+        }
+    }
+}
+
 public extension Party {
+    /// The levels of the players present: each one's own, or the party's.
+    var presentLevels: [Int] { presentMembers.map { $0.level ?? level } }
+
     /// The challenge points of the players present, for a scenario's level range. Nil when the range has no
     /// lowest level to measure from.
     func challengePoints(levelRange: String) -> Int? {
         guard let lowest = ChallengePoints.lowestLevel(in: levelRange), !presentMembers.isEmpty else { return nil }
-        return ChallengePoints.total(levels: presentMembers.map { $0.level ?? level }, lowestAllowed: lowest)
+        return ChallengePoints.total(levels: presentLevels, lowestAllowed: lowest)
     }
 }
