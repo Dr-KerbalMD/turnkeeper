@@ -2,14 +2,20 @@
 # Imports creatures, conditions and the glossary into Generated/. Creature art isn't imported: the app reads it
 # from the user's own PDFs on the device.
 #
-# PF2E_REPO           the pf2e system repository (default ~/git/pf2e)
+# PF2E_REPO           a pf2e system repository to read instead of the release in pf2e.release, which is
+#                     fetched into build/pf2e (scripts/fetch-pf2e.sh); release builds always use that release
 # REXARD_PACKS        the folder holding the user's Rexard UI packs, for the cards' art (default ~/git/rexard-packs)
 # ARTWORK             the toolkit-artwork checkout, for Paizo's Pathfinder-Icons font (default the Artwork submodule)
 set -eu
 
 cd "$(dirname "$0")/.."
 
-PF2E_REPO="${PF2E_REPO:-$HOME/git/pf2e}"
+if [ -z "${PF2E_REPO:-}" ]; then
+    scripts/fetch-pf2e.sh build/pf2e
+    PF2E_REPO=build/pf2e
+else
+    echo "Reading $PF2E_REPO; release builds read $(cut -d ' ' -f 2- pf2e.release) instead." >&2
+fi
 REXARD_PACKS="${REXARD_PACKS:-$HOME/git/rexard-packs}"
 ARTWORK="${ARTWORK:-Artwork}"
 
