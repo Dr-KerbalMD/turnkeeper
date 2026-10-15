@@ -1,5 +1,13 @@
 # Turnkeeper
 
+[![CI](https://github.com/scooper4711/turnkeeper/actions/workflows/ci.yml/badge.svg)](https://github.com/scooper4711/turnkeeper/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=scooper4711_turnkeeper&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=scooper4711_turnkeeper)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=scooper4711_turnkeeper&metric=coverage)](https://sonarcloud.io/summary/new_code?id=scooper4711_turnkeeper)
+[![GitHub Release](https://img.shields.io/github/v/release/scooper4711/turnkeeper)](https://github.com/scooper4711/turnkeeper/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/scooper4711/turnkeeper/total)](https://github.com/scooper4711/turnkeeper/releases)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%2015%2B%20%7C%20iPadOS%2018%2B-informational)](./Package.swift)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 Running a Pathfinder or Starfinder fight at the table means keeping a lot in your head: the initiative order, hit
 points, conditions that change every round, who is delaying, the persistent damage and frightened values that tick
 at the end of a turn, the stat block of whoever is up, open in a book or a PDF somewhere, and the rules for
