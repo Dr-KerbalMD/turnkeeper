@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Converts the pf2e system's web fonts to TrueType, which iOS and macOS can load.
 
-Converts Roboto and Roboto Condensed from <pf2e>/static/fonts into <out> as .ttf files named after the
-source files. The action icons' Pathfinder-Icons font is already TrueType, and its license forbids altering it,
-so import-bestiary.sh copies it as it is.
+Converts Roboto and Roboto Condensed from <pf2e>/static/fonts into <out>, a folder inside the repository, as
+.ttf files named after the source files. The action icons' Pathfinder-Icons font is already TrueType, and its
+license forbids altering it, so import-bestiary.sh copies it as it is.
 
 Requirements: turnkeeper R5.1, R5.2, R5.4
 """
@@ -14,6 +14,7 @@ from pathlib import Path
 from fontTools.ttLib import TTFont
 
 FONT_PREFIXES = ("roboto-v", "roboto-condensed-")
+REPOSITORY = Path(__file__).resolve().parent.parent
 
 
 def main() -> None:
@@ -22,7 +23,9 @@ def main() -> None:
     parser.add_argument("--fonts", required=True, help="the pf2e system's static/fonts folder")
     parser.add_argument("--out", required=True, help="output folder, such as Generated/Fonts")
     arguments = parser.parse_args()
-    out = Path(arguments.out)
+    out = Path(arguments.out).resolve()
+    if not out.is_relative_to(REPOSITORY):
+        parser.error(f"--out must be inside the repository ({REPOSITORY}), not {out}")
     out.mkdir(parents=True, exist_ok=True)
     converted = [convert(source, out) for source in wanted_fonts(Path(arguments.fonts))]
     print(f"Fonts ready: {len(converted)}.")
