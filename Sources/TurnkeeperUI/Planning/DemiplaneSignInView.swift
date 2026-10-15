@@ -84,8 +84,11 @@ final class SignInWatcher: NSObject, WKHTTPCookieStoreObserver, WKNavigationDele
         }
     }
 
-    func webView(_: WKWebView, decidePolicyFor action: WKNavigationAction) async -> WKNavigationActionPolicy {
-        Self.isTrusted(action.request.url) ? .allow : .cancel
+    func webView(
+        _: WKWebView, decidePolicyFor action: WKNavigationAction,
+        decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void
+    ) {
+        decisionHandler(Self.isTrusted(action.request.url) ? .allow : .cancel)
     }
 
     /// Whether the URL is a secure page on a trusted domain, or a blank frame (`about:blank`).
