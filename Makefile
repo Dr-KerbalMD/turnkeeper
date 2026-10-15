@@ -1,4 +1,5 @@
-.PHONY: build test lint bestiary update-pf2e dmg cards icon app run install ipad-simulator ipad-install ipad-uitest clean
+.PHONY: build test lint coverage bestiary update-pf2e dmg cards icon app run install \
+	ipad-simulator ipad-install ipad-uitest clean
 
 build:
 	swift build
@@ -8,6 +9,10 @@ test:
 
 lint:
 	swiftlint --strict --quiet
+
+# Runs the tests and fails when TurnkeeperKit's and CharacterImport's coverage is below 80%.
+coverage:
+	scripts/coverage.sh
 
 # Re-imports creatures, conditions and the glossary from the pf2e release in pf2e.release (see
 # scripts/import-bestiary.sh for the sources and their overrides).
