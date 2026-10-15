@@ -34,7 +34,11 @@ struct SwipeableStrip: ViewModifier {
             }
     }
 
-    private var action: StripSwipeAction? { offset > 0 ? leading : offset < 0 ? trailing : nil }
+    private var action: StripSwipeAction? {
+        if offset > 0 { return leading }
+        if offset < 0 { return trailing }
+        return nil
+    }
     private var isPastThreshold: Bool { abs(offset) >= Self.threshold }
 
     @ViewBuilder private var revealed: some View {

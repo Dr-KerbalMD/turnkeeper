@@ -39,7 +39,7 @@ extension AppModel {
     /// The live encounters with a slot for the creature, in any variant.
     func encountersUsing(key: String) -> [Encounter] {
         library.encounters.filter { encounter in
-            !encounter.isDeleted && encounter.variants.contains { $0.slots.contains { $0.creatureKey == key } }
+            !encounter.isDeleted && encounter.variants.flatMap(\.slots).contains { $0.creatureKey == key }
         }
     }
 

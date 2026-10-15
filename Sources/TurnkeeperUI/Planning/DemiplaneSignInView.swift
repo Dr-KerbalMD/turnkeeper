@@ -50,12 +50,16 @@ private struct DemiplaneWebView {
 #if os(iOS)
 extension DemiplaneWebView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView { makeWebView(coordinator: context.coordinator) }
-    func updateUIView(_ webView: WKWebView, context: Context) {}
+    func updateUIView(_: WKWebView, context _: Context) {
+        // Nothing to update: the page signs in on its own and the watcher reports it.
+    }
 }
 #else
 extension DemiplaneWebView: NSViewRepresentable {
     func makeNSView(context: Context) -> WKWebView { makeWebView(coordinator: context.coordinator) }
-    func updateNSView(_ webView: WKWebView, context: Context) {}
+    func updateNSView(_: WKWebView, context _: Context) {
+        // Nothing to update: the page signs in on its own and the watcher reports it.
+    }
 }
 #endif
 

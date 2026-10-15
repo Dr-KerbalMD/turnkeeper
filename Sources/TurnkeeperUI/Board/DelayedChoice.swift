@@ -25,7 +25,7 @@ private struct DelayedChoiceModifier: ViewModifier {
             .alert("Delay \(controller.delayToConfirm?.name ?? "")?", isPresented: isConfirmingDelay,
                    presenting: controller.delayToConfirm) { combatant in
                 Button("Delay") { controller.startDelay(combatant.id) }
-                Button("Cancel", role: .cancel) {}
+                Button.cancel()
             } message: { _ in
                 Text("It waits below the next strip, and is asked about before each turn passes it.")
             }
@@ -42,7 +42,7 @@ private struct DelayedChoiceModifier: ViewModifier {
 
     private func isAsking(count: some RangeExpression<Int>) -> Binding<Bool> {
         // The buttons answer or cancel; dismissing alone must not, since it can come before the button's action.
-        Binding(get: { count.contains(controller.delayedChoice.count) }, set: { _ in })
+        .readOnly { count.contains(controller.delayedChoice.count) }
     }
 }
 

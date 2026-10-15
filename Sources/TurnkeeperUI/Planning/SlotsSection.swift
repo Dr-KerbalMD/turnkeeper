@@ -138,7 +138,7 @@ private struct SlotRow: View {
         }
         .alert("Delete \(model.entry(slot.creatureKey)?.name ?? "this creature")?", isPresented: $isConfirmingDelete) {
             Button("Delete", role: .destructive) { model.deleteCustomCreature(key: slot.creatureKey) }
-            Button("Cancel", role: .cancel) {}
+            Button.cancel()
         } message: {
             Text(deleteMessage)
         }

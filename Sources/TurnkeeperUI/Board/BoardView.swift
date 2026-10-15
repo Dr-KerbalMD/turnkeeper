@@ -79,11 +79,11 @@ private struct BoardContent: View {
     }
 
     private var reminderBinding: Binding<Bool> {
-        Binding(get: { !controller.reminders.isEmpty }, set: { _ in })
+        .readOnly { !controller.reminders.isEmpty }
     }
 
     private var endBinding: Binding<Bool> {
-        Binding(get: { controller.showsEndSheet }, set: { _ in })
+        .readOnly { controller.showsEndSheet }
     }
 }
 

@@ -69,7 +69,7 @@ struct StatBlockImportModifier: ViewModifier {
             }
             .alert("Stat Blocks Added", isPresented: isShowingResult, presenting: model.statBlockImport) { result in
                 Button("Review…") { reviewing = Self.firstToReview(in: result) }
-                Button("OK", role: .cancel) {}
+                Button.cancel("OK")
             } message: { result in
                 Text(([result.summary] + result.warnings.prefix(4)).joined(separator: "\n"))
             }

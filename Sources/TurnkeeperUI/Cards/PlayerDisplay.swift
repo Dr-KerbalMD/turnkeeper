@@ -59,8 +59,8 @@ struct PlayerScreen: View {
 /// Routes an external display or AirPlay screen to the player screen; other scenes use SwiftUI's own.
 final class TurnkeeperAppDelegate: NSObject, UIApplicationDelegate {
     func application(
-        _ application: UIApplication, configurationForConnecting session: UISceneSession,
-        options: UIScene.ConnectionOptions
+        _: UIApplication, configurationForConnecting session: UISceneSession,
+        options _: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
         guard session.role == .windowExternalDisplayNonInteractive else {
             return UISceneConfiguration(name: nil, sessionRole: session.role)
@@ -75,7 +75,7 @@ final class TurnkeeperAppDelegate: NSObject, UIApplicationDelegate {
 final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene, willConnectTo _: UISceneSession, options _: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = UIHostingController(rootView: PlayerScreen())
@@ -84,7 +84,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
         MainActor.assumeIsolated { PlayerDisplay.shared.hasSecondScreen = true }
     }
 
-    func sceneDidDisconnect(_ scene: UIScene) {
+    func sceneDidDisconnect(_: UIScene) {
         window = nil
         MainActor.assumeIsolated { PlayerDisplay.shared.hasSecondScreen = false }
     }

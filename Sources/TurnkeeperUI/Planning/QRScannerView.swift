@@ -43,9 +43,11 @@ private struct Scanner: UIViewControllerRepresentable {
         return scanner
     }
 
-    func updateUIViewController(_ scanner: DataScannerViewController, context: Context) {}
+    func updateUIViewController(_: DataScannerViewController, context _: Context) {
+        // Nothing to update: the scanner keeps running until it is dismantled.
+    }
 
-    static func dismantleUIViewController(_ scanner: DataScannerViewController, coordinator: Coordinator) {
+    static func dismantleUIViewController(_ scanner: DataScannerViewController, coordinator _: Coordinator) {
         scanner.stopScanning()
     }
 
@@ -57,8 +59,8 @@ private struct Scanner: UIViewControllerRepresentable {
             self.onScan = onScan
         }
 
-        func dataScanner(_ scanner: DataScannerViewController, didAdd items: [RecognizedItem],
-                         allItems: [RecognizedItem]) {
+        func dataScanner(_: DataScannerViewController, didAdd items: [RecognizedItem],
+                         allItems _: [RecognizedItem]) {
             for case let .barcode(code) in items {
                 guard !hasScanned, let payload = code.payloadStringValue,
                       DemiplaneReference.parse(payload) != nil else { continue }

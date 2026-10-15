@@ -24,7 +24,7 @@ struct PlannerView: View {
         .alert("A fight is in progress for this encounter.", isPresented: pendingBinding,
                presenting: model.pendingPlanChange) { pending in
             Button("Change and Reset", role: .destructive) { model.confirm(pending) }
-            Button("Cancel", role: .cancel) {}
+            Button.cancel()
         } message: { _ in
             Text("Changing its creatures or events will reset that fight.")
         }
