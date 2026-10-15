@@ -87,9 +87,15 @@ extension DemiplaneSheetReader {
     /// "Occult Prepared Spells", "Arcane Spontaneous Spells" or just "Spells".
     private static func mainName(_ fields: SheetFields) -> String {
         let tradition = ["arcane", "divine", "occult", "primal"].first { fields.isChecked("tradition_\($0)_yn") }
-        let style = fields.isChecked("prepared_caster_yn") ? "Prepared"
-            : fields.isChecked("spontaneous_caster_yn") ? "Spontaneous" : ""
-        return ([tradition?.capitalized ?? "", style, "Spells"]).filter { !$0.isEmpty }.joined(separator: " ")
+        return [tradition?.capitalized ?? "", casterStyle(fields), "Spells"].filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    /// "Prepared", "Spontaneous", or "" when neither box is ticked.
+    private static func casterStyle(_ fields: SheetFields) -> String {
+        if fields.isChecked("prepared_caster_yn") { return "Prepared" }
+        if fields.isChecked("spontaneous_caster_yn") { return "Spontaneous" }
+        return ""
     }
 
     private static func mainRanks(_ fields: SheetFields) -> [SpellRank] {

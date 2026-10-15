@@ -29,7 +29,7 @@ enum DemoLibrary {
         }
         model.startCombat(encounter: encounter, variantLabel: "16–18 CP", party: party)
         if mode == "board", var session = model.activeSession {
-            session.state = startedFight(session.state, bestiary: bestiary)
+            session.state = startedFight(session.state)
             model.library.save(session)
         }
         return model
@@ -53,7 +53,7 @@ enum DemoLibrary {
         model.library.save(encounter)
         model.startCombat(encounter: encounter, variantLabel: "Base", party: party)
         if var session = model.activeSession {
-            session.state = startedFight(session.state, bestiary: bestiary)
+            session.state = startedFight(session.state)
             model.library.save(session)
         }
         return model
@@ -79,7 +79,7 @@ enum DemoLibrary {
         return encounter
     }
 
-    private static func startedFight(_ state: CombatState, bestiary: BestiaryStore) -> CombatState {
+    private static func startedFight(_ state: CombatState) -> CombatState {
         var state = state
         var generator = SeededGenerator(seed: 3)
         for combatant in state.combatants where combatant.place == .ladder {
