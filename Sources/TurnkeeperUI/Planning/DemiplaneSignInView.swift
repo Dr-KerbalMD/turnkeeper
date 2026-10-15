@@ -28,18 +28,19 @@ struct DemiplaneSignInView: View {
     }
 }
 
-/// A web view that calls back once Demiplane's `access_token` cookie is set.
+/// A web view that calls back once Demiplane's `access_token` cookie is set, and only goes to secure pages.
 @MainActor
 private struct DemiplaneWebView {
     let url: URL
     let onSignedIn: () -> Void
 
-    func makeCoordinator() -> CookieWatcher {
-        CookieWatcher(onSignedIn: onSignedIn)
+    func makeCoordinator() -> SignInWatcher {
+        SignInWatcher(onSignedIn: onSignedIn)
     }
 
-    private func makeWebView(coordinator: CookieWatcher) -> WKWebView {
+    private func makeWebView(coordinator: SignInWatcher) -> WKWebView {
         let webView = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
+        webView.navigationDelegate = coordinator
         webView.configuration.websiteDataStore.httpCookieStore.add(coordinator)
         webView.load(URLRequest(url: url))
         return webView
@@ -58,9 +59,14 @@ extension DemiplaneWebView: NSViewRepresentable {
 }
 #endif
 
-/// Watches the web view's cookies for a signed-in Demiplane session, reporting it once.
+/// Watches the web view's cookies for a signed-in Demiplane session, reporting it once, and keeps the web view
+/// on secure pages.
 @MainActor
-final class CookieWatcher: NSObject, WKHTTPCookieStoreObserver {
+final class SignInWatcher: NSObject, WKHTTPCookieStoreObserver, WKNavigationDelegate {
+    /// Demiplane and the sign-in services it hands off to are all served over https; `about:` covers the blank
+    /// frames their pages make.
+    private static let allowedSchemes: Set<String> = ["https", "about"]
+
     private let onSignedIn: () -> Void
     private var hasReported = false
 
@@ -74,5 +80,9 @@ final class CookieWatcher: NSObject, WKHTTPCookieStoreObserver {
             hasReported = true
             onSignedIn()
         }
+    }
+
+    func webView(_: WKWebView, decidePolicyFor action: WKNavigationAction) async -> WKNavigationActionPolicy {
+        Self.allowedSchemes.contains(action.request.url?.scheme ?? "") ? .allow : .cancel
     }
 }
