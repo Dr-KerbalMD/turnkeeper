@@ -28,7 +28,7 @@ struct DemiplaneSignInView: View {
     }
 }
 
-/// A web view that calls back once Demiplane's `access_token` cookie is set, and only goes to secure pages.
+/// A web view that calls back once Demiplane's `access_token` cookie is set, and only goes to the sign-in's sites.
 @MainActor
 private struct DemiplaneWebView {
     let url: URL
@@ -60,12 +60,14 @@ extension DemiplaneWebView: NSViewRepresentable {
 #endif
 
 /// Watches the web view's cookies for a signed-in Demiplane session, reporting it once, and keeps the web view
-/// on secure pages.
+/// on the sites a sign-in passes through.
 @MainActor
 final class SignInWatcher: NSObject, WKHTTPCookieStoreObserver, WKNavigationDelegate {
-    /// Demiplane and the sign-in services it hands off to are all served over https; `about:` covers the blank
-    /// frames their pages make.
-    private static let allowedSchemes: Set<String> = ["https", "about"]
+    /// Demiplane, its Auth0 sign-in, Roll20 (Demiplane's owner) and the accounts Auth0 can sign in with.
+    private static let trustedDomains = [
+        "demiplane.com", "thedemiplane.com", "auth0.com", "roll20.net",
+        "google.com", "apple.com", "facebook.com", "discord.com"
+    ]
 
     private let onSignedIn: () -> Void
     private var hasReported = false
@@ -83,6 +85,14 @@ final class SignInWatcher: NSObject, WKHTTPCookieStoreObserver, WKNavigationDele
     }
 
     func webView(_: WKWebView, decidePolicyFor action: WKNavigationAction) async -> WKNavigationActionPolicy {
-        Self.allowedSchemes.contains(action.request.url?.scheme ?? "") ? .allow : .cancel
+        Self.isTrusted(action.request.url) ? .allow : .cancel
+    }
+
+    /// Whether the URL is a secure page on a trusted domain, or a blank frame (`about:blank`).
+    static func isTrusted(_ url: URL?) -> Bool {
+        guard let url else { return false }
+        if url.scheme == "about" { return true }
+        guard url.scheme == "https", let host = url.host()?.lowercased() else { return false }
+        return trustedDomains.contains { host == $0 || host.hasSuffix("." + $0) }
     }
 }
