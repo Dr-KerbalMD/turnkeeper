@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   GH_TOKEN: ${{ github.token }}
@@ -19,6 +19,8 @@ env:
 jobs:
   look:
     name: Look for a newer pf2e release
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     outputs:
       latest: ${{ steps.look.outputs.latest }}
@@ -52,6 +54,8 @@ jobs:
 
   import:
     name: Import the new release
+    permissions:
+      contents: write
     needs: look
     if: needs.look.outputs.latest != ''
     runs-on: macos-26
@@ -103,6 +107,8 @@ jobs:
 
   release:
     name: Release
+    permissions:
+      contents: write
     needs: import
     if: needs.import.outputs.tag != ''
     uses: ./.github/workflows/release.yml
