@@ -28,6 +28,12 @@ checkout for development. `scripts/latest-pf2e-release.sh` finds the newest `pf2
   deploy key, runs the import with `REXARD_PACKS=Artwork/rexard`, tests, builds the universal app and attaches
   `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release, creating a draft if there is none. The
   app is signed ad hoc, as a local build is.
+- **App Sandbox** (R8). `scripts/build-app.sh` signs with `Resources/Turnkeeper.entitlements`: the App Sandbox,
+  network client (Demiplane, web views, joining nearby sync) and server (hosting it), audio input (Hold to Say
+  Initiative), read-write access to files the user picks, and app-scoped bookmarks for the watched folders and
+  PDFs. It copies `Resources/container-migration.plist` into the bundle; on the first sandboxed launch macOS
+  moves `Application Support/Turnkeeper`, the preferences and WebKit's and URLSession's stores (the Demiplane
+  session) into the container. The Keychain token stays where it is.
 - **Fingerprint.** `make bestiary` writes `import.sha256`, a SHA-256 of `Generated/Bestiary`
   (`scripts/fingerprint.sh`); fonts and pictures are left out, since tool versions change their bytes. The
   release workflow warns when its import doesn't match it.
@@ -42,8 +48,10 @@ checkout for development. `scripts/latest-pf2e-release.sh` finds the newest `pf2
 ## Creature art
 - Tabletop Kit's `CreatureArtStore` (an actor, in its `CreatureArt` product) owns the kit's `ArtLibrary`;
   Turnkeeper's `standard()` puts it in Application Support/Turnkeeper/Creature Art (apart from
-  pasted art's `Art` folder, whose unused files are swept at launch). Import
-  from Scrollkeeper watches the chosen folder and runs `addNewFiles`, by reference; Add PDFs… commits each file
+  pasted art's `Art` folder, whose unused files are swept at launch). In the sandbox
+  `URL.applicationSupportDirectory` is the container's, so on the Mac too Import from Scrollkeeper finds no
+  Scrollkeeper folder there and opens the folder picker; picking a folder again relinks its PDFs (Tabletop Kit
+  0.15.1). Import from Scrollkeeper watches the chosen folder and runs `addNewFiles`, by reference; Add PDFs… commits each file
   kept. At launch the store refreshes the PDFs' statuses and adds new files from the watched folders. Pictures
   are drawn by `ArtLibrary.picture(of:maxPixels:)` and cached by entry and size.
 - After each change the store publishes a catalog: per entry its id, name, game, whether a remastered product

@@ -33,7 +33,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   art; a Battle Card's creature or a pawn gives the portrait, a token the token (else the portrait).
 - R2.3a A referenced PDF that was deleted or moved is listed as missing in Creature Art, with the art it
   took away, and a creature whose art came only from missing PDFs says on its card which PDF it needs. Art
-  returns when the PDF does (Check Again).
+  returns when the PDF does (Check Again), or, when Turnkeeper can no longer reach their folder, when the folder
+  is picked again with Import from Scrollkeeper.
 - R2.4 The import writes a report covering counts per pack and enrichers it couldn't parse.
 - R2.5 The browser searches by name and trait, and filters by level, game, source, rarity, size and
   kind, and by source book. With a party chosen, the level filter starts at party level −4 to +4. The
@@ -222,3 +223,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
   ORC License (the creature and rules text), the Apache License for the Roboto fonts, and the condition icons'
   credits. The README carries the same notices.
 
+## R8 App Sandbox
+- R8.1 The Mac app runs in the App Sandbox. On its first sandboxed launch the library, the art, the settings
+  and the Demiplane web session move into the app's container, so the GM stays signed in.
+- R8.2 Import from Scrollkeeper opens the folder picker on the Mac too, since the sandbox can't read
+  Scrollkeeper's folder until the user picks it. Folders watched before the move have to be picked once more.
