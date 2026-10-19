@@ -24,6 +24,10 @@ struct SwipeableStrip: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            #if os(macOS)
+            // A drag gesture only follows a click and drag on the Mac; a two-finger swipe arrives as scrolling.
+            .background { TrackpadSwipeCatcher(slide: slide(to:), finish: finish) }
+            #endif
             .offset(x: offset)
             .background { revealed }
             .simultaneousGesture(swipe)
@@ -60,13 +64,23 @@ struct SwipeableStrip: ViewModifier {
                 let (sideways, upDown) = (value.translation.width, value.translation.height)
                 if isSideways == nil { isSideways = abs(sideways) > abs(upDown) }
                 guard isSideways == true else { return }
-                offset = (sideways > 0 && leading == nil) || (sideways < 0 && trailing == nil) ? 0 : sideways
+                slide(to: sideways)
             }
             .onEnded { _ in
-                let fired = isPastThreshold ? action : nil
-                withAnimation(.snappy) { offset = 0 }
                 isSideways = nil
-                fired?.perform()
+                finish()
             }
+    }
+
+    /// Slides the strip `sideways` from its place, toward an action it has.
+    private func slide(to sideways: CGFloat) {
+        offset = (sideways > 0 && leading == nil) || (sideways < 0 && trailing == nil) ? 0 : sideways
+    }
+
+    /// Lets go: fires the revealed action when the strip went past the threshold, and slides it back.
+    private func finish() {
+        let fired = isPastThreshold ? action : nil
+        withAnimation(.snappy) { offset = 0 }
+        fired?.perform()
     }
 }
