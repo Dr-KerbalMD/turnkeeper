@@ -140,7 +140,11 @@ Ported from the pf2e system, with tests.
 - **Board.** The left half holds the ladder, the bench and event tiles.
   The ladder is a scroll view, so strips use `SwipeableStrip`: a sideways `DragGesture` (ignored when the
   drag starts more vertical than sideways, so scrolling and `.draggable` still work) that slides the strip
-  over a colored action and fires it past a threshold.
+  over a colored action and fires it past a threshold. On the Mac a drag gesture only follows a click and drag,
+  and a two-finger trackpad swipe arrives as scroll events, so `TrackpadSwipeCatcher`, an `NSView` behind the
+  strip that takes no clicks, reads the window's scroll events with a local monitor. `TrackpadSwipeTracker`
+  (TurnkeeperKit) decides: a gesture that begins over the strip and moves more sideways than up and down slides
+  it the same way, and its events and the coasting after it are kept from the ladder; anything else scrolls.
 - **Delay.** `Combatant.isDelaying` keeps a delaying strip in `CombatState.order`. `TurnAdvancer.next`
   skips delaying strips and takes `actingNow`, the GM's answer about `delayedStripsAhead`, which
   `BoardController` asks for (an alert for one, a sheet for several) before passing the turn.
