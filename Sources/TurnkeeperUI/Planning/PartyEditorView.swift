@@ -115,6 +115,8 @@ private struct MemberRowActions: ViewModifier {
             .swipeActions(edge: .leading) {
                 Button(awayTitle, systemImage: awayImage, action: toggleAway).tint(.indigo)
             }
+            // The whole row, gaps included, answers a right-click.
+            .contentShape(Rectangle())
             .contextMenu {
                 Button(awayTitle, systemImage: awayImage, action: toggleAway)
                 Button("Remove", systemImage: "trash", role: .destructive, action: remove)
