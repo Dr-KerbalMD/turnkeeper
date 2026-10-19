@@ -10,7 +10,7 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 | `Sources/Turnkeeper` | Mac app entry point. |
 | `Sources/FoundryImport` | Library that parses Foundry documents, converts rules text and matches art. |
 | `Sources/BestiaryImport` | CLI around FoundryImport that writes `Generated/`. |
-| `Sources/CharacterImport` | Demiplane character import: links and QR codes, the sheet PDF reader, the client and the token. |
+| `Sources/CharacterImport` | Demiplane character import: links and QR codes, the sheet PDF reader and the client. |
 | `ios/Turnkeeper.xcodeproj` | iPad app. It references the package as `..` and bundles `Generated/` as a folder reference. |
 | `scripts/extract_pdf_art.py`, `scripts/pdfart/` | PyMuPDF extractor for token, pawn and card art from the Paizo PDFs, run in the project `.venv`. |
 | `Generated/` | Import output, gitignored and bundled into both apps. |
@@ -29,11 +29,10 @@ checkout for development. `scripts/latest-pf2e-release.sh` finds the newest `pf2
   `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release, creating a draft if there is none. The
   app is signed ad hoc, as a local build is.
 - **App Sandbox** (R8). `scripts/build-app.sh` signs with `Resources/Turnkeeper.entitlements`: the App Sandbox,
-  network client (Demiplane, web views, joining nearby sync) and server (hosting it), audio input (Hold to Say
+  network client (Demiplane, joining nearby sync) and server (hosting it), audio input (Hold to Say
   Initiative), read-write access to files the user picks, and app-scoped bookmarks for the watched folders and
   PDFs. It copies `Resources/container-migration.plist` into the bundle; on the first sandboxed launch macOS
-  moves `Application Support/Turnkeeper`, the preferences and WebKit's and URLSession's stores (the Demiplane
-  session) into the container. The Keychain token stays where it is.
+  moves `Application Support/Turnkeeper` and the preferences into the container.
 - **Fingerprint.** `make bestiary` writes `import.sha256`, a SHA-256 of `Generated/Bestiary`
   (`scripts/fingerprint.sh`); fonts and pictures are left out, since tool versions change their bytes. The
   release workflow warns when its import doesn't match it.
@@ -193,49 +192,28 @@ Ported from the pf2e system, with tests.
   background, class, class DC, feats and class features), stored on its `PartyMember` with a
   `CharacterLink` (source, character ID, game, revision) and an optional GM-typed max HP. On the board it
   has the key `pc.<member id>`; `AppModel` resolves those keys from the party. Tiles still treat it as a PC.
-- **Demiplane.** The GraphQL API (`apiv4.demiplane.com/v1/graphql`, bearer token) gives the name, level,
-  avatar and game, but no computed statistics. Those come from the sheet PDF, a fillable form read field by
-  field with PDFKit (`DemiplaneSheetReader`), one sheet at a time since PDFKit can deadlock reading form
-  fields on several threads. Starfinder sheets (`/nexus/starfinder2e/…`, against Pathfinder's
-  `/nexus/pathfinder-2e/…`) add Computers, Piloting, credits and a ranged weapon's range, magazine and
-  expend, and have no damage types; a sheet's game comes from the API, else from those fields. `POST app.demiplane.com/api/magic-missile` with
-  `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports it: 202 (or sometimes 200 without a URL) while it builds,
-  then 200 with the PDF URL and a revision hash of the character. Campaigns come from `GET /api/getCampaign?campaignUuid=`, sent with
-  `Client-Pathname: /nexus/<pathfinder2e|starfinder2e>/campaigns/<id>` as Demiplane's own page does: the
-  server looks the campaign up in the game that path names, and answers 403 "Campaign not found" for a
-  Starfinder campaign asked without it. Both, and a fresh GraphQL token (`/api/auth/token`, then
-  `/api/generate-graphql-token`), need the web session's cookies.
-- **Shared characters.** `demiplane_user_character` returns only the user's own characters (Demiplane's own
-  client filters it by `user_id` too), so a character shared with the GM read-only gets no row, with any
-  token. Demiplane's server embeds the character in its sheet page (`/nexus/<slug>/character-sheet/<id>`)
-  for anyone allowed to view it, as `characterSheetContent.character` (`name`, `level`, `avatar_url`,
-  `nexus_id`: 1 Pathfinder, 100 Starfinder) inside the page's string-escaped React data; the import reads it
-  from there (`DemiplaneClient.sharedCharacter`). When the page doesn't have it either, the import goes on
-  with the link's game and the sheet's name and level.
-- **Refresh.** Every request to Demiplane skips the URL cache (`reloadIgnoringLocalCacheData`): signed out,
-  the sheet's address never changes, so a cached PDF would hide a rebuild. `Party.apply(_:link:to:)`
+- **Demiplane.** Nothing needs a Demiplane account: every request is one anyone with a shared character's link
+  can make, without cookies or a token (checked 2026-10-19). `DemiplaneClient` makes three:
+  - The sheet page (`app.demiplane.com/nexus/<pathfinder2e|starfinder2e>/character-sheet/<id>`) embeds the
+    character as `characterSheetContent.character` (`name`, `level`, `avatar_url`, `nexus_id`: 1 Pathfinder,
+    100 Starfinder) inside the page's string-escaped React data; `DemiplaneClient.sharedCharacter` reads it.
+    When the page doesn't have it, the import goes on with the link's game and the sheet's name and level.
+  - `POST app.demiplane.com/api/magic-missile` with `GENERATE_CHARACTER_PDF_LAMBDA_NAME` exports the sheet
+    PDF: 202 (or 200 with `cacheStatus: pending` and no URL) while it builds, then 200 with the PDF URL and a
+    revision hash of the character. 401, 403 or 404 mean the character isn't shared by link.
+  - The PDF itself, on `content.demiplane.com`, and the avatar on S3.
+
+  The sheet PDF is a fillable form read field by field with PDFKit (`DemiplaneSheetReader`), one sheet at a
+  time since PDFKit can deadlock reading form fields on several threads. Starfinder sheets add Computers,
+  Piloting, credits and a ranged weapon's range, magazine and expend, and have no damage types; a sheet's game
+  comes from the sheet page, else from those fields. Demiplane campaigns aren't imported: reading one
+  (`/api/getCampaign`) needs a signed-in session, which the app doesn't have.
+- **Refresh.** Every request to Demiplane skips the URL cache (`reloadIgnoringLocalCacheData`): the sheet's
+  address never changes, so a cached PDF would hide a rebuild. `Party.apply(_:link:to:)`
   (TurnkeeperKit) puts an imported sheet on its member and returns a `SheetUpdate`: `added`, `unchanged` (the
   same sheet as before) or `updated` with the changes a GM cares about (level, AC, saves, Perception, class DC,
-  then skills, Strikes, spells, feats and items). The status message reports it, and says when the import was
-  signed out and so read Demiplane's last export. The party row shows progress while its refresh runs.
-- **Session and token.** `DemiplaneSignInView` is a `WKWebView` on the default persistent data store; the
-  app reads the session cookies from it. The GraphQL token is kept in the Keychain; its JWT expiry is
-  shown, and an expired token is renewed from the session when there is one.
-- **Interactive cards.** `CreatureBattleCard` wraps Tabletop Kit's `InteractiveBattleCard`, with
-  `CreatureCardBack` (the kit's `CardBack` around its `ArtPicture`) as the back. `battleCardEnvironment(_:)`
-  sets what cards take from the app: the glossary, the card UI art, and an `ArtPictureLoader` that calls
-  `AppModel.artPicture(for:maxPixels:)`. The root view and `CreaturePreview` apply
-  `battleCardFullScreenHost()`, so a Mac card fills its window or sheet. The board's card is keyed by
-  combatant (`.id`), so a new turn starts it on its front. Condition tags and `ConditionLabel` are the kit's;
-  the strip chips use the same `ConditionLabel`.
-- **Player screen.** `CombatState.playerScreen(maxHitPoints:)` (tested) builds a `PlayerScreenFight`: the
-  ladder as `PlayerScreenLine`s with a `HealthEstimate` (Tabletop Kit) for enemies, and the acting
-  combatant's creature key. `BoardView` pushes `BoardController.playerScreen` to `PlayerDisplay.fight` on
-  every change and clears it when the board closes. `PlayerScreenToggle` sets
-  `PlayerDisplay.isPlayerScreenOn`: on the Mac it opens or dismisses the Players window (whose appearing
-  and disappearing set it too); on the iPad without a second screen it presents `PlayerScreen` in a
-  `fullScreenCover`. `PlayerScreen`, the root of the external-display scene and the Players window, uses
-  the app's own `AppModel` and lays the order and art side by side, or stacked when taller than wide.
+  then skills, Strikes, spells, feats and items). The status message reports it. The party row shows progress
+  while its refresh runs.
 - **Glossary links.** `CharacterGlossaryLinker` fills the sheet's `LinkTable` by name through
   `BestiaryStore.glossaryID`, falling back to Pathfinder names for Starfinder characters (Starfinder 2e
   shares the Player Core ancestries and feats); action text is replaced by the linked entry's rules text when there is one.
@@ -247,4 +225,4 @@ Ported from the pf2e system, with tests.
 - Creatures in a `.turnkeeper` file are referenced by bestiary key, so both devices should run the same
   bestiary import.
 - Demiplane's sheet PDF has the wrong max HP, so PCs show only a max HP the GM types.
-- The Demiplane API is undocumented and may change without notice.
+- Demiplane's web endpoints are undocumented and may change without notice.
