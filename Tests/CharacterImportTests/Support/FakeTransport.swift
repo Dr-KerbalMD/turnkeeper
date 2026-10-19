@@ -51,8 +51,9 @@ struct SmallGlossary: GlossarySource {
 
 enum TestData {
     static let characterID = "999a5a39-4e0c-4dfa-a6af-d3f47c704a87"
-    static let graphQLPath = "/v1/graphql"
+    static let sheetPagePath = "/nexus/pathfinder2e/character-sheet/\(characterID)"
     static let exportPath = "/api/magic-missile"
+    static let sheetURL = URL(string: "https://content.demiplane.com/sheet.pdf")!
 
     /// A sheet PDF from the fixtures: Ignatius (Pathfinder) or Eagan (Starfinder).
     static func sheetPDF(_ name: String = "ignatius") throws -> Data {
@@ -61,11 +62,6 @@ enum TestData {
         return try Data(contentsOf: url)
     }
 
-    static var character: [String: Any] { ["data": ["demiplane_user_character": [[
-        "uuid": characterID, "name": "Dr Ignatius Constaline", "level": 15,
-        "avatar_url": "https://example.com/avatar.png", "nexus": ["slug": "pathfinder2e"]
-    ]]]] }
-
     static func exportDone(revision: String = "rev1") -> [String: Any] {
         ["success": true, "statusCode": 200, "message": "", "result": [
             "cacheStatus": "hit", "targetRevision": revision,
@@ -73,11 +69,4 @@ enum TestData {
         ]]
     }
 
-    /// An unsigned JWT that expires at the given time.
-    static func token(expiring date: Date) -> String {
-        let claims = Data(#"{"exp":\#(date.timeIntervalSince1970)}"#.utf8)
-        let payload = claims.base64EncodedString().replacingOccurrences(of: "=", with: "")
-            .replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
-        return "eyJhbGciOiJub25lIn0.\(payload).signature"
-    }
 }

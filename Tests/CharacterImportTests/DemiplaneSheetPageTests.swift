@@ -32,30 +32,28 @@ struct DemiplaneSheetPageTests {
         #expect(DemiplaneClient.game(nexusID: "7") == nil)
     }
 
-    @Test("A shared character is fetched from its page when the API doesn't return it")
+    @Test("A shared character's page is read without cookies")
     func importsSharedCharacter() async throws {
         let transport = FakeTransport()
-        transport.respond(to: TestData.graphQLPath, json: ["data": ["demiplane_user_character": []]])
         let page = Self.page(id: TestData.characterID, avatar: #"\"https://example.com/a.png\""#)
         transport.respond(to: "/nexus/starfinder2e/character-sheet/\(TestData.characterID)", body: Data(page.utf8))
         transport.respond(to: TestData.exportPath, json: TestData.exportDone())
         transport.respond(to: "/sheet.pdf", body: try TestData.sheetPDF())
-        var client = DemiplaneClient(transport: transport, token: "token",
-                                     session: DemiplaneSession(cookieHeader: "access_token=a"))
+        var client = DemiplaneClient(transport: transport)
         client.sleep = { _ in }
         let imported = try await DemiplaneImporter(client: client, glossary: SmallGlossary())
             .importCharacter(id: TestData.characterID, game: .starfinder)
         #expect(imported.avatarURL?.host == "example.com")
         let request = try #require(
             transport.requests(to: "/nexus/starfinder2e/character-sheet/\(TestData.characterID)").first)
-        #expect(request.value(forHTTPHeaderField: "Cookie") == "access_token=a")
+        #expect(request.value(forHTTPHeaderField: "Cookie") == nil)
     }
 
     @Test("A page that fails leaves the import to the sheet")
     func pageFails() async throws {
         let transport = FakeTransport()
         transport.respond(to: "/nexus/pathfinder2e/character-sheet/x", status: 404, body: Data())
-        let client = DemiplaneClient(transport: transport, token: nil, session: nil)
+        let client = DemiplaneClient(transport: transport)
         #expect(try await client.sharedCharacter(id: "x", game: .pathfinder) == nil)
     }
 }

@@ -6,9 +6,6 @@
     <array>
         <string>${ApplicationSupport}/Turnkeeper</string>
         <string>${Library}/Preferences/io.github.scooper4711.Turnkeeper.plist</string>
-        <string>${Library}/WebKit/io.github.scooper4711.Turnkeeper</string>
-        <string>${Library}/HTTPStorages/io.github.scooper4711.Turnkeeper</string>
-        <string>${Library}/HTTPStorages/io.github.scooper4711.Turnkeeper.binarycookies</string>
     </array>
 </dict>
 </plist>

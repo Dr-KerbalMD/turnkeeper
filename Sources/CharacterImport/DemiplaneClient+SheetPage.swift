@@ -2,15 +2,14 @@ import Bestiary
 import TurnkeeperKit
 import Foundation
 
-/// Characters shared with the GM, read from their sheet page. The GraphQL API only returns a user's own
-/// characters, but Demiplane's server embeds the character in its sheet page for anyone allowed to view it.
+/// A shared character's identity, read from its sheet page: Demiplane's server embeds the character there for
+/// anyone allowed to view it.
 extension DemiplaneClient {
     /// The character's name, level, game and avatar from its sheet page; nil when the page doesn't include it
-    /// (the character isn't shared with this user, or the page has changed).
+    /// (the character isn't shared, or the page has changed).
     public func sharedCharacter(id: String, game: Game) async throws -> DemiplaneCharacter? {
         let path = "/nexus/\(DemiplaneReference.nexusSlug(for: game))/character-sheet/\(id)"
-        var request = URLRequest(url: Self.appURL.appendingPathComponent(path), cachePolicy: Self.uncached)
-        if let session { request.setValue(session.cookieHeader, forHTTPHeaderField: "Cookie") }
+        let request = URLRequest(url: Self.appURL.appendingPathComponent(path), cachePolicy: Self.uncached)
         let (data, response) = try await transport.send(request)
         guard response.statusCode == 200, let html = String(data: data, encoding: .utf8) else { return nil }
         return Self.sharedCharacter(id: id, inPage: html)
