@@ -91,8 +91,9 @@ struct CreatureArtView: View {
         } header: {
             Label("Missing PDFs", systemImage: "exclamationmark.triangle")
         } footer: {
-            Text("These PDFs were deleted or moved, so their art can't be shown. Download them again in Scrollkeeper "
-                 + "and choose Check Again, or remove them.")
+            Text("Turnkeeper can't reach these PDFs, so their art can't be shown. If they're still there, choose "
+                 + "Import from Scrollkeeper… and pick their folder again. If they were deleted or moved, download "
+                 + "them again in Scrollkeeper and choose Check Again, or remove them.")
         }
     }
 

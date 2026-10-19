@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Move</key>
+    <array>
+        <string>${ApplicationSupport}/Turnkeeper</string>
+        <string>${Library}/Preferences/io.github.scooper4711.Turnkeeper.plist</string>
+        <string>${Library}/WebKit/io.github.scooper4711.Turnkeeper</string>
+        <string>${Library}/HTTPStorages/io.github.scooper4711.Turnkeeper</string>
+        <string>${Library}/HTTPStorages/io.github.scooper4711.Turnkeeper.binarycookies</string>
+    </array>
+</dict>
+</plist>
