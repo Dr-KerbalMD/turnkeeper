@@ -77,6 +77,7 @@ private struct SlotRow: View {
                 .buttonStyle(.borderless)
                 .foregroundStyle(.primary)
                 .help("Show the battle card")
+                .layoutPriority(1)
                 Spacer()
                 if slot.isCustom {
                     Button("Edit Creature…", systemImage: "pencil") { isEditingCreature = true }
@@ -86,8 +87,14 @@ private struct SlotRow: View {
                 Button("Card", systemImage: "rectangle.portrait") { isShowingCard = true }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.borderless)
-                Stepper("× \(slot.count)", value: field(\.count), in: 1...20)
-                    .fixedSize()
+                AdjacentStepper(label: "× \(slot.count)", value: field(\.count), range: 1...20)
+                #if os(macOS)
+                // The Mac has no swipe to delete.
+                Button("Remove from Encounter", systemImage: "trash", action: remove)
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(.borderless)
+                    .help("Remove from Encounter")
+                #endif
             }
             HStack {
                 Picker("Template", selection: field(\.template)) {
@@ -105,6 +112,10 @@ private struct SlotRow: View {
                 .labelsHidden()
                 .fixedSize()
                 Toggle("Starts on bench", isOn: field(\.startsOnBench))
+                    #if os(macOS)
+                    // A form puts a switch at the far edge of the row, away from its label.
+                    .toggleStyle(.checkbox)
+                    #endif
             }
             startingState
             TextField("Creature notes", text: noteBinding, prompt: Text("Notes for this creature in the scenario"),
@@ -113,6 +124,8 @@ private struct SlotRow: View {
                 .font(.callout)
         }
         .padding(.vertical, 4)
+        // The whole row, gaps included, answers a right-click.
+        .contentShape(Rectangle())
         .sheet(isPresented: $isShowingCard) {
             CreaturePreview(key: slot.creatureKey, template: slot.template, conditions: slot.conditions)
         }
@@ -160,8 +173,8 @@ private struct SlotRow: View {
             }
             .buttonStyle(.borderless)
             Spacer()
-            Stepper("Temp HP \(slot.temporaryHitPoints)", value: field(\.temporaryHitPoints), in: 0...500, step: 5)
-                .fixedSize()
+            AdjacentStepper(label: "Temp HP \(slot.temporaryHitPoints)", value: field(\.temporaryHitPoints),
+                            range: 0...500, step: 5)
         }
         .font(.callout)
     }
@@ -202,5 +215,23 @@ private struct SlotRow: View {
         }
         if let source = entry?.source.title, !source.isEmpty { parts.append(source) }
         return parts.joined(separator: " · ")
+    }
+}
+
+/// A stepper with its label right beside the arrows. In a form a labeled stepper puts the label at one edge of
+/// the row and the arrows at the other.
+private struct AdjacentStepper: View {
+    let label: String
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    var step = 1
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Text(label).monospacedDigit()
+            Stepper(label, value: $value, in: range, step: step)
+                .labelsHidden()
+        }
+        .fixedSize()
     }
 }

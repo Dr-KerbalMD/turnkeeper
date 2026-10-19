@@ -64,7 +64,8 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R3.5 A slot has a creature, count, template (elite, normal or weak), side, whether it starts on
   the bench, and the conditions and temporary HP its creatures start the fight with.
   Slots, events and party members are removed by swiping right to left, and on the Mac from the context
-  menu or with the Delete key. Swiping a party member left to right marks them away, or back. Adding a creature that is already in the encounter adds a new
+  menu (anywhere on the row) or with the Delete key. On the Mac a slot also has a trash button, since the
+  Mac has no swipe to delete. Each count stepper sits right beside its value. Swiping a party member left to right marks them away, or back. Adding a creature that is already in the encounter adds a new
   slot, so one stack can be made weak or elite. Combatants of the same creature are numbered together across
   slots (Wolf 1, Wolf 2, even when one is weak), and on the board weak and elite strips have a colored border,
   a different color for each.
