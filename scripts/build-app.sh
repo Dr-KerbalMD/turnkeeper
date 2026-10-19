@@ -25,6 +25,7 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BINARY" "$APP/Contents/MacOS/$EXECUTABLE"
 [ -f Resources/AppIcon.icns ] && cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+cp Resources/container-migration.plist "$APP/Contents/Resources/container-migration.plist"
 # The imported bestiary and art (see "make bestiary"), bundled as a folder like on the iPad.
 if [ -d Generated ]; then
     ditto Generated "$APP/Contents/Resources/Generated"
@@ -127,8 +128,9 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
-# Ad-hoc signature: enough to run locally; Gatekeeper will still ask on other Macs.
-codesign --force --sign - "$APP"
+# Ad-hoc signature: enough to run locally; Gatekeeper will still ask on other Macs. The entitlements turn on
+# the App Sandbox.
+codesign --force --sign - --entitlements Resources/Turnkeeper.entitlements "$APP"
 # The bundle is rebuilt at the same path, so Finder and LaunchServices keep showing the icon they cached
 # for it (none, from the first build). Touching it and re-registering makes them read the icon again.
 touch "$APP"
