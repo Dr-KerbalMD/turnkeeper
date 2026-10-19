@@ -128,9 +128,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
-# Ad-hoc signature: enough to run locally; Gatekeeper will still ask on other Macs. The entitlements turn on
-# the App Sandbox.
-codesign --force --sign - --entitlements Resources/Turnkeeper.entitlements "$APP"
+# The entitlements turn on the App Sandbox.
+scripts/sign-app.sh "$APP" Resources/Turnkeeper.entitlements
 # The bundle is rebuilt at the same path, so Finder and LaunchServices keep showing the icon they cached
 # for it (none, from the first build). Touching it and re-registering makes them read the icon again.
 touch "$APP"

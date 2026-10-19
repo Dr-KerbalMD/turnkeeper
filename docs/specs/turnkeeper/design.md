@@ -26,8 +26,15 @@ from `foundryvtt/pf2e` into `build/pf2e` (`scripts/fetch-pf2e.sh`) and imports i
 checkout for development. `scripts/latest-pf2e-release.sh` finds the newest `pf2e-*` or `sf2e-*` release.
 - **Release workflow** (on `v*` tags, or called): fetches the `Artwork` submodule with the `ARTWORK_SSH_KEY`
   deploy key, runs the import with `REXARD_PACKS=Artwork/rexard`, tests, builds the universal app and attaches
-  `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release, creating a draft if there is none. The
-  app is signed ad hoc, as a local build is.
+  `Turnkeeper-<version>.dmg` (`scripts/make-dmg.sh`) to the release, creating a draft if there is none.
+- **Signing.** `scripts/sign-app.sh` signs the app with the first Developer ID Application certificate in the
+  keychain, with the hardened runtime and a secure timestamp, or ad hoc when there is none (`SIGNING_IDENTITY`
+  overrides it). On GitHub, `scripts/add-signing-certificate.sh` puts the certificate from the
+  `DEVELOPER_ID_CERTIFICATE` and `DEVELOPER_ID_CERTIFICATE_PASSWORD` secrets into a temporary keychain; without it a
+  release fails and a trial build is signed ad hoc. For a release, `scripts/notarize.sh` signs the disk image, has
+  Apple's notary service check it (the `NOTARY_APPLE_ID`, `NOTARY_TEAM_ID` and `NOTARY_PASSWORD` secrets, or a
+  notarytool keychain profile on a Mac) and staples the ticket to it. The team ID is kept only in the secrets and
+  the keychain.
 - **App Sandbox** (R8). `scripts/build-app.sh` signs with `Resources/Turnkeeper.entitlements`: the App Sandbox,
   network client (Demiplane, web views, joining nearby sync) and server (hosting it), audio input (Hold to Say
   Initiative), read-write access to files the user picks, and app-scoped bookmarks for the watched folders and
