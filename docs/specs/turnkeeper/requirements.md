@@ -11,10 +11,11 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R1.3 "Sync with nearby device" merges the libraries of two devices over the local network.
 - R1.4 Merging never loses edits silently. When both sides changed the same record, the newer one wins
   and the other is kept as a conflict copy.
-- R1.5 Nothing requires a paid Apple developer account. There is no iCloud or CloudKit.
-- R1.6 Pushing a version tag makes GitHub build the universal Mac app and attach its disk image to the tag's
-  release. It bundles the same data as a local build: both import the pf2e release named in `pf2e.release`
-  and the art in the `Artwork` submodule.
+- R1.5 Building and running need no paid Apple developer account; only signing and notarizing releases does. There
+  is no iCloud or CloudKit.
+- R1.6 Pushing a version tag makes GitHub build the universal Mac app and attach its disk image, signed with the
+  Developer ID and notarized, to the tag's release. It bundles the same data as a local build: both import the pf2e
+  release named in `pf2e.release` and the art in the `Artwork` submodule.
 - R1.7 pf2e updates need no work: weekly, GitHub switches `pf2e.release` to pf2e's newest release. When that
   release changes the imported bestiary and the app has a release, it also tags the next patch version and
   builds it into a draft release to publish; a pf2e release that changes nothing Turnkeeper shows makes no
