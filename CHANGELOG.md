@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-10-20
+
+### Added
+- Import shared Demiplane characters without signing in
+- Run Turnkeeper in the App Sandbox
+
+### Fixed
+- Let the whole party member row answer a right-click
+- Swipe battle strips with two fingers on a Mac trackpad
+- Lay out a creature's row for the Mac, with a trash button
+- Bundle the universal binary from where SwiftPM built it
+
+### Changed
+- Specify importing shared characters without signing in
+- Run the weekly pf2e update off the hour
+- Take Tabletop Kit 0.15.1
+- Specify running in the App Sandbox
+- Watch every pf2e file the import reads
+- Gate releases on the coverage check, as CI does
+
+[1.1.1]: https://github.com/scooper4711/turnkeeper/releases/tag/v1.1.1
+
 ## [1.1.0] - 2026-10-15
 
 ### Added
