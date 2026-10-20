@@ -194,15 +194,16 @@ ladder, and the right half is the notes side, which shows the battle card of the
   with its name on a terminal plate (Starfinder).
 
 ## R6 Player characters
-- R6.1 A PC can be added from Demiplane by scanning the QR code on its character sheet (iPad), by pasting
-  the sheet's link, its ID or an image of the QR code, or by importing a Demiplane campaign and choosing
-  from its characters. A quick PC (name and level only) can be linked later, and a linked one unlinked.
+- R6.1 A PC can be added from Demiplane by scanning the QR code on its character sheet (iPad), or by pasting
+  the sheet's link, its ID or an image of the QR code. A quick PC (name and level only) can be linked later,
+  and a linked one unlinked. Only characters whose player shares them by link can be imported; a private
+  character can't, and the import says so. Campaigns aren't imported: each character is added on its own.
 - R6.2 Importing asks Demiplane to export the character sheet PDF and reads the computed numbers from it:
   AC, saves, Perception, skills, speeds, Strikes, spells, actions and reactions, feats, class features,
   items, languages and senses. Refreshing re-imports; a character that hasn't changed comes back at once.
   A refresh always says what happened: what changed ("Updated Eagan Norr: AC 18 → 19."), that nothing did
-  (perhaps the player hasn't saved the rebuild), that the member isn't linked, and, when signed out, that
-  Demiplane's last export was read. It never shows an old copy of the sheet from a cache.
+  (perhaps the player hasn't saved the rebuild), or that the member isn't linked. It never shows an old copy
+  of the sheet from a cache.
   Importing again matches by the Demiplane character, so it never duplicates a PC.
   When an import fails, the reason shows in the import sheet at once, not after it closes.
 - R6.3 A linked PC's tile pins a PC battle card in the same style as creature cards, with conditions
@@ -214,9 +215,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R6.5 Players track their own HP: PC tiles don't change (R4.4, R4.5). The GM may type a max HP, shown only
   on the card; imports never overwrite it.
 - R6.6 On the player screen, a PC's turn shows only its card back, drawn around the Demiplane portrait.
-- R6.7 Demiplane access is set up in the app: sign in through a Demiplane web page (needed for campaigns
-  and sheet export, and to renew the token), or paste a token. The token stays in the device's Keychain;
-  it is never synced or exported. Linked PCs and their sheets travel with the party like any other data.
+- R6.7 Importing needs no Demiplane account and no sign-in: the app asks Demiplane for a shared character's
+  sheet as anyone with its link can, and keeps nothing about Demiplane on the device besides the linked
+  characters. Linked PCs and their sheets travel with the party like any other data.
 
 ## R7 About
 - R7.1 An About screen (the app menu's About Turnkeeper on the Mac, the sidebar's About button on the iPad) shows
@@ -227,7 +228,7 @@ ladder, and the right half is the notes side, which shows the battle card of the
   credits. The README carries the same notices.
 
 ## R8 App Sandbox
-- R8.1 The Mac app runs in the App Sandbox. On its first sandboxed launch the library, the art, the settings
-  and the Demiplane web session move into the app's container, so the GM stays signed in.
+- R8.1 The Mac app runs in the App Sandbox. On its first sandboxed launch the library, the art and the settings
+  move into the app's container.
 - R8.2 Import from Scrollkeeper opens the folder picker on the Mac too, since the sandbox can't read
   Scrollkeeper's folder until the user picks it. Folders watched before the move have to be picked once more.

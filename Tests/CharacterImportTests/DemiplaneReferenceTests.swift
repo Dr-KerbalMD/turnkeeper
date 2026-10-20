@@ -12,22 +12,21 @@ struct DemiplaneReferenceTests {
     @Test("A character sheet link names the character and its game")
     func sheetLink() {
         let link = "https://app.demiplane.com/nexus/pathfinder2e/character-sheet/\(character)"
-        #expect(DemiplaneReference.parse(link) == .character(id: character, game: .pathfinder))
+        #expect(DemiplaneReference.parse(link) == DemiplaneReference(id: character, game: .pathfinder))
         let starfinder = "https://app.demiplane.com/nexus/starfinder2e/character-sheet/\(character.uppercased())?x=1"
-        #expect(DemiplaneReference.parse(starfinder) == .character(id: character, game: .starfinder))
+        #expect(DemiplaneReference.parse(starfinder) == DemiplaneReference(id: character, game: .starfinder))
     }
 
     @Test("A bare ID, even with text around it, is a character of unknown game")
     func bareID() {
-        #expect(DemiplaneReference.parse(" \(character)\n") == .character(id: character, game: nil))
-        #expect(DemiplaneReference.parse("Kyra: \(character)") == .character(id: character, game: nil))
+        #expect(DemiplaneReference.parse(" \(character)\n") == DemiplaneReference(id: character, game: nil))
+        #expect(DemiplaneReference.parse("Kyra: \(character)") == DemiplaneReference(id: character, game: nil))
     }
 
-    @Test("A campaign link names the campaign")
+    @Test("A campaign link is no reference, since campaigns aren't imported")
     func campaign() {
         let link = "https://app.demiplane.com/nexus/starfinder2e/campaigns/73aa3e65-37a9-4d36-b201-b4ed6699d01b"
-        #expect(DemiplaneReference.parse(link)
-                == .campaign(id: "73aa3e65-37a9-4d36-b201-b4ed6699d01b", game: .starfinder))
+        #expect(DemiplaneReference.parse(link) == nil)
     }
 
     @Test("Text without a UUID is no reference")
@@ -36,7 +35,7 @@ struct DemiplaneReferenceTests {
         #expect(DemiplaneReference.parse("") == nil)
     }
 
-    @Test("Nexus slugs from links and the API map to games")
+    @Test("Nexus slugs from links map to games")
     func nexus() {
         #expect(DemiplaneReference.game(nexus: "pathfinder2e") == .pathfinder)
         #expect(DemiplaneReference.game(nexus: "Starfinder-2e") == .starfinder)
@@ -49,7 +48,7 @@ struct DemiplaneReferenceTests {
                                                  subdirectory: "Fixtures"))
         let source = try #require(CGImageSourceCreateWithURL(url as CFURL, nil))
         let image = try #require(CGImageSourceCreateImageAtIndex(source, 0, nil))
-        #expect(try QRCodeReader.reference(in: image) == .character(id: character, game: .pathfinder))
+        #expect(try QRCodeReader.reference(in: image) == DemiplaneReference(id: character, game: .pathfinder))
     }
 
     @Test("An image without a QR code has no reference")

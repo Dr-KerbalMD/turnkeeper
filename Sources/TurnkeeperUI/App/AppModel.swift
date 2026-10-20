@@ -32,14 +32,10 @@ final class AppModel {
     var pendingPlanChange: PendingPlanChange?
     /// What the last paste or drop of stat blocks added, shown until dismissed.
     var statBlockImport: StatBlockImport?
-    /// The GM's Demiplane token and sign-in, kept on this device only.
-    let demiplane: DemiplaneAccount
     /// What a Demiplane import is doing, while it runs.
     var demiplaneProgress: String?
     /// The party member whose sheet is being refreshed, for the progress on its row.
     var refreshingMemberID: UUID?
-    /// A campaign's characters, waiting for the GM to choose which to add.
-    var campaignImport: PendingCampaignImport?
 
     /// Where pasted artwork is kept; nil when there's nowhere to keep it.
     @ObservationIgnored let artStore: ArtStore?
@@ -54,9 +50,8 @@ final class AppModel {
     @ObservationIgnored private var saveTask: Task<Void, Never>?
 
     init(library: Library = Library(), bestiary: BestiaryStore = BestiaryStore(), file: LibraryFile? = nil,
-         artStore: ArtStore? = nil, creatureArt: CreatureArtStore? = nil, demiplane: DemiplaneAccount? = nil) {
+         artStore: ArtStore? = nil, creatureArt: CreatureArtStore? = nil) {
         self.library = library
-        self.demiplane = demiplane ?? DemiplaneAccount()
         self.bestiary = bestiary
         self.file = file
         self.artStore = artStore

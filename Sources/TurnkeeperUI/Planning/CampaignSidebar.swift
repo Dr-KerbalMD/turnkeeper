@@ -10,7 +10,6 @@ struct CampaignSidebar: View {
     @State private var isAdding = false
     @State private var isImporting = false
     @State private var isSyncing = false
-    @State private var isShowingDemiplane = false
     @State private var isShowingCreatureArt = false
     @State private var isShowingAbout = false
     @State private var exportDocument: LibraryDocument?
@@ -32,7 +31,6 @@ struct CampaignSidebar: View {
             ToolbarItem {
                 Button("Sync with Nearby Device", systemImage: "arrow.triangle.2.circlepath") { isSyncing = true }
             }
-            ToolbarItem { Button("Demiplane", systemImage: "person.badge.key") { isShowingDemiplane = true } }
             ToolbarItem {
                 Button("Creature Art", systemImage: "photo.on.rectangle.angled") { isShowingCreatureArt = true }
                     .badge(model.artCatalog.missingSources.count)
@@ -45,7 +43,6 @@ struct CampaignSidebar: View {
         .sheet(isPresented: $isAdding) { CampaignSheet(campaign: nil) }
         .sheet(item: $renaming) { campaign in CampaignSheet(campaign: campaign) }
         .sheet(isPresented: $isSyncing) { NearbySyncSheet() }
-        .sheet(isPresented: $isShowingDemiplane) { DemiplaneSettingsView() }
         .sheet(isPresented: $isShowingCreatureArt) { CreatureArtView() }
         .sheet(isPresented: $isShowingAbout) { AboutSheet(info: .turnkeeper) }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.turnkeeperLibrary, .json]) { result in
