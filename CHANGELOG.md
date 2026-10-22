@@ -8,8 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2026-10-23
 
 ### Added
-- Add player names to party members
-- Stabilize dying strips and show unconscious enemies
+- Party members have a player's name and notes
+- "Show Player Names" in the board's Fight menu shows "Character (Player)" on PC tiles (GM view only)
+
+### Changed
+- Knocking out a strip now applies unconscious and prone alongside dying
+- Swiping right to left (or the context menu) on a dying strip stabilizes it: dying ends, unconscious stays, and wounded goes up by 1
+- Stabilized and unconscious enemies show as down on the players' screen
 
 [1.2.0]: https://github.com/scooper4711/turnkeeper/releases/tag/v1.2.0
 
