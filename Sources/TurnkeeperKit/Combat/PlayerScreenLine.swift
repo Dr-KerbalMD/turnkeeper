@@ -34,10 +34,12 @@ public extension CombatState {
         }
     }
 
-    /// Dying counts as down, whatever its HP.
+    /// Dying or unconscious counts as down, whatever its HP.
     private func healthEstimate(of combatant: Combatant, maxHitPoints: Int) -> HealthEstimate? {
         guard combatant.side == .enemy, combatant.tracksHitPoints, maxHitPoints > 0 else { return nil }
-        if combatant.condition(ConditionSlug.dying) != nil { return .down }
+        if [ConditionSlug.dying, ConditionSlug.unconscious].contains(where: { combatant.condition($0) != nil }) {
+            return .down
+        }
         return HealthEstimate(hitPoints: maxHitPoints - combatant.damageTaken, maxHitPoints: maxHitPoints)
     }
 }

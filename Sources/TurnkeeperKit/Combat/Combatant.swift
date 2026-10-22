@@ -111,6 +111,8 @@ public struct Combatant: Codable, Sendable, Identifiable, Hashable {
     public func condition(_ slug: String) -> AppliedCondition? {
         conditions.first { $0.slug == slug }
     }
+
+    public var isDying: Bool { condition(ConditionSlug.dying) != nil }
 }
 
 public enum Magnet: String, Codable, Sendable {

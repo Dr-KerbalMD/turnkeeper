@@ -53,12 +53,17 @@ struct LadderView: View {
         }
     }
 
-    /// Right to left: a delaying strip returns; any other is knocked out.
+    /// Right to left: a delaying strip returns, a dying one is stabilized, and any other is knocked out.
     private func knockOutAction(_ combatant: Combatant) -> StripSwipeAction? {
         guard controller.state.phase == .active else { return nil }
         if combatant.isDelaying {
             return StripSwipeAction(title: "Return", systemImage: "arrow.uturn.left", color: .green) {
                 controller.change { $0.endDelay(combatant.id) }
+            }
+        }
+        if combatant.isDying {
+            return StripSwipeAction(title: "Stabilize", systemImage: "heart.text.square", color: .teal) {
+                controller.change { $0.stabilize(combatant.id) }
             }
         }
         return StripSwipeAction(title: "Knocked Out", systemImage: "heart.slash", color: .red) {

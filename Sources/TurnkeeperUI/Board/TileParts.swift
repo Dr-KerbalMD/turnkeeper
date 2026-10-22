@@ -57,8 +57,14 @@ struct TileMenu: View {
             } else {
                 Button("Delay", systemImage: "hourglass") { controller.startDelay(combatant.id) }
             }
-            Button("Knocked Out (Dying)", systemImage: "heart.slash") {
-                controller.change { $0.knockOut(combatant.id) }
+            if combatant.isDying {
+                Button("Stabilize (End Dying)", systemImage: "heart.text.square") {
+                    controller.change { $0.stabilize(combatant.id) }
+                }
+            } else {
+                Button("Knocked Out (Dying)", systemImage: "heart.slash") {
+                    controller.change { $0.knockOut(combatant.id) }
+                }
             }
         }
         Button("Move to Bench", systemImage: "chair.lounge") { controller.change { $0.moveToBench(combatant.id) } }
