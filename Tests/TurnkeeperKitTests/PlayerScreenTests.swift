@@ -56,6 +56,14 @@ struct PlayerScreenTests {
         #expect(lines(state).first { $0.id == ids[0] }?.health == .down)
     }
 
+    @Test("A stabilized enemy is still down while unconscious")
+    func unconsciousIsDown() {
+        var (state, ids) = fight()
+        state.knockOut(ids[0])
+        state.stabilize(ids[0])
+        #expect(lines(state).first { $0.id == ids[0] }?.health == .down)
+    }
+
     @Test("An enemy without a known maximum shows no estimate")
     func unknownMaximum() {
         let (state, _) = fight()

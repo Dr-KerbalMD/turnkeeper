@@ -39,11 +39,23 @@ public extension CombatState {
         self[id] = combatant
     }
 
-    /// Knocked out at 0 HP: dying 1 plus wounded, and its place moves to just before the current turn.
+    /// Knocked out at 0 HP: dying 1 plus wounded, unconscious and prone, and its place moves to just before the
+    /// current turn. Unconscious and prone are applied rather than left implied by dying, since both outlast it:
+    /// a stable creature stays unconscious, and one that wakes stays prone until it Stands.
     mutating func knockOut(_ id: UUID) {
         let wounded = self[id]?.condition(ConditionSlug.wounded)?.value ?? 0
         addCondition(AppliedCondition(slug: ConditionSlug.dying, value: 1 + wounded), to: id)
+        addCondition(AppliedCondition(slug: ConditionSlug.unconscious), to: id)
+        addCondition(AppliedCondition(slug: ConditionSlug.prone), to: id)
         moveBeforeCurrent(id)
+    }
+
+    /// Ends dying: the creature stays unconscious, and wounded goes up by 1.
+    mutating func stabilize(_ id: UUID) {
+        guard let dying = self[id]?.condition(ConditionSlug.dying) else { return }
+        removeCondition(dying.id, from: id)
+        addCondition(AppliedCondition(slug: ConditionSlug.unconscious), to: id)
+        raiseWounded(on: id)
     }
 
     mutating func removeCondition(_ conditionID: UUID, from id: UUID) {
@@ -62,6 +74,23 @@ public extension CombatState {
     mutating func addEvent(_ event: EncounterEvent) {
         events.append(event)
     }
+}
+
+extension CombatState {
+    /// Raises wounded by 1, adding wounded 1 when there's none, as when dying ends.
+    mutating func raiseWounded(on id: UUID) {
+        if let wounded = self[id]?.condition(ConditionSlug.wounded) {
+            setConditionValue((wounded.value ?? 0) + 1, conditionID: wounded.id, on: id)
+        } else {
+            addCondition(AppliedCondition(slug: ConditionSlug.wounded, value: 1), to: id)
+        }
+    }
+}
+
+/// Conditions knocking out applies besides dying.
+public extension ConditionSlug {
+    static let unconscious = "unconscious"
+    static let prone = "prone"
 }
 
 /// Condition lists, shared by combatants and by planned encounter slots.

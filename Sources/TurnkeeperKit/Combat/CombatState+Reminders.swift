@@ -32,14 +32,7 @@ public extension CombatState {
         let change = [DegreeOfSuccess.criticalSuccess: -2, .success: -1, .failure: 1, .criticalFailure: 2][degree] ?? 0
         let newValue = value + change
         setConditionValue(newValue, conditionID: dying.id, on: id)
-        if newValue <= 0 {
-            let wounded = self[id]?.condition(ConditionSlug.wounded)?.value ?? 0
-            if let existing = self[id]?.condition(ConditionSlug.wounded) {
-                setConditionValue(wounded + 1, conditionID: existing.id, on: id)
-            } else {
-                addCondition(AppliedCondition(slug: ConditionSlug.wounded, value: 1), to: id)
-            }
-        }
+        if newValue <= 0 { raiseWounded(on: id) }
     }
 
     /// Puts a condition back as it was before an automatic change, re-adding it if the change removed it.
