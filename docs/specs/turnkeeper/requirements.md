@@ -137,9 +137,11 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R4.7d Each condition in the palette has an icon from game-icons.net, used under CC BY 3.0 and credited
   to its authors. Turnkeeper takes no condition icons from the pf2e system.
 - R4.7a In combat, swiping a strip left to right delays it (asking first, for now), and right to left
-  knocks it out (dying 1 plus wounded) or, on a delaying strip, brings it back where it is. On the Mac a
-  two-finger trackpad swipe does the same as a click and drag. The context menu has the same actions for the
-  Mac and accessibility. There are no Delay or Dying drop zones.
+  knocks it out (dying 1 plus wounded, with unconscious and prone) or, on a delaying strip, brings it back
+  where it is. On a dying strip the right-to-left swipe stabilizes it: dying ends, unconscious stays, and
+  wounded goes up by 1 (added as wounded 1 when there's none). On the Mac a two-finger trackpad swipe does
+  the same as a click and drag. The context menu has the same actions for the Mac and accessibility. There
+  are no Delay or Dying drop zones.
 - R4.7b A delaying strip stays on the ladder, shifted right and dimmed, and its turns are skipped. Delaying
   on its own turn passes the turn, and the strip waits just below whoever acts next; delaying off its turn
   moves it just below the next strip. As the Delay rule says, a strip delaying on its own turn has its

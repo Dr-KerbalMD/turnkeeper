@@ -157,7 +157,56 @@ struct TurnAdvancerTests {
         state.addCondition(AppliedCondition(slug: "wounded", value: 1), to: ids[2])
         state.knockOut(ids[2])
         #expect(state[ids[2]]?.condition("dying")?.value == 2)
+        #expect(state[ids[2]]?.condition("unconscious") != nil)
+        #expect(state[ids[2]]?.condition("prone") != nil)
         #expect(state.order == [ids[0], ids[2], ids[1]])
+    }
+
+    @Test("Stabilizing ends dying, leaves unconscious, and raises wounded")
+    func stabilize() {
+        var (state, ids) = fight()
+        state.addCondition(AppliedCondition(slug: "wounded", value: 1), to: ids[2])
+        state.knockOut(ids[2])
+        let order = state.order
+        state.stabilize(ids[2])
+        #expect(state.order == order)
+        #expect(state[ids[2]]?.condition("dying") == nil)
+        #expect(state[ids[2]]?.condition("unconscious") != nil)
+        #expect(state[ids[2]]?.condition("prone") != nil)
+        #expect(state[ids[2]]?.condition("wounded")?.value == 2)
+    }
+
+    @Test("Stabilizing a creature without wounded adds wounded 1")
+    func stabilizeWithoutWounded() {
+        var (state, ids) = fight()
+        state.knockOut(ids[1])
+        state.stabilize(ids[1])
+        #expect(state[ids[1]]?.condition("wounded")?.value == 1)
+    }
+
+    @Test("Stabilizing a strip that isn't dying changes nothing")
+    func stabilizeNotDying() {
+        var (state, ids) = fight()
+        state.stabilize(ids[0])
+        #expect(state[ids[0]]?.conditions.isEmpty == true)
+    }
+
+    @Test("Stabilizing dying added from the palette adds unconscious")
+    func stabilizePaletteDying() {
+        var (state, ids) = fight()
+        state.addCondition(AppliedCondition(slug: "dying", value: 1), to: ids[0])
+        state.stabilize(ids[0])
+        #expect(state[ids[0]]?.conditions.map(\.slug) == ["unconscious", "wounded"])
+    }
+
+    @Test("A recovery check that ends dying leaves a knocked-out creature unconscious")
+    func recoveryKeepsUnconscious() {
+        var (state, ids) = fight()
+        state.knockOut(ids[1])
+        state.apply(.recoveryCheck(.criticalSuccess, combatantID: ids[1]))
+        #expect(state[ids[1]]?.isDying == false)
+        #expect(state[ids[1]]?.condition("unconscious") != nil)
+        #expect(state[ids[1]]?.condition("wounded")?.value == 1)
     }
 
     @Test("Benched creatures come in at their initiative")
