@@ -151,6 +151,10 @@ Ported from the pf2e system, with tests.
   strip that takes no clicks, reads the window's scroll events with a local monitor. `TrackpadSwipeTracker`
   (TurnkeeperKit) decides: a gesture that begins over the strip and moves more sideways than up and down slides
   it the same way, and its events and the coasting after it are kept from the ladder; anything else scrolls.
+- **Player names.** `PartyMember.playerName` and `notes` are blank in libraries saved before them.
+  `CombatSetup` copies the player's name onto the PC's `Combatant.playerName`, so a fight keeps the name it
+  started with. `MagnetTile` adds it after the character's name while `PlayerNamesToggle`'s `@AppStorage` key
+  `showsPlayerNames` is on; `PlayerScreenLine` takes only `name`.
 - **Delay.** `Combatant.isDelaying` keeps a delaying strip in `CombatState.order`. `TurnAdvancer.next`
   skips delaying strips and takes `actingNow`, the GM's answer about `delayedStripsAhead`, which
   `BoardController` asks for (an alert for one, a sheet for several) before passing the turn.

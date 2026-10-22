@@ -11,6 +11,7 @@ struct MagnetTile: View {
     let combatant: Combatant
     @Binding var sheet: BoardSheet?
     @State private var voice = VoiceInitiative.shared
+    @AppStorage(PlayerNamesToggle.key) private var showsPlayerNames = true
 
     private var isCurrent: Bool { controller.state.currentID == combatant.id }
     private var isSetup: Bool { controller.state.phase == .setup }
@@ -26,7 +27,7 @@ struct MagnetTile: View {
             ArtImage(path: tileArt, size: 46, shape: .circle, alignment: .top)
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text(combatant.name).font(.headline).lineLimit(2).minimumScaleFactor(0.8)
+                    nameText.font(.headline).lineLimit(2).minimumScaleFactor(0.8)
                     if combatant.template != .normal {
                         TemplateBadge(template: combatant.template, color: .black).fixedSize()
                     }
@@ -66,6 +67,12 @@ struct MagnetTile: View {
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isCurrent ? .isSelected : [])
         .accessibilityValue(isVoiceTarget ? "next for voice entry" : "")
+    }
+
+    /// "Valeros (Sam)", with the player's name softer, when player names are shown and the PC has one.
+    private var nameText: Text {
+        guard showsPlayerNames, !combatant.playerName.isEmpty else { return Text(combatant.name) }
+        return Text(combatant.name) + Text(" (\(combatant.playerName))").fontWeight(.regular)
     }
 
     /// PC strips stay plain, even when a linked sheet has a portrait.

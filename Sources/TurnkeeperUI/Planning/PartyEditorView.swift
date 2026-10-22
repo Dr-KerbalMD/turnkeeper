@@ -17,7 +17,7 @@ struct PartyEditorView: View {
             Section("Members") {
                 ForEach(party.members) { member in
                     HStack {
-                        TextField("Name", text: memberName(member.id)).nameEntry()
+                        TextField("Name", text: memberBinding(member.id, \.name)).nameEntry()
                             .foregroundStyle(member.isAway ? .secondary : .primary)
                         Stepper("Level \(member.level ?? party.level)", value: levelBinding(member.id), in: 1...20)
                             .fixedSize()
@@ -29,6 +29,9 @@ struct PartyEditorView: View {
                         .help(member.isAway ? "Away: not in budgets; waits on the bench in fights"
                                             : "At the table")
                     }
+                    .modifier(memberActions(member))
+                    MemberPlayerRow(playerName: memberBinding(member.id, \.playerName),
+                                    notes: memberBinding(member.id, \.notes))
                     .modifier(memberActions(member))
                     MemberLinkRow(member: member, partyID: party.id) {
                         demiplaneTarget = DemiplaneTarget(memberID: member.id)
@@ -92,11 +95,28 @@ struct PartyEditorView: View {
                 } })
     }
 
-    private func memberName(_ id: UUID) -> Binding<String> {
-        Binding(get: { party.members.first { $0.id == id }?.name ?? "" },
-                set: { name in update { party in
-                    if let index = party.members.firstIndex(where: { $0.id == id }) { party.members[index].name = name }
+    private func memberBinding(_ id: UUID, _ path: WritableKeyPath<PartyMember, String>) -> Binding<String> {
+        Binding(get: { party.members.first { $0.id == id }?[keyPath: path] ?? "" },
+                set: { value in update { party in
+                    if let index = party.members.firstIndex(where: { $0.id == id }) {
+                        party.members[index][keyPath: path] = value
+                    }
                 } })
+    }
+}
+
+/// Who plays the character, and the GM's notes about them, such as their Discord handle.
+private struct MemberPlayerRow: View {
+    @Binding var playerName: String
+    @Binding var notes: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            TextField("Player", text: $playerName, prompt: Text("Player's name")).nameEntry()
+            TextField("Notes", text: $notes, prompt: Text("Notes, such as their Discord handle"), axis: .vertical)
+                .lineLimit(1...4)
+        }
+        .padding(.leading, 16)
     }
 }
 
