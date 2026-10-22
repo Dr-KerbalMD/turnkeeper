@@ -101,6 +101,8 @@ private struct FightMenu: View {
 
     var body: some View {
         Menu("Fight", systemImage: "ellipsis.circle") {
+            PlayerNamesToggle()
+            Divider()
             Button("Reset Combat…", systemImage: "arrow.counterclockwise") { isConfirmingReset = true }
             Button("End Combat", systemImage: "flag.checkered") { controller.endCombat() }
         }
@@ -143,5 +145,15 @@ private struct BeginCombatButton: View {
 
     private var isWarning: Binding<Bool> {
         Binding(get: { !missing.isEmpty }, set: { if !$0 { missing = [] } })
+    }
+}
+
+/// Shows each PC's player after its name on the GM's ladder, as in "Valeros (Sam)". Never on the players' screen.
+struct PlayerNamesToggle: View {
+    static let key = "showsPlayerNames"
+    @AppStorage(key) private var showsPlayerNames = true
+
+    var body: some View {
+        Toggle("Show Player Names", systemImage: "person.text.rectangle", isOn: $showsPlayerNames)
     }
 }

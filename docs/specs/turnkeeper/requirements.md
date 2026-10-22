@@ -125,6 +125,10 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R4.4 Tiles show the name, initiative, HP and conditions, and a creature's or hazard's AC with its template
   and conditions applied (in yellow when they change it). Tiles are colored like magnets: red for
   enemies, blue for PCs, green for NPCs, gray for hazards.
+- R4.4a A party member has the player's name and free-text notes (such as their Discord handle), set in the
+  party editor. While Show Player Names (in the Fight menu, on unless turned off, kept per device) is on, a PC's
+  tile shows the player's name in parentheses after the character's, as in "Valeros (Sam)". The players'
+  screen never shows player names.
 - R4.5 Creature HP tracks damage, healing and temporary HP. PCs track no HP.
 - R4.6 The template can be changed during combat. It recalculates the stats without changing the damage
   already taken.

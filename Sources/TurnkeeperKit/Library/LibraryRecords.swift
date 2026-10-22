@@ -70,16 +70,21 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
     public var link: CharacterLink?
     /// Max HP typed by the GM, shown on the card only; imports never change it.
     public var maxHitPoints: Int?
+    /// The real person playing the character, shown after its name in the GM's view when turned on.
+    public var playerName = ""
+    /// The GM's notes about the player, such as their Discord handle.
+    public var notes = ""
 
     public init(name: String) {
         self.name = name
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, isAway, level, sheet, link, maxHitPoints
+        case id, name, isAway, level, sheet, link, maxHitPoints, playerName, notes
     }
 
-    /// Libraries saved before players could be away have no `isAway`; they read as present.
+    /// Libraries saved before players could be away have no `isAway`, and read as present; ones saved before
+    /// player names and notes have neither, and read as blank.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -89,6 +94,8 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
         sheet = try container.decodeIfPresent(Creature.self, forKey: .sheet)
         link = try container.decodeIfPresent(CharacterLink.self, forKey: .link)
         maxHitPoints = try container.decodeIfPresent(Int.self, forKey: .maxHitPoints)
+        playerName = try container.decodeIfPresent(String.self, forKey: .playerName) ?? ""
+        notes = try container.decodeIfPresent(String.self, forKey: .notes) ?? ""
     }
 }
 
