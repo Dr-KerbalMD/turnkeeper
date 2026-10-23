@@ -58,8 +58,11 @@ struct NearbySyncSheet: View {
     private var joinSection: some View {
         Section("Nearby devices") {
             if peers.isEmpty { ProgressView("Looking for devices showing a code…") }
-            Picker("Device", selection: $selectedPeer) {
-                ForEach(peers) { Text($0.name).tag(NearbyPeer?.some($0)) }
+            // Rows, not a Picker: on the iPad a menu picker with nothing chosen collapsed to nothing to tap.
+            ForEach(peers) { peer in
+                Button { selectedPeer = peer } label: {
+                    Label(peer.name, systemImage: peer == selectedPeer ? "checkmark.circle.fill" : "circle")
+                }
             }
             TextField("Code", text: $enteredCode)
             Button("Sync", systemImage: "arrow.triangle.2.circlepath") { Task { await join() } }
@@ -76,8 +79,18 @@ struct NearbySyncSheet: View {
             await startHost()
         } else {
             let browser = NearbyBrowser()
-            browser.start { found in Task { @MainActor in peers = found } }
+            browser.start { found in Task { @MainActor in show(found) } }
             self.browser = browser
+        }
+    }
+
+    /// Keeps the chosen device while it is still there, and chooses the only one found.
+    private func show(_ found: [NearbyPeer]) {
+        peers = found
+        if let selectedPeer, let same = found.first(where: { $0.id == selectedPeer.id }) {
+            self.selectedPeer = same
+        } else {
+            selectedPeer = found.count == 1 ? found[0] : nil
         }
     }
 
@@ -120,6 +133,7 @@ struct NearbySyncSheet: View {
         browser?.stop()
         browser = nil
         peers = []
+        selectedPeer = nil
     }
 
     private static var deviceName: String {
