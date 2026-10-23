@@ -111,12 +111,16 @@ private struct SlotRow: View {
                 }
                 .labelsHidden()
                 .fixedSize()
+                #if os(macOS)
                 Toggle("Starts on bench", isOn: field(\.startsOnBench))
-                    #if os(macOS)
                     // A form puts a switch at the far edge of the row, away from its label.
                     .toggleStyle(.checkbox)
-                    #endif
+                #endif
             }
+            #if os(iOS)
+            // A line of its own: beside the side picker, the label read as part of it and the switch as unlabeled.
+            Toggle("Starts on bench", isOn: field(\.startsOnBench))
+            #endif
             startingState
             TextField("Creature notes", text: noteBinding, prompt: Text("Notes for this creature in the scenario"),
                       axis: .vertical)
