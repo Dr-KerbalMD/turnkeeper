@@ -71,7 +71,8 @@ public struct StoredImage: Sendable, Equatable {
     public var byteCount: Int
 }
 
-/// A pasted image ready to store: at most 2048 px on its long side, JPEG, or PNG when it has transparency.
+/// A pasted image ready to store: at most 2048 px on its long side, JPEG, or PNG when it has transparency. A PDF
+/// is stored as an image of its first page.
 public struct PreparedImage: Sendable {
     public static let maximumPixels = 2048
 
@@ -80,13 +81,10 @@ public struct PreparedImage: Sendable {
     public let pixelSize: CGSize
 
     public init(_ original: Data) throws {
-        let options: [CFString: Any] = [
-            kCGImageSourceCreateThumbnailFromImageAlways: true,
-            kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceThumbnailMaxPixelSize: Self.maximumPixels
-        ]
-        guard let source = CGImageSourceCreateWithData(original as CFData, nil),
-              let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else {
+        // PDFs first: the Mac's ImageIO reads them too, but only at 1×, and the iPad's doesn't.
+        let isPDF = original.starts(with: Data("%PDF".utf8))
+        guard let image = isPDF ? PDFPageImage.firstPage(of: original, maximumPixels: Self.maximumPixels)
+                                : Self.image(from: original) else {
             throw ArtStoreError.unreadableImage
         }
         let hasAlpha = ![.none, .noneSkipFirst, .noneSkipLast].contains(image.alphaInfo)
@@ -100,6 +98,16 @@ public struct PreparedImage: Sendable {
         data = output as Data
         fileExtension = hasAlpha ? "png" : "jpg"
         pixelSize = CGSize(width: image.width, height: image.height)
+    }
+
+    private static func image(from original: Data) -> CGImage? {
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maximumPixels
+        ]
+        guard let source = CGImageSourceCreateWithData(original as CFData, nil) else { return nil }
+        return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
     }
 }
 

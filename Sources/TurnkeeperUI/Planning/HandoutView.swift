@@ -19,21 +19,21 @@ struct HandoutView: View {
                 HandoutImage(path: handout.imagePath)
             } else {
                 ContentUnavailableView("No Image", systemImage: "photo", description: Text(
-                    "Paste an image copied from Pluck, choose a file, or drop one here."))
+                    "Paste an image or PDF page copied from Pluck or a PDF viewer, choose a file, or drop one here."))
             }
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
         #if os(macOS)
-        .onPasteCommand(of: [.image]) { model.setImage(from: $0, forHandout: handout.id) }
+        .onPasteCommand(of: ArtworkPasteboard.pasteTypes) { model.setImage(from: $0, forHandout: handout.id) }
         #endif
         .onDrop(of: ArtworkPasteboard.acceptedTypes, isTargeted: nil) { providers in
             model.setImage(from: providers, forHandout: handout.id)
             return true
         }
         .navigationTitle(handout.name)
-        .fileImporter(isPresented: $isChoosingFile, allowedContentTypes: [.image]) { result in
+        .fileImporter(isPresented: $isChoosingFile, allowedContentTypes: [.image, .pdf]) { result in
             guard case .success(let url) = result else { return }
             Task { await choose(url) }
         }
@@ -45,7 +45,9 @@ struct HandoutView: View {
     /// In the page rather than the toolbar: iOS ignores a paste button it can't see in full.
     private var controls: some View {
         HStack(spacing: 12) {
-            PasteButton(supportedContentTypes: [.image]) { model.setImage(from: $0, forHandout: handout.id) }
+            PasteButton(supportedContentTypes: ArtworkPasteboard.pasteTypes) {
+                model.setImage(from: $0, forHandout: handout.id)
+            }
                 .labelStyle(.titleAndIcon)
             Button("Choose Image…", systemImage: "folder") { isChoosingFile = true }
             Spacer()

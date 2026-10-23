@@ -38,6 +38,28 @@ struct CustomArtTests {
         #expect(throws: ArtStoreError.unreadableImage) { try PreparedImage(Data("not an image".utf8)) }
     }
 
+    /// A one-page PDF of the given size in points, like a figure copied out of a PDF viewer.
+    private func pdf(width: CGFloat, height: CGFloat) throws -> Data {
+        let output = NSMutableData()
+        var box = CGRect(x: 0, y: 0, width: width, height: height)
+        let consumer = try #require(CGDataConsumer(data: output))
+        let context = try #require(CGContext(consumer: consumer, mediaBox: &box, nil))
+        context.beginPDFPage(nil)
+        context.setFillColor(CGColor(red: 0.1, green: 0.3, blue: 0.8, alpha: 1))
+        context.fill(CGRect(x: 10, y: 10, width: width / 2, height: height / 2))
+        context.endPDFPage()
+        context.closePDF()
+        return output as Data
+    }
+
+    @Test("A PDF is stored as its first page, at twice its size, within the cap")
+    func pdfPages() throws {
+        let figure = try PreparedImage(try pdf(width: 300, height: 200))
+        #expect(figure.pixelSize == CGSize(width: 600, height: 400) && figure.fileExtension == "jpg")
+        let poster = try PreparedImage(try pdf(width: 4000, height: 1000))
+        #expect(poster.pixelSize == CGSize(width: 2048, height: 512))
+    }
+
     @Test("The store writes, finds and sweeps files")
     func store() throws {
         let store = temporaryStore()

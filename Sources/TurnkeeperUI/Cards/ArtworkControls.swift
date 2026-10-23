@@ -11,7 +11,7 @@ struct ArtworkControls: ToolbarContent {
 
     var body: some ToolbarContent {
         ToolbarItem {
-            PasteButton(supportedContentTypes: [.image]) { providers in
+            PasteButton(supportedContentTypes: ArtworkPasteboard.pasteTypes) { providers in
                 model.setArtwork(from: providers, for: key)
             }
             .help("Use the copied image as this creature's art")
@@ -45,7 +45,9 @@ extension View {
     func acceptsArtwork(for key: String, model: AppModel) -> some View {
         self
             #if os(macOS)
-            .onPasteCommand(of: [.image]) { providers in model.setArtwork(from: providers, for: key) }
+            .onPasteCommand(of: ArtworkPasteboard.pasteTypes) { providers in
+                model.setArtwork(from: providers, for: key)
+            }
             #endif
             .onDrop(of: ArtworkPasteboard.acceptedTypes, isTargeted: nil) { providers in
                 model.setArtwork(from: providers, for: key)
