@@ -16,26 +16,33 @@ struct PartyEditorView: View {
             }
             Section("Members") {
                 ForEach(party.members) { member in
-                    HStack {
-                        TextField("Name", text: memberBinding(member.id, \.name)).nameEntry()
-                            .foregroundStyle(member.isAway ? .secondary : .primary)
-                        Stepper("Level \(member.level ?? party.level)", value: levelBinding(member.id), in: 1...20)
+                    // One row per member, so the form's dividers fall between characters.
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            TextField("Name", text: memberBinding(member.id, \.name), prompt: Text("Character name"))
+                                .labelsHidden()
+                                .textFieldStyle(.plain)
+                                .nameEntry()
+                                .font(.title3.bold())
+                                .foregroundStyle(member.isAway ? .secondary : .primary)
+                            Toggle(isOn: awayBinding(member.id)) {
+                                Label("Away", systemImage: member.isAway ? "moon.zzz.fill" : "person.fill.checkmark")
+                            }
+                            .toggleStyle(.button)
+                            .buttonStyle(.borderless)
+                            .labelStyle(.iconOnly)
                             .fixedSize()
-                        Toggle(isOn: awayBinding(member.id)) {
-                            Label("Away", systemImage: member.isAway ? "moon.zzz.fill" : "person.fill.checkmark")
+                            .help(member.isAway ? "Away: not in budgets; waits on the bench in fights"
+                                                : "At the table")
                         }
-                        .toggleStyle(.button)
-                        .buttonStyle(.borderless)
-                        .help(member.isAway ? "Away: not in budgets; waits on the bench in fights"
-                                            : "At the table")
+                        Stepper("Level \(member.level ?? party.level)", value: levelBinding(member.id), in: 1...20)
+                        MemberPlayerRow(playerName: memberBinding(member.id, \.playerName),
+                                        notes: memberBinding(member.id, \.notes))
+                        MemberLinkRow(member: member, partyID: party.id) {
+                            demiplaneTarget = DemiplaneTarget(memberID: member.id)
+                        }
                     }
-                    .modifier(memberActions(member))
-                    MemberPlayerRow(playerName: memberBinding(member.id, \.playerName),
-                                    notes: memberBinding(member.id, \.notes))
-                    .modifier(memberActions(member))
-                    MemberLinkRow(member: member, partyID: party.id) {
-                        demiplaneTarget = DemiplaneTarget(memberID: member.id)
-                    }
+                    .padding(.vertical, 6)
                     .modifier(memberActions(member))
                 }
                 .onMove { source, target in update { $0.members.move(fromOffsets: source, toOffset: target) } }
@@ -116,7 +123,6 @@ private struct MemberPlayerRow: View {
             TextField("Notes", text: $notes, prompt: Text("Notes, such as their Discord handle"), axis: .vertical)
                 .lineLimit(1...4)
         }
-        .padding(.leading, 16)
     }
 }
 
