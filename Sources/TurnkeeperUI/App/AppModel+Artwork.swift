@@ -21,7 +21,10 @@ extension AppModel {
     /// Reads an image from pasted, dropped or chosen items and stores it as the creature's art.
     func setArtwork(from providers: [NSItemProvider], for key: String) {
         Task {
-            guard let image = await ArtworkPasteboard.imageData(from: providers) else { return }
+            guard let image = await ArtworkPasteboard.imageData(from: providers) else {
+                errorMessage = ArtworkPasteboard.unusableMessage(for: providers)
+                return
+            }
             await setArtwork(image, for: key)
         }
     }
@@ -36,16 +39,19 @@ extension AppModel {
     }
 }
 
-/// Reads images from pasted or dropped items: image data such as Pluck's PNG, or an image file.
+/// Reads images from pasted or dropped items: image data such as Pluck's PNG, PDF data such as a map copied
+/// from a PDF viewer, or an image or PDF file.
 enum ArtworkPasteboard {
-    static let acceptedTypes: [UTType] = [.image, .fileURL]
+    static let acceptedTypes: [UTType] = [.image, .pdf, .fileURL]
+    /// What turns Paste on: anything, so a clipboard without an image says what it holds instead of
+    /// leaving the button dimmed with no reason given.
+    static let pasteTypes: [UTType] = acceptedTypes + [.item]
 
     @MainActor
     static func imageData(from providers: [NSItemProvider]) async -> Data? {
         for provider in providers {
-            if provider.hasItemConformingToTypeIdentifier(UTType.image.identifier),
-               let data = await data(from: provider, type: UTType.image.identifier) {
-                return data
+            for type in [UTType.image, .pdf] where provider.hasItemConformingToTypeIdentifier(type.identifier) {
+                if let data = await data(from: provider, type: type.identifier) { return data }
             }
             if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier),
                let reference = await data(from: provider, type: UTType.fileURL.identifier),
@@ -55,6 +61,14 @@ enum ArtworkPasteboard {
             }
         }
         return nil
+    }
+
+    /// Why nothing could be used, naming what the items held.
+    static func unusableMessage(for providers: [NSItemProvider]) -> String {
+        let held = providers.flatMap(\.registeredTypeIdentifiers).map { UTType($0)?.localizedDescription ?? $0 }
+        let list = Array(NSOrderedSet(array: held)).compactMap { $0 as? String }.joined(separator: ", ")
+        return "Pasting failed: there's no image or PDF to use"
+            + (list.isEmpty ? "." : ". The clipboard holds: \(list).")
     }
 
     @MainActor

@@ -34,7 +34,10 @@ extension AppModel {
     /// Reads an image from pasted, dropped or chosen items and makes it the handout's.
     func setImage(from providers: [NSItemProvider], forHandout id: UUID) {
         Task {
-            guard let image = await ArtworkPasteboard.imageData(from: providers) else { return }
+            guard let image = await ArtworkPasteboard.imageData(from: providers) else {
+                errorMessage = ArtworkPasteboard.unusableMessage(for: providers)
+                return
+            }
             await setImage(image, forHandout: id)
         }
     }
