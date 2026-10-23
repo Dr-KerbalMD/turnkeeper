@@ -6,9 +6,13 @@
 #
 # IPAD         name of the iPad to install on (default: the first connected iPad)
 # IPAD_LAUNCH  "no" to leave the app closed after installing, as a scheduled reinstall does
+# VERSION      version shown in About (default: the latest release tag, such as 1.2.4)
 set -eu
 
 cd "$(dirname "$0")/.."
+# The Xcode project's own version is a placeholder; this one is passed to the build instead.
+VERSION="${VERSION:-$(git describe --tags --abbrev=0 --match 'v[0-9]*' 2>/dev/null | sed 's/^v//')}"
+VERSION="${VERSION:-0.0.0}"
 mkdir -p Generated
 
 DEVICES="$(mktemp)"
@@ -34,10 +38,11 @@ PYTHON
 BUNDLE_ID="$(xcodebuild -project ios/Turnkeeper.xcodeproj -scheme Turnkeeper-iPad \
     -showBuildSettings 2>/dev/null | sed -n 's/^ *PRODUCT_BUNDLE_IDENTIFIER = //p' | head -n 1)"
 
-echo "Building for ${IPAD}..."
+echo "Building $VERSION for ${IPAD}..."
 # A failed build must stop here: the app left by an earlier build would install with its old signature.
 if ! xcodebuild -project ios/Turnkeeper.xcodeproj -scheme Turnkeeper-iPad \
-    -destination 'generic/platform=iOS' -derivedDataPath ios/build -allowProvisioningUpdates build \
+    -destination 'generic/platform=iOS' -derivedDataPath ios/build -allowProvisioningUpdates \
+    MARKETING_VERSION="$VERSION" build \
     >"$BUILD_LOG" 2>&1; then
     grep -E 'error:' "$BUILD_LOG" >&2 || tail -n 20 "$BUILD_LOG" >&2
     echo "Installing failed: the build failed." >&2
