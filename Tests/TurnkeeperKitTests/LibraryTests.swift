@@ -23,6 +23,22 @@ struct LibraryTests {
         return received
     }
 
+    @Test("The remembered campaign is chosen while it's active; otherwise the first one is")
+    func preferredCampaign() {
+        var library = Library()
+        let pathfinder = Campaign(name: "Pathfinder Society", game: .pathfinder)
+        var starfinder = Campaign(name: "Starfinder Society", game: .starfinder)
+        library.save(pathfinder)
+        library.save(starfinder)
+        #expect(library.activeCampaign(preferring: starfinder.id)?.id == starfinder.id)
+        #expect(library.activeCampaign(preferring: nil)?.id == pathfinder.id)
+        #expect(library.activeCampaign(preferring: UUID())?.id == pathfinder.id)
+        starfinder.deletedAt = Date()
+        library.save(starfinder)
+        #expect(library.activeCampaign(preferring: starfinder.id)?.id == pathfinder.id)
+        #expect(Library().activeCampaign(preferring: starfinder.id) == nil)
+    }
+
     @Test("New records are added, and a package round-trips exactly")
     func added() throws {
         let (library, _) = plannedLibrary()

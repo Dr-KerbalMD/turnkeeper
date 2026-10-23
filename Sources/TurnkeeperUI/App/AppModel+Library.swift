@@ -15,7 +15,7 @@ extension AppModel {
 
     func deleteCampaign(_ id: UUID) {
         library.deleteCampaign(id)
-        if selectedCampaignID == id { selectedCampaignID = library.activeCampaigns.first?.id }
+        if selectedCampaignID == id { selectedCampaignID = library.activeCampaign(preferring: nil)?.id }
         selection = nil
     }
 

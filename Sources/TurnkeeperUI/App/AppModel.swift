@@ -21,7 +21,10 @@ final class AppModel {
         didSet { scheduleSave() }
     }
     let bestiary: BestiaryStore
-    var selectedCampaignID: UUID?
+    var selectedCampaignID: UUID? {
+        // Only the saved library's choice is kept; demos and tests leave it alone.
+        didSet { if file != nil { LastCampaign.id = selectedCampaignID } }
+    }
     var selection: PlannerSelection?
     /// The fight on screen; the planner shows when nil.
     var activeSessionID: UUID?
@@ -56,7 +59,7 @@ final class AppModel {
         self.file = file
         self.artStore = artStore
         self.creatureArt = creatureArt
-        selectedCampaignID = library.activeCampaigns.first?.id
+        selectedCampaignID = library.activeCampaign(preferring: file == nil ? nil : LastCampaign.id)?.id
     }
 
     /// The app's model, with the saved library and the bundled bestiary.

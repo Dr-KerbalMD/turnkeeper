@@ -38,6 +38,11 @@ public struct Library: Codable, Sendable, Hashable {
 
     public var activeCampaigns: [Campaign] { campaigns.filter { !$0.isDeleted }.sorted { $0.name < $1.name } }
 
+    /// The campaign with this ID while it is still active, else the first active one.
+    public func activeCampaign(preferring id: UUID?) -> Campaign? {
+        activeCampaigns.first { $0.id == id } ?? activeCampaigns.first
+    }
+
     public func parties(in campaignID: UUID) -> [Party] {
         parties.filter { $0.campaignID == campaignID && !$0.isDeleted }.sorted { $0.name < $1.name }
     }
