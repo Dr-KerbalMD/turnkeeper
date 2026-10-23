@@ -65,8 +65,16 @@ struct NearbySyncSheet: View {
                 }
             }
             TextField("Code", text: $enteredCode)
-            Button("Sync", systemImage: "arrow.triangle.2.circlepath") { Task { await join() } }
-                .disabled(selectedPeer == nil || enteredCode.count < 4 || isSyncing)
+            Button { Task { await join() } } label: {
+                Label {
+                    Text(isSyncing ? "Syncing…" : "Sync")
+                } icon: {
+                    // Spins while the libraries are exchanged, which can take a while with many images.
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .symbolEffect(.rotate, options: .repeat(.continuous), isActive: isSyncing)
+                }
+            }
+            .disabled(selectedPeer == nil || enteredCode.count < 4 || isSyncing)
         }
     }
 
