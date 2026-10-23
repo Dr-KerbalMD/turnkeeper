@@ -39,10 +39,10 @@ extension AppModel {
     }
 }
 
-/// Reads images from pasted or dropped items: image data such as Pluck's PNG, PDF data such as a map copied
-/// from a PDF viewer, or an image or PDF file.
+/// Reads images from pasted or dropped items: image data such as Pluck's PNG, PDF data, an image copied from
+/// a PDF viewer as rich text, or an image or PDF file.
 enum ArtworkPasteboard {
-    static let acceptedTypes: [UTType] = [.image, .pdf, .fileURL]
+    static let acceptedTypes: [UTType] = [.image, .pdf, RichTextAttachments.flatRTFD, .fileURL]
     /// What turns Paste on: anything, so a clipboard without an image says what it holds instead of
     /// leaving the button dimmed with no reason given.
     static let pasteTypes: [UTType] = acceptedTypes + [.item]
@@ -52,6 +52,12 @@ enum ArtworkPasteboard {
         for provider in providers {
             for type in [UTType.image, .pdf] where provider.hasItemConformingToTypeIdentifier(type.identifier) {
                 if let data = await data(from: provider, type: type.identifier) { return data }
+            }
+            let richText = RichTextAttachments.flatRTFD.identifier
+            if provider.hasItemConformingToTypeIdentifier(richText),
+               let data = await data(from: provider, type: richText),
+               let image = RichTextAttachments.firstImage(inFlatRTFD: data) {
+                return image
             }
             if provider.hasItemConformingToTypeIdentifier(UTType.fileURL.identifier),
                let reference = await data(from: provider, type: UTType.fileURL.identifier),

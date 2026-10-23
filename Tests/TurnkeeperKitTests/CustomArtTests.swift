@@ -60,6 +60,22 @@ struct CustomArtTests {
         #expect(poster.pixelSize == CGSize(width: 2048, height: 512))
     }
 
+    @Test("An image attached to copied rich text is found; text alone has none")
+    func richTextAttachments() throws {
+        let picture = try image(width: 20, height: 10)
+        let bundle = FileWrapper(directoryWithFileWrappers: [
+            "TXT.rtf": FileWrapper(regularFileWithContents: Data("{\\rtf1 A map}".utf8)),
+            "Map.png": FileWrapper(regularFileWithContents: picture)
+        ])
+        let flat = try #require(bundle.serializedRepresentation)
+        #expect(RichTextAttachments.firstImage(inFlatRTFD: flat) == picture)
+        let textOnly = FileWrapper(directoryWithFileWrappers: [
+            "TXT.rtf": FileWrapper(regularFileWithContents: Data("{\\rtf1 Just words}".utf8))
+        ])
+        #expect(RichTextAttachments.firstImage(inFlatRTFD: try #require(textOnly.serializedRepresentation)) == nil)
+        #expect(RichTextAttachments.firstImage(inFlatRTFD: Data("not rich text".utf8)) == nil)
+    }
+
     @Test("The store writes, finds and sweeps files")
     func store() throws {
         let store = temporaryStore()
