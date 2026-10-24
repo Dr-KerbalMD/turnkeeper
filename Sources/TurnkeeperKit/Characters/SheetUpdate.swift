@@ -27,20 +27,6 @@ extension Party {
         guard let previous else { return .updated([]) }
         return previous == sheet ? .unchanged : .updated(SheetComparison.changes(from: previous, to: sheet))
     }
-
-    /// Takes each member's sheet from `other` where it was fetched later there, as when a member was refreshed
-    /// on one device while the party was edited on another.
-    public mutating func keepNewerSheets(from other: Party) {
-        for index in members.indices {
-            guard let theirs = other.members.first(where: { $0.id == members[index].id }),
-                  let theirLink = theirs.link,
-                  theirLink.fetchedAt > members[index].link?.fetchedAt ?? .distantPast
-            else { continue }
-            members[index].sheet = theirs.sheet
-            members[index].link = theirLink
-            members[index].level = theirs.level
-        }
-    }
 }
 
 /// The differences between two sheets of the same character that a GM would care about at the table.
