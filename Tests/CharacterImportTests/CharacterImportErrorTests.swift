@@ -11,6 +11,7 @@ struct CharacterImportErrorTests {
         let errors: [(CharacterImportError, String)] = [
             (.unreadableImage(operation: "Reading", underlying: underlying), "couldn't be read"),
             (.notASheet(operation: "Reading"), "isn't a fillable"),
+            (.missingNumbers(operation: "Reading", name: ""), "sent the sheet without its numbers"),
             (.notShared(operation: "Reading"), "isn't shared"),
             (.rejected(operation: "Reading", status: 500, message: "boom"), "500 (boom)"),
             (.rejected(operation: "Reading", status: 500, message: ""), "answered 500."),

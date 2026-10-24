@@ -5,10 +5,21 @@ import Foundation
 /// Reads Demiplane's exported character sheet PDF, a fillable form holding the computed numbers, into a
 /// character `Creature` for the PC's battle card. The key is left empty; the party member supplies it.
 public enum DemiplaneSheetReader {
-    /// The sheet for a game, or, without one, the game the sheet's own fields show.
+    /// The sheet for a game, or, without one, the game the sheet's own fields show. Throws for a sheet without
+    /// its numbers, which Demiplane sometimes exports and then keeps serving.
     public static func sheet(fromPDF data: Data, game: Game?) throws -> Creature {
         let fields = try SheetFields(pdf: data)
+        try checkNumbers(fields)
         return sheet(from: fields, game: game ?? (fields.isStarfinder ? .starfinder : .pathfinder))
+    }
+
+    /// Every character has a nonzero attribute modifier or Perception; a sheet with none was exported before
+    /// Demiplane worked out the character's statistics.
+    static func checkNumbers(_ fields: SheetFields) throws {
+        let numbers = ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma", "perception"]
+        guard numbers.allSatisfy({ fields.int($0) == 0 }) else { return }
+        throw CharacterImportError.missingNumbers(operation: "Reading the character sheet",
+                                                  name: fields.string("character_name"))
     }
 
     static func sheet(from fields: SheetFields, game: Game) -> Creature {
