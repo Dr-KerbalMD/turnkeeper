@@ -24,6 +24,12 @@ struct CharacterImportErrorTests {
         }
     }
 
+    @Test("Only a sheet sent without its numbers is fixed by opening the character on Demiplane")
+    func fixedByOpeningSheet() {
+        #expect(CharacterImportError.missingNumbers(operation: "Reading", name: "Mandor").isFixedByOpeningSheet)
+        #expect(!CharacterImportError.notShared(operation: "Reading").isFixedByOpeningSheet)
+    }
+
     @Test("URLSession sends requests and hands back the HTTP response")
     func urlSession() async throws {
         let configuration = URLSessionConfiguration.ephemeral

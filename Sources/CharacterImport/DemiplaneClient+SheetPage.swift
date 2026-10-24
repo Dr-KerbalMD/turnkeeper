@@ -8,8 +8,8 @@ extension DemiplaneClient {
     /// The character's name, level, game and avatar from its sheet page; nil when the page doesn't include it
     /// (the character isn't shared, or the page has changed).
     public func sharedCharacter(id: String, game: Game) async throws -> DemiplaneCharacter? {
-        let path = "/nexus/\(DemiplaneReference.nexusSlug(for: game))/character-sheet/\(id)"
-        let request = URLRequest(url: Self.appURL.appendingPathComponent(path), cachePolicy: Self.uncached)
+        let url = DemiplaneReference(id: id, game: game).sheetURL(defaultGame: game)
+        let request = URLRequest(url: url, cachePolicy: Self.uncached)
         let (data, response) = try await transport.send(request)
         guard response.statusCode == 200, let html = String(data: data, encoding: .utf8) else { return nil }
         return Self.sharedCharacter(id: id, inPage: html)

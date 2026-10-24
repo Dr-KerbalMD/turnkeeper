@@ -11,6 +11,12 @@ public enum CharacterImportError: Error, LocalizedError {
     case timedOut(operation: String)
     case unexpectedResponse(operation: String, detail: String)
 
+    /// Opening the character on Demiplane fixes it: true for a sheet sent without its numbers.
+    public var isFixedByOpeningSheet: Bool {
+        if case .missingNumbers = self { return true }
+        return false
+    }
+
     public var errorDescription: String? {
         switch self {
         case let .unreadableImage(operation, underlying):
@@ -20,8 +26,8 @@ public enum CharacterImportError: Error, LocalizedError {
         case let .missingNumbers(operation, name):
             let sheet = name.isEmpty ? "the sheet" : "\(name)'s sheet"
             return "\(operation) failed: Demiplane sent \(sheet) without its numbers "
-                + "(AC 10, every modifier +0), so the sheet you have is kept. Refresh again later; if it stays "
-                + "blank, ask the player to open and save the character on Demiplane."
+                + "(AC 10, every modifier +0), so the sheet you have is kept. Open the character on Demiplane, "
+                + "which works its numbers out again, then refresh."
         case let .notShared(operation):
             return "\(operation) failed: the character isn't shared. Ask its player to share it by link on Demiplane."
         case let .rejected(operation, status, message):

@@ -51,6 +51,15 @@ struct DemiplaneReferenceTests {
         #expect(try QRCodeReader.reference(in: image) == DemiplaneReference(id: character, game: .pathfinder))
     }
 
+    @Test("A reference's sheet page uses its own game, else the default")
+    func sheetURL() {
+        let starfinder = DemiplaneReference(id: "abc", game: .starfinder)
+        #expect(starfinder.sheetURL(defaultGame: .pathfinder).absoluteString
+                == "https://app.demiplane.com/nexus/starfinder2e/character-sheet/abc")
+        #expect(DemiplaneReference(id: "abc", game: nil).sheetURL(defaultGame: .pathfinder).path
+                == "/nexus/pathfinder2e/character-sheet/abc")
+    }
+
     @Test("An image without a QR code has no reference")
     func noQRCode() throws {
         let context = try #require(CGContext(data: nil, width: 64, height: 64, bitsPerComponent: 8, bytesPerRow: 0,

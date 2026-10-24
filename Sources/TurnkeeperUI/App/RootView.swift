@@ -5,6 +5,7 @@ import SwiftUI
 /// The planner, or the combat board while a fight is open.
 struct RootView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         Group {
@@ -21,7 +22,13 @@ struct RootView: View {
         .battleCardEnvironment(model)
         .battleCardFullScreenHost()
         .alert("Turnkeeper", isPresented: errorBinding) {
-            Button("OK") { model.errorMessage = nil }
+            if let url = model.errorSheetURL {
+                Button("Open on Demiplane") {
+                    openURL(url)
+                    clearError()
+                }
+            }
+            Button("OK") { clearError() }
         } message: {
             Text(model.errorMessage ?? "")
         }
@@ -36,7 +43,12 @@ struct RootView: View {
     }
 
     private var errorBinding: Binding<Bool> {
-        Binding(get: { model.errorMessage != nil }, set: { if !$0 { model.errorMessage = nil } })
+        Binding(get: { model.errorMessage != nil }, set: { if !$0 { clearError() } })
+    }
+
+    private func clearError() {
+        model.errorMessage = nil
+        model.errorSheetURL = nil
     }
 }
 
