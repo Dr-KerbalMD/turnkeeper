@@ -102,7 +102,10 @@ public struct Library: Codable, Sendable, Hashable {
     // MARK: Changes (each stamps modifiedAt)
 
     public mutating func save(_ campaign: Campaign) { upsert(campaign, into: \.campaigns) }
-    public mutating func save(_ party: Party) { upsert(party, into: \.parties) }
+    public mutating func save(_ party: Party) {
+        let stored = parties.first { $0.id == party.id }
+        upsert(party.stampingMembers(against: stored, at: ChangeClock.now()), into: \.parties)
+    }
     public mutating func save(_ scenario: Scenario) { upsert(scenario, into: \.scenarios) }
     public mutating func save(_ encounter: Encounter) { upsert(encounter, into: \.encounters) }
     public mutating func save(_ session: CombatSession) { upsert(session, into: \.sessions) }

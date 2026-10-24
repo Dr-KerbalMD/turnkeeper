@@ -17,14 +17,14 @@ public struct MergeSummary: Sendable, Equatable {
 ///
 /// - When only one side changed a record since they last shared it, that change wins.
 /// - When both sides changed it, the newer change wins. For scenarios and encounters the other version
-///   is kept as a "conflict copy", so no planning is lost silently. For parties, each member keeps the
-///   sheet fetched last, so a refresh on one device survives an edit on the other.
+///   is kept as a "conflict copy", so no planning is lost silently. Parties are merged member by member,
+///   so players edited, added or removed on either device all carry across.
 /// - Deletions are tombstones, so they carry across like any other change.
 public enum LibraryMerger {
     public static func merge(_ incoming: Library, into local: inout Library) -> MergeSummary {
         var summary = MergeSummary()
         merge(incoming.campaigns, into: &local.campaigns, summary: &summary)
-        merge(incoming.parties, into: &local.parties, summary: &summary, combine: combinedParty)
+        merge(incoming.parties, into: &local.parties, summary: &summary, combine: Party.merging(newer:older:))
         merge(incoming.scenarios, into: &local.scenarios, summary: &summary, copy: conflictCopy)
         merge(incoming.encounters, into: &local.encounters, summary: &summary, copy: conflictCopy)
         merge(incoming.sessions, into: &local.sessions, summary: &summary)
@@ -71,13 +71,6 @@ public enum LibraryMerger {
         var received = record
         received.sharedVersion = record.modifiedAt
         return received
-    }
-
-    /// The newer party, with each member's sheet from whichever side fetched it last.
-    private static func combinedParty(_ newer: Party, _ older: Party) -> Party {
-        var party = newer
-        party.keepNewerSheets(from: older)
-        return party
     }
 
     private static func conflictCopy(_ scenario: Scenario) -> Scenario {

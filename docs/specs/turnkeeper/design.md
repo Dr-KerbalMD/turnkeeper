@@ -136,6 +136,12 @@ Ported from the pf2e system, with tests.
 - **Merging.** `LibraryMerger` compares each record with the other device's copy. If one side is unchanged
   since the shared version, the other side's change wins. If both changed, the newer one wins, and for
   scenarios and encounters the other is kept as a "(conflict copy)". Deletions merge like any change.
+- **Party members.** `Library.save(_: Party)` stamps `PartyMember.modifiedAt` on each member that changed
+  and records removed members in `Party.removedMembers`. When both sides changed a party,
+  `Party.merging(newer:older:)` keeps the newer party's name, level and order, takes each member's later
+  version, keeps members added on either side, and leaves out members removed after their last edit. The
+  later-fetched Demiplane sheet wins when both versions are linked, so an unlink isn't undone.
+  Members saved before stamping read as `.distantPast`.
 - **Sharing.** `LibraryPackage` is the `.turnkeeper` file (UTType
   `io.github.scooper4711.turnkeeper.library`) and the nearby-sync payload. `NearbySync` uses
   Network.framework with Bonjour `_turnkeeper._tcp` and a 4-digit pairing code.

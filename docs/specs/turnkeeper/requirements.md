@@ -11,6 +11,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R1.3 "Sync with nearby device" merges the libraries of two devices over the local network.
 - R1.4 Merging never loses edits silently. When both sides changed the same record, the newer one wins
   and the other is kept as a conflict copy.
+- R1.4a Players are synced one at a time. When both devices changed a party, each player keeps its latest
+  edit, players added or removed on either device carry across, and a Demiplane sheet fetched later is
+  kept even when the other device edited the same player.
 - R1.5 Building and running need no paid Apple developer account; only signing and notarizing releases does. There
   is no iCloud or CloudKit.
 - R1.6 Pushing a version tag makes GitHub build the universal Mac app and attach its disk image, signed with the
