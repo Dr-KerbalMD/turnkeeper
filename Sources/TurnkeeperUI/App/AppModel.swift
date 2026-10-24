@@ -29,6 +29,8 @@ final class AppModel {
     /// The fight on screen; the planner shows when nil.
     var activeSessionID: UUID?
     var errorMessage: String?
+    /// A Demiplane sheet the error says to open, offered as a button beside it.
+    var errorSheetURL: URL?
     /// A passing message, such as the result of an import.
     var statusMessage: String?
     /// A planning edit that would reset a fight in progress, waiting for the GM to confirm.

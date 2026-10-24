@@ -32,6 +32,12 @@ public struct DemiplaneReference: Equatable, Sendable {
         }
     }
 
+    /// The character's sheet page on Demiplane, under the link's game or `defaultGame`.
+    public func sheetURL(defaultGame: Game) -> URL {
+        let slug = Self.nexusSlug(for: game ?? defaultGame)
+        return URL(string: "https://app.demiplane.com/nexus/\(slug)/character-sheet/\(id)")!
+    }
+
     /// The game's slug in Demiplane's page paths, such as `/nexus/starfinder2e/character-sheet/…`.
     public static func nexusSlug(for game: Game) -> String {
         game == .starfinder ? "starfinder2e" : "pathfinder2e"

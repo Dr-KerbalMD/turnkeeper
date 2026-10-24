@@ -17,6 +17,8 @@ struct DemiplaneImportSheet: View {
     @State private var isScanning = false
     /// Why the last import failed, shown here: an alert on the window would wait until this sheet closes.
     @State private var importError: String?
+    /// The character's sheet page, when opening it there fixes the failure.
+    @State private var importErrorURL: URL?
 
     private var reference: DemiplaneReference? { DemiplaneReference.parse(text) }
 
@@ -47,12 +49,18 @@ struct DemiplaneImportSheet: View {
                     Section {
                         Label(importError, systemImage: "exclamationmark.triangle.fill")
                             .foregroundStyle(.red)
+                        if let importErrorURL {
+                            Link("Open on Demiplane", destination: importErrorURL)
+                        }
                     }
                 }
             }
             .formStyle(.grouped)
             .navigationTitle(memberID == nil ? "Add from Demiplane" : "Link to Demiplane")
-            .onChange(of: text) { importError = nil }
+            .onChange(of: text) {
+                importError = nil
+                importErrorURL = nil
+            }
             .toolbar { toolbar }
             .onDrop(of: [.image], isTargeted: nil) { providers in
                 readQRCode(providers)
@@ -96,7 +104,9 @@ struct DemiplaneImportSheet: View {
     /// Moves the model's error into this sheet, so it shows now and not again once the sheet closes.
     private func showFailure() {
         importError = model.errorMessage
+        importErrorURL = model.errorSheetURL
         model.errorMessage = nil
+        model.errorSheetURL = nil
     }
 
     private func readQRCode(_ providers: [NSItemProvider]) {

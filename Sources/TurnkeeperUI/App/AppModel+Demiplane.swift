@@ -9,7 +9,7 @@ extension AppModel {
     /// `errorMessage` set.
     @discardableResult
     func importFromDemiplane(_ reference: DemiplaneReference, partyID: UUID, memberID: UUID? = nil) async -> Bool {
-        await runDemiplane("Importing from Demiplane…") { importer in
+        await runDemiplane("Importing from Demiplane…", reference: reference) { importer in
             let imported = try await importer.importCharacter(id: reference.id, game: reference.game ?? self.game)
             await self.add(imported, to: partyID, memberID: memberID)
         }
@@ -61,15 +61,21 @@ extension AppModel {
         }
     }
 
-    private func runDemiplane(_ progress: String, _ work: (DemiplaneImporter) async throws -> Void) async -> Bool {
+    private func runDemiplane(
+        _ progress: String, reference: DemiplaneReference, _ work: (DemiplaneImporter) async throws -> Void
+    ) async -> Bool {
         demiplaneProgress = progress
         defer { demiplaneProgress = nil }
+        errorSheetURL = nil
         do {
             let importer = DemiplaneImporter(client: DemiplaneClient(transport: URLSession.shared), glossary: bestiary)
             try await work(importer)
             return true
         } catch {
             errorMessage = error.localizedDescription
+            if (error as? CharacterImportError)?.isFixedByOpeningSheet == true {
+                errorSheetURL = reference.sheetURL(defaultGame: game)
+            }
             return false
         }
     }
