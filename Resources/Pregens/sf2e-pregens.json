@@ -1,0 +1,7191 @@
+{
+ "system": "sf2e",
+ "version": "1.5.1",
+ "exportedAt": "2026-10-24T16:07:23.780Z",
+ "pregens": [
+  {
+   "key": "chk-chk",
+   "name": "Chk Chk",
+   "level": 1,
+   "ancestry": "Shirren",
+   "heritage": "Defiant Shirren",
+   "background": "Disciple",
+   "className": "Mystic",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "shirren"
+   ],
+   "attributes": {
+    "str": 1,
+    "dex": 2,
+    "con": 2,
+    "int": 1,
+    "wis": 4,
+    "cha": -1
+   },
+   "armorClass": 17,
+   "shieldBonus": 0,
+   "fortitude": 5,
+   "reflex": 5,
+   "will": 9,
+   "perception": 7,
+   "senses": [],
+   "hitPoints": 18,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "vercite",
+    "common",
+    "shirren"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 2
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 1
+    },
+    {
+     "name": "Crafting",
+     "modifier": 4
+    },
+    {
+     "name": "Deception",
+     "modifier": 2
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 7
+    },
+    {
+     "name": "Nature",
+     "modifier": 7
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 7
+    },
+    {
+     "name": "Society",
+     "modifier": 1
+    },
+    {
+     "name": "Stealth",
+     "modifier": 5
+    },
+    {
+     "name": "Survival",
+     "modifier": 4
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Zon-Shelyn Lore",
+     "modifier": 4
+    }
+   ],
+   "classDC": 17,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 5,
+     "damage": "1d4 + 1 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Arc Pistol",
+     "attack": 5,
+     "damage": "1d4 electricity",
+     "traits": [
+      "Arc",
+      "Tech"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Painglaive",
+     "attack": 4,
+     "damage": "1d10 + 1 slashing",
+     "traits": [
+      "Boost 1d10",
+      "Powered",
+      "Reach",
+      "Tech"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Divine Spontaneous Spells",
+     "tradition": "divine",
+     "category": "spontaneous",
+     "dc": 17,
+     "attack": 7,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Eldritch Lance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Guidance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Void Warp",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Grim Tendrils",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Motivating Ringtone",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Divine Focus Spells",
+     "tradition": "divine",
+     "category": "focus",
+     "dc": 17,
+     "attack": 7,
+     "spells": [
+      {
+       "name": "Shadow Snap",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Rebellious Defiance",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "mental"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\nEffect You decry one foe within 100 feet that you can see as a tyrant or villain and prepare yourself to defy them, even until death. You gain a +1 circumstance bonus on your attack rolls against this foe, and you gain a +1 circumstance bonus to saving throws against the attacks, spells, and effects of this foe. These benefits last for 1 minute."
+    },
+    {
+     "name": "Transfer Vitality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "healing",
+      "mystic"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You can transfer up to 10 Hit Points (minimum 1) from your vitality network into yourself or a bonded creature you can sense within 60 feet. This works on creatures with void healing as though this action had the void trait. The amount you can transfer increases by 10 at 5th, 10th, 15th and 20th level."
+    }
+   ],
+   "feats": [
+    "Limited Telepathy",
+    "Religious Talisman",
+    "Unconventional Weaponry (Painglaive)"
+   ],
+   "classFeatures": [
+    "Initial Epiphany",
+    "Mystic Spellcasting",
+    "Mystic Bond",
+    "Vitality Network",
+    "Connection",
+    "Spell Repertoire",
+    "Shadow"
+   ],
+   "items": [
+    "Commercial Arc Pistol",
+    "Commercial Microcord Armor",
+    "Commercial Painglaive",
+    "Battery (Commercial)",
+    "Comm Unit",
+    "Repair Toolkit (Commercial)",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "chk-chk",
+   "name": "Chk Chk",
+   "level": 3,
+   "ancestry": "Shirren",
+   "heritage": "Defiant Shirren",
+   "background": "Disciple",
+   "className": "Mystic",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "shirren"
+   ],
+   "attributes": {
+    "str": 1,
+    "dex": 2,
+    "con": 2,
+    "int": 1,
+    "wis": 4,
+    "cha": -1
+   },
+   "armorClass": 19,
+   "shieldBonus": 0,
+   "fortitude": 7,
+   "reflex": 9,
+   "will": 11,
+   "perception": 9,
+   "senses": [],
+   "hitPoints": 37,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "vercite",
+    "common",
+    "shirren"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 2
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 1
+    },
+    {
+     "name": "Crafting",
+     "modifier": 6
+    },
+    {
+     "name": "Deception",
+     "modifier": 6
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 9
+    },
+    {
+     "name": "Nature",
+     "modifier": 9
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 9
+    },
+    {
+     "name": "Society",
+     "modifier": 1
+    },
+    {
+     "name": "Stealth",
+     "modifier": 7
+    },
+    {
+     "name": "Survival",
+     "modifier": 4
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Zon-Shelyn Lore",
+     "modifier": 6
+    }
+   ],
+   "classDC": 19,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 7,
+     "damage": "1d4 + 1 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Arc Pistol",
+     "attack": 7,
+     "damage": "1d4 electricity",
+     "traits": [
+      "Arc",
+      "Tech"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Tactical Painglaive",
+     "attack": 7,
+     "damage": "1d10 + 1 slashing",
+     "traits": [
+      "Boost 1d10",
+      "Powered",
+      "Reach",
+      "Tech",
+      "Tracking +1"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Divine Spontaneous Spells",
+     "tradition": "divine",
+     "category": "spontaneous",
+     "dc": 19,
+     "attack": 9,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Eldritch Lance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Guidance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Void Warp",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Grim Tendrils",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Motivating Ringtone",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Fear",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Invisibility",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Soul Surge",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Divine Focus Spells",
+     "tradition": "divine",
+     "category": "focus",
+     "dc": 19,
+     "attack": 9,
+     "spells": [
+      {
+       "name": "Shadow Snap",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Rebellious Defiance",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "mental"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\nEffect You decry one foe within 100 feet that you can see as a tyrant or villain and prepare yourself to defy them, even until death. You gain a +1 circumstance bonus on your attack rolls against this foe, and you gain a +1 circumstance bonus to saving throws against the attacks, spells, and effects of this foe. These benefits last for 1 minute."
+    },
+    {
+     "name": "Transfer Vitality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "healing",
+      "mystic"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You can transfer up to 10 Hit Points (minimum 1) from your vitality network into yourself or a bonded creature you can sense within 60 feet. This works on creatures with void healing as though this action had the void trait. The amount you can transfer increases by 10 at 5th, 10th, 15th and 20th level."
+    },
+    {
+     "name": "Network Spell",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "mystic",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You channel your spell to manifest from one of your allies instead of yourself. If the next action you use is to Cast a Spell with an area, range, or target, the spell manifests from one of your bonded allies instead of yourself. Use the ally's space to determine the spell's source, range, and area of effect, but line of sight and line of effect must be met from both you and your ally when the spell is cast. While this might fool someone who only sees your ally, unless you're Hidden or the spell has the subtle trait, any creature able to see both you and your ally can easily determine you're the source of the spell. If the spell has the subtle trait, you and your ally can Cast the Spell in a way that makes the ally appear to have cast it without that trait."
+    },
+    {
+     "name": "Spot Healing",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "mystic"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An adjacent bonded ally takes damage.\nYou quickly expend energy from your vitality network toward a bonded ally. Transfer Vitality to the triggering ally."
+    },
+    {
+     "name": "Battle Medicine",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "healing",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're holding or wearing a medkit.\nYou can patch up wounds, even in combat. Attempt a Medicine check with the same DC as for Treat Wounds and restore the corresponding amount of HP; this doesn't remove the wounded condition. As with Treat Wounds, you can attempt checks against higher DCs if you have the minimum proficiency rank. The target is then immune to your Battle Medicine for 1 day. This does not make them immune to, or otherwise count as, Treat Wounds."
+    }
+   ],
+   "feats": [
+    "Limited Telepathy",
+    "Religious Talisman",
+    "Unconventional Weaponry (Painglaive)",
+    "Spot Healing",
+    "Toughness",
+    "Battle Medicine"
+   ],
+   "classFeatures": [
+    "Initial Epiphany",
+    "Group Chat",
+    "Signature Spells",
+    "Reflex Expertise",
+    "Mystic Spellcasting",
+    "Mystic Bond",
+    "Vitality Network",
+    "Connection",
+    "Spell Repertoire",
+    "Shadow"
+   ],
+   "items": [
+    "Commercial Arc Pistol",
+    "Commercial Microcord Armor",
+    "Tactical Painglaive",
+    "Battery (Commercial)",
+    "Comm Unit",
+    "Repair Toolkit (Commercial)",
+    "Credstick",
+    "Medkit (Commercial)"
+   ]
+  },
+  {
+   "key": "chk-chk",
+   "name": "Chk Chk",
+   "level": 5,
+   "ancestry": "Shirren",
+   "heritage": "Defiant Shirren",
+   "background": "Disciple",
+   "className": "Mystic",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "shirren"
+   ],
+   "attributes": {
+    "str": 2,
+    "dex": 3,
+    "con": 3,
+    "int": 1,
+    "wis": 4,
+    "cha": -1
+   },
+   "armorClass": 22,
+   "shieldBonus": 0,
+   "fortitude": 12,
+   "reflex": 12,
+   "will": 13,
+   "perception": 11,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 60,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "vercite",
+    "common",
+    "shirren"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 3
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 2
+    },
+    {
+     "name": "Crafting",
+     "modifier": 8
+    },
+    {
+     "name": "Deception",
+     "modifier": 8
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 13
+    },
+    {
+     "name": "Nature",
+     "modifier": 11
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 11
+    },
+    {
+     "name": "Society",
+     "modifier": 1
+    },
+    {
+     "name": "Stealth",
+     "modifier": 10
+    },
+    {
+     "name": "Survival",
+     "modifier": 4
+    },
+    {
+     "name": "Thievery",
+     "modifier": 3
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 3
+    }
+   ],
+   "lores": [
+    {
+     "name": "Zon-Shelyn Lore",
+     "modifier": 8
+    }
+   ],
+   "classDC": 21,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 10,
+     "damage": "1d4 + 2 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Painglaive",
+     "attack": 10,
+     "damage": "2d10 + 2 slashing",
+     "traits": [
+      "Boost 1d10",
+      "Powered",
+      "Reach",
+      "Tech",
+      "Tracking +1"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Tactical Arc Pistol",
+     "attack": 11,
+     "damage": "1d4 electricity",
+     "traits": [
+      "Arc",
+      "Tech",
+      "Tracking +1"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Divine Spontaneous Spells",
+     "tradition": "divine",
+     "category": "spontaneous",
+     "dc": 21,
+     "attack": 11,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Eldritch Lance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Guidance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Void Warp",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Grim Tendrils",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Motivating Ringtone",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Fear",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Invisibility",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Soul Surge",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Share Pain",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Slow",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Divine Focus Spells",
+     "tradition": "divine",
+     "category": "focus",
+     "dc": 21,
+     "attack": 11,
+     "spells": [
+      {
+       "name": "Shadow Snap",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Rebellious Defiance",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "mental"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\nEffect You decry one foe within 100 feet that you can see as a tyrant or villain and prepare yourself to defy them, even until death. You gain a +1 circumstance bonus on your attack rolls against this foe, and you gain a +1 circumstance bonus to saving throws against the attacks, spells, and effects of this foe. These benefits last for 1 minute."
+    },
+    {
+     "name": "Transfer Vitality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "healing",
+      "mystic"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You can transfer up to 10 Hit Points (minimum 1) from your vitality network into yourself or a bonded creature you can sense within 60 feet. This works on creatures with void healing as though this action had the void trait. The amount you can transfer increases by 10 at 5th, 10th, 15th and 20th level."
+    },
+    {
+     "name": "Network Spell",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "mystic",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You channel your spell to manifest from one of your allies instead of yourself. If the next action you use is to Cast a Spell with an area, range, or target, the spell manifests from one of your bonded allies instead of yourself. Use the ally's space to determine the spell's source, range, and area of effect, but line of sight and line of effect must be met from both you and your ally when the spell is cast. While this might fool someone who only sees your ally, unless you're Hidden or the spell has the subtle trait, any creature able to see both you and your ally can easily determine you're the source of the spell. If the spell has the subtle trait, you and your ally can Cast the Spell in a way that makes the ally appear to have cast it without that trait."
+    },
+    {
+     "name": "Spot Healing",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "mystic"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An adjacent bonded ally takes damage.\nYou quickly expend energy from your vitality network toward a bonded ally. Transfer Vitality to the triggering ally."
+    },
+    {
+     "name": "Battle Medicine",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "healing",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're holding or wearing a medkit.\nYou can patch up wounds, even in combat. Attempt a Medicine check with the same DC as for Treat Wounds and restore the corresponding amount of HP; this doesn't remove the wounded condition. As with Treat Wounds, you can attempt checks against higher DCs if you have the minimum proficiency rank. The target is then immune to your Battle Medicine for 1 day. This does not make them immune to, or otherwise count as, Treat Wounds."
+    },
+    {
+     "name": "Communalism",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "concentrate",
+      "fortune",
+      "shirren"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\n\nTrigger An ally within 10 feet fails a skill check requiring 3 actions or fewer.\nYou broadcast helpful encouragement or pertinent information to your ally's mind. Your ally rerolls the triggering skill check and takes the better result."
+    },
+    {
+     "name": "Waste Not",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "mystic",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "With careful focus, you guarantee vital energy lost from a target is caught by your vitality network. If the next action you use is to Cast a Spell that deals void damage to a living creature, your vitality network gains Hit Points equal to twice the spell's rank.\nSpecial You can Waste Not without the spellshape trait. If you do and your next action is to Strike with a weapon that deals void damage, your vitality network gains 2 Hit Points per weapon damage die."
+    },
+    {
+     "name": "Feign Death",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You take damage.\nYou lie Prone and Impersonate a corpse. As long as you don't take any actions requiring anything other than your mind, you appear dead. To see through your ruse, a creature must succeed at a check against your Deception DC, either by Seeking or Recalling Knowledge. You can Ready an Action without ending this effect if you're a master in Deception."
+    }
+   ],
+   "feats": [
+    "Limited Telepathy",
+    "Religious Talisman",
+    "Unconventional Weaponry (Painglaive)",
+    "Spot Healing",
+    "Toughness",
+    "Battle Medicine",
+    "Communalism",
+    "Waste Not",
+    "Feign Death"
+   ],
+   "classFeatures": [
+    "Initial Epiphany",
+    "Group Chat",
+    "Signature Spells",
+    "Reflex Expertise",
+    "Fortitude Expertise",
+    "Mystic Spellcasting",
+    "Mystic Bond",
+    "Vitality Network",
+    "Connection",
+    "Spell Repertoire",
+    "Shadow"
+   ],
+   "items": [
+    "Tactical Arc Pistol",
+    "Commercial Microcord Armor",
+    "Advanced Painglaive",
+    "Battery (Commercial)",
+    "Comm Unit",
+    "Repair Toolkit (Commercial)",
+    "Credstick",
+    "Medkit (Commercial)",
+    "Ultralight Wings (Commercial)"
+   ]
+  },
+  {
+   "key": "chk-chk",
+   "name": "Chk Chk",
+   "level": 7,
+   "ancestry": "Shirren",
+   "heritage": "Defiant Shirren",
+   "background": "Disciple",
+   "className": "Mystic",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "shirren"
+   ],
+   "attributes": {
+    "str": 2,
+    "dex": 3,
+    "con": 3,
+    "int": 1,
+    "wis": 4,
+    "cha": -1
+   },
+   "armorClass": 24,
+   "shieldBonus": 0,
+   "fortitude": 14,
+   "reflex": 14,
+   "will": 15,
+   "perception": 13,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 80,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "vercite",
+    "common",
+    "shirren"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 3
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 2
+    },
+    {
+     "name": "Crafting",
+     "modifier": 10
+    },
+    {
+     "name": "Deception",
+     "modifier": 10
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 15
+    },
+    {
+     "name": "Nature",
+     "modifier": 13
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 13
+    },
+    {
+     "name": "Society",
+     "modifier": 1
+    },
+    {
+     "name": "Stealth",
+     "modifier": 12
+    },
+    {
+     "name": "Survival",
+     "modifier": 4
+    },
+    {
+     "name": "Thievery",
+     "modifier": 3
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 3
+    }
+   ],
+   "lores": [
+    {
+     "name": "Zon-Shelyn Lore",
+     "modifier": 10
+    }
+   ],
+   "classDC": 23,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 12,
+     "damage": "1d4 + 2 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Painglaive",
+     "attack": 12,
+     "damage": "2d10 + 2 slashing",
+     "traits": [
+      "Boost 1d10",
+      "Powered",
+      "Reach",
+      "Tech",
+      "Tracking +1"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Tactical Arc Pistol",
+     "attack": 13,
+     "damage": "1d4 electricity",
+     "traits": [
+      "Arc",
+      "Tech",
+      "Tracking +1"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Divine Spontaneous Spells",
+     "tradition": "divine",
+     "category": "spontaneous",
+     "dc": 25,
+     "attack": 15,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Eldritch Lance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Guidance",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Void Warp",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Grim Tendrils",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Motivating Ringtone",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Fear",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Invisibility",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Soul Surge",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Share Pain",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Slow",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Flicker",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Genetic Regeneration",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Heal",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Divine Focus Spells",
+     "tradition": "divine",
+     "category": "focus",
+     "dc": 25,
+     "attack": 15,
+     "spells": [
+      {
+       "name": "Shadow Snap",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Rebellious Defiance",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "mental"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\nEffect You decry one foe within 100 feet that you can see as a tyrant or villain and prepare yourself to defy them, even until death. You gain a +1 circumstance bonus on your attack rolls against this foe, and you gain a +1 circumstance bonus to saving throws against the attacks, spells, and effects of this foe. These benefits last for 1 minute."
+    },
+    {
+     "name": "Transfer Vitality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "healing",
+      "mystic"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You can transfer up to 10 Hit Points (minimum 1) from your vitality network into yourself or a bonded creature you can sense within 60 feet. This works on creatures with void healing as though this action had the void trait. The amount you can transfer increases by 10 at 5th, 10th, 15th and 20th level."
+    },
+    {
+     "name": "Network Spell",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "mystic",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You channel your spell to manifest from one of your allies instead of yourself. If the next action you use is to Cast a Spell with an area, range, or target, the spell manifests from one of your bonded allies instead of yourself. Use the ally's space to determine the spell's source, range, and area of effect, but line of sight and line of effect must be met from both you and your ally when the spell is cast. While this might fool someone who only sees your ally, unless you're Hidden or the spell has the subtle trait, any creature able to see both you and your ally can easily determine you're the source of the spell. If the spell has the subtle trait, you and your ally can Cast the Spell in a way that makes the ally appear to have cast it without that trait."
+    },
+    {
+     "name": "Spot Healing",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "mystic"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An adjacent bonded ally takes damage.\nYou quickly expend energy from your vitality network toward a bonded ally. Transfer Vitality to the triggering ally."
+    },
+    {
+     "name": "Battle Medicine",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "healing",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're holding or wearing a medkit.\nYou can patch up wounds, even in combat. Attempt a Medicine check with the same DC as for Treat Wounds and restore the corresponding amount of HP; this doesn't remove the wounded condition. As with Treat Wounds, you can attempt checks against higher DCs if you have the minimum proficiency rank. The target is then immune to your Battle Medicine for 1 day. This does not make them immune to, or otherwise count as, Treat Wounds."
+    },
+    {
+     "name": "Communalism",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "concentrate",
+      "fortune",
+      "shirren"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\n\nTrigger An ally within 10 feet fails a skill check requiring 3 actions or fewer.\nYou broadcast helpful encouragement or pertinent information to your ally's mind. Your ally rerolls the triggering skill check and takes the better result."
+    },
+    {
+     "name": "Waste Not",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "mystic",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "With careful focus, you guarantee vital energy lost from a target is caught by your vitality network. If the next action you use is to Cast a Spell that deals void damage to a living creature, your vitality network gains Hit Points equal to twice the spell's rank.\nSpecial You can Waste Not without the spellshape trait. If you do and your next action is to Strike with a weapon that deals void damage, your vitality network gains 2 Hit Points per weapon damage die."
+    },
+    {
+     "name": "Feign Death",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You take damage.\nYou lie Prone and Impersonate a corpse. As long as you don't take any actions requiring anything other than your mind, you appear dead. To see through your ruse, a creature must succeed at a check against your Deception DC, either by Seeking or Recalling Knowledge. You can Ready an Action without ending this effect if you're a master in Deception."
+    }
+   ],
+   "feats": [
+    "Limited Telepathy",
+    "Religious Talisman",
+    "Unconventional Weaponry (Painglaive)",
+    "Spot Healing",
+    "Toughness",
+    "Battle Medicine",
+    "Communalism",
+    "Waste Not",
+    "Feign Death",
+    "Radiant Bond",
+    "Continual Recovery"
+   ],
+   "classFeatures": [
+    "Initial Epiphany",
+    "Group Chat",
+    "Signature Spells",
+    "Reflex Expertise",
+    "Fortitude Expertise",
+    "Expert Spellcaster",
+    "Mystic Spellcasting",
+    "Mystic Bond",
+    "Vitality Network",
+    "Connection",
+    "Spell Repertoire",
+    "Shadow"
+   ],
+   "items": [
+    "Tactical Arc Pistol",
+    "Commercial Microcord Armor",
+    "Advanced Painglaive",
+    "Battery (Commercial)",
+    "Comm Unit",
+    "Repair Toolkit (Commercial)",
+    "Credstick",
+    "Ultralight Wings (Commercial)",
+    "Medkit (Tactical)",
+    "Pain Journal (Commercial) (Diplomacy)"
+   ]
+  },
+  {
+   "key": "dae",
+   "name": "Dae",
+   "level": 1,
+   "ancestry": "Pahtra",
+   "heritage": "Meyel's Chosen Pahtra",
+   "background": "Icon",
+   "className": "Solarian",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "pahtra"
+   ],
+   "attributes": {
+    "str": 4,
+    "dex": 2,
+    "con": 1,
+    "int": 0,
+    "wis": 0,
+    "cha": 2
+   },
+   "armorClass": 17,
+   "shieldBonus": 0,
+   "fortitude": 4,
+   "reflex": 7,
+   "will": 5,
+   "perception": 5,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 19,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "common",
+    "pahtra",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 5
+    },
+    {
+     "name": "Arcana",
+     "modifier": 0
+    },
+    {
+     "name": "Athletics",
+     "modifier": 7
+    },
+    {
+     "name": "Crafting",
+     "modifier": 0
+    },
+    {
+     "name": "Deception",
+     "modifier": 2
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 5
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 2
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 0
+    },
+    {
+     "name": "Occultism",
+     "modifier": 0
+    },
+    {
+     "name": "Performance",
+     "modifier": 5
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 3
+    },
+    {
+     "name": "Stealth",
+     "modifier": 4
+    },
+    {
+     "name": "Survival",
+     "modifier": 0
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 0
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Media Lore",
+     "modifier": 3
+    }
+   ],
+   "classDC": 17,
+   "strikes": [
+    {
+     "name": "Solar Flare",
+     "attack": 5,
+     "damage": "1d8 + 4 bludgeoning",
+     "traits": [
+      "Attuned",
+      "Solarian"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Unarmed Attack",
+     "attack": 7,
+     "damage": "1d4 + 4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 5,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Nimbus Surge",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "attuned",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature within your reach uses a manipulate action or a move action, makes a ranged attack, or leaves a square during a move action it's using.\nYour nimbus surges with energy, forcing an opening in your foe's defenses. Make a melee Strike against the triggering creature. This Strike doesn't count toward your multiple attack penalty, and your multiple attack penalty doesn't apply to this Strike.\n\nGraviton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Enfeebled 1 until the end of its turn.\n\nPhoton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Clumsy 1 until the start of its turn."
+    },
+    {
+     "name": "Attune",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "1/round",
+     "text": "Frequency once per round\nYou steady your body and mind and attune yourself to the stellar aspect of your choice. You become attuned to photon or graviton. You can also manifest any of your solar manifestations if they're currently dormant and if you have the free hands to use them.\nSpecial In addition to the above usage, you can also Attune as a free action when you roll initiative.\n\nEffect: Solar Weapon"
+    },
+    {
+     "name": "Stellar Rush",
+     "actionType": "action",
+     "actions": 2,
+     "traits": [
+      "attuned",
+      "cycle",
+      "move",
+      "solarian",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You rush forward with a blast of stellar energy, getting into the thick of combat with ease. Stride twice. You gain a +10-foot circumstance bonus to your Speed during these moves.\n\nGraviton-Attuned When you finish your Strides, enemies within 15 feet of you must attempt a @Check[fortitude|against:solarian|options:area-effect,forced-movement] save against your class DC. On a failure, they're pulled directly toward you, ending in an adjacent square if possible. You select the order these enemies are moved.\n\nPhoton-Attuned When you finish your Strides, you create a photon field in a @Template[type:burst|distance:15] centered on you. Until the start of your next turn, creatures outside the photon field are Concealed to creatures inside the field."
+    },
+    {
+     "name": "Competitive Spirit",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "pahtra"
+     ],
+     "trigger": "",
+     "frequency": "1/PT1H",
+     "text": "Frequency once per hour\n\nTrigger An ally attempts a skill check with a skill that you have trained or better proficiency rank in.\nYou push yourself to be the best by competing with the triggering ally. Until the end of your next turn, you can attempt the same skill check to perform the same action or activity that the triggering ally performed. You gain a +2 circumstance bonus to this skill check. If you achieve at least one degree of success higher than the triggering ally, this use of Competitive Spirit doesn't count toward its frequency. If you roll a critical failure on this skill check, you take a –1 circumstance penalty to all skill checks attempted with that skill for the next hour as you try new techniques to improve your future attempts."
+    }
+   ],
+   "feats": [
+    "Impressive Performance",
+    "Stellar Rush",
+    "Competitive Spirit"
+   ],
+   "classFeatures": [
+    "Solar Manifestations",
+    "Stellar Attunement"
+   ],
+   "items": [
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Comm Unit",
+    "Commercial Hardlight Series",
+    "Medpatch (Commercial)",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "dae",
+   "name": "Dae",
+   "level": 3,
+   "ancestry": "Pahtra",
+   "heritage": "Meyel's Chosen Pahtra",
+   "background": "Icon",
+   "className": "Solarian",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "pahtra"
+   ],
+   "attributes": {
+    "str": 4,
+    "dex": 2,
+    "con": 1,
+    "int": 0,
+    "wis": 0,
+    "cha": 2
+   },
+   "armorClass": 19,
+   "shieldBonus": 0,
+   "fortitude": 8,
+   "reflex": 9,
+   "will": 7,
+   "perception": 7,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 41,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "common",
+    "pahtra",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 7
+    },
+    {
+     "name": "Arcana",
+     "modifier": 0
+    },
+    {
+     "name": "Athletics",
+     "modifier": 9
+    },
+    {
+     "name": "Crafting",
+     "modifier": 0
+    },
+    {
+     "name": "Deception",
+     "modifier": 2
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 7
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 2
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 0
+    },
+    {
+     "name": "Occultism",
+     "modifier": 0
+    },
+    {
+     "name": "Performance",
+     "modifier": 9
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 5
+    },
+    {
+     "name": "Stealth",
+     "modifier": 6
+    },
+    {
+     "name": "Survival",
+     "modifier": 0
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 0
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Media Lore",
+     "modifier": 5
+    }
+   ],
+   "classDC": 19,
+   "strikes": [
+    {
+     "name": "Solar Flare",
+     "attack": 7,
+     "damage": "1d8 + 4 bludgeoning",
+     "traits": [
+      "Attuned",
+      "Solarian"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Unarmed Attack",
+     "attack": 9,
+     "damage": "1d4 + 4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 7,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Nimbus Surge",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "attuned",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature within your reach uses a manipulate action or a move action, makes a ranged attack, or leaves a square during a move action it's using.\nYour nimbus surges with energy, forcing an opening in your foe's defenses. Make a melee Strike against the triggering creature. This Strike doesn't count toward your multiple attack penalty, and your multiple attack penalty doesn't apply to this Strike.\n\nGraviton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Enfeebled 1 until the end of its turn.\n\nPhoton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Clumsy 1 until the start of its turn."
+    },
+    {
+     "name": "Attune",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "1/round",
+     "text": "Frequency once per round\nYou steady your body and mind and attune yourself to the stellar aspect of your choice. You become attuned to photon or graviton. You can also manifest any of your solar manifestations if they're currently dormant and if you have the free hands to use them.\nSpecial In addition to the above usage, you can also Attune as a free action when you roll initiative.\n\nEffect: Solar Weapon"
+    },
+    {
+     "name": "Stellar Rush",
+     "actionType": "action",
+     "actions": 2,
+     "traits": [
+      "attuned",
+      "cycle",
+      "move",
+      "solarian",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You rush forward with a blast of stellar energy, getting into the thick of combat with ease. Stride twice. You gain a +10-foot circumstance bonus to your Speed during these moves.\n\nGraviton-Attuned When you finish your Strides, enemies within 15 feet of you must attempt a @Check[fortitude|against:solarian|options:area-effect,forced-movement] save against your class DC. On a failure, they're pulled directly toward you, ending in an adjacent square if possible. You select the order these enemies are moved.\n\nPhoton-Attuned When you finish your Strides, you create a photon field in a @Template[type:burst|distance:15] centered on you. Until the start of your next turn, creatures outside the photon field are Concealed to creatures inside the field."
+    },
+    {
+     "name": "Competitive Spirit",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "pahtra"
+     ],
+     "trigger": "",
+     "frequency": "1/PT1H",
+     "text": "Frequency once per hour\n\nTrigger An ally attempts a skill check with a skill that you have trained or better proficiency rank in.\nYou push yourself to be the best by competing with the triggering ally. Until the end of your next turn, you can attempt the same skill check to perform the same action or activity that the triggering ally performed. You gain a +2 circumstance bonus to this skill check. If you achieve at least one degree of success higher than the triggering ally, this use of Competitive Spirit doesn't count toward its frequency. If you roll a critical failure on this skill check, you take a –1 circumstance penalty to all skill checks attempted with that skill for the next hour as you try new techniques to improve your future attempts."
+    },
+    {
+     "name": "Shattering Impact",
+     "actionType": "action",
+     "actions": 2,
+     "traits": [
+      "attuned",
+      "disharmony",
+      "flourish",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You pour all your effort into making a single attack with your solar weapon that's so powerful it shatters the weapon. Strike with your solar weapon. The Strike deals one additional weapon damage die. Your solar weapon shatters and must be manifested to continue using it.\n\nGraviton-Attuned On a hit, the target takes a –10-foot status penalty to Speed until the start of your next turn.\n\nEffect: Shattering Impact\n\nPhoton-Attuned On a hit, you additionally deal persistent fire damage equal to half your level, rounded up."
+    }
+   ],
+   "feats": [
+    "Impressive Performance",
+    "Stellar Rush",
+    "Competitive Spirit",
+    "Shattering Impact",
+    "Fleet",
+    "Cat Fall"
+   ],
+   "classFeatures": [
+    "Solar Manifestations",
+    "Stellar Resilience",
+    "Stellar Attunement"
+   ],
+   "items": [
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Comm Unit",
+    "Commercial Hardlight Series",
+    "Medpatch (Commercial)",
+    "Credstick",
+    "Datapad"
+   ]
+  },
+  {
+   "key": "dae",
+   "name": "Dae",
+   "level": 5,
+   "ancestry": "Pahtra",
+   "heritage": "Meyel's Chosen Pahtra",
+   "background": "Icon",
+   "className": "Solarian",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "pahtra"
+   ],
+   "attributes": {
+    "str": 4,
+    "dex": 3,
+    "con": 2,
+    "int": 0,
+    "wis": 0,
+    "cha": 3
+   },
+   "armorClass": 22,
+   "shieldBonus": 0,
+   "fortitude": 11,
+   "reflex": 12,
+   "will": 9,
+   "perception": 9,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 68,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "common",
+    "pahtra",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 12
+    },
+    {
+     "name": "Arcana",
+     "modifier": 0
+    },
+    {
+     "name": "Athletics",
+     "modifier": 11
+    },
+    {
+     "name": "Crafting",
+     "modifier": 0
+    },
+    {
+     "name": "Deception",
+     "modifier": 3
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 10
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 3
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 0
+    },
+    {
+     "name": "Occultism",
+     "modifier": 0
+    },
+    {
+     "name": "Performance",
+     "modifier": 12
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 7
+    },
+    {
+     "name": "Stealth",
+     "modifier": 9
+    },
+    {
+     "name": "Survival",
+     "modifier": 0
+    },
+    {
+     "name": "Thievery",
+     "modifier": 3
+    },
+    {
+     "name": "Computers",
+     "modifier": 0
+    },
+    {
+     "name": "Piloting",
+     "modifier": 3
+    }
+   ],
+   "lores": [
+    {
+     "name": "Media Lore",
+     "modifier": 7
+    }
+   ],
+   "classDC": 21,
+   "strikes": [
+    {
+     "name": "Solar Flare",
+     "attack": 13,
+     "damage": "1d8 + 4 bludgeoning",
+     "traits": [
+      "Attuned",
+      "Solarian"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Unarmed Attack",
+     "attack": 13,
+     "damage": "1d4 + 4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 12,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Nimbus Surge",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "attuned",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature within your reach uses a manipulate action or a move action, makes a ranged attack, or leaves a square during a move action it's using.\nYour nimbus surges with energy, forcing an opening in your foe's defenses. Make a melee Strike against the triggering creature. This Strike doesn't count toward your multiple attack penalty, and your multiple attack penalty doesn't apply to this Strike.\n\nGraviton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Enfeebled 1 until the end of its turn.\n\nPhoton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Clumsy 1 until the start of its turn."
+    },
+    {
+     "name": "Attune",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "1/round",
+     "text": "Frequency once per round\nYou steady your body and mind and attune yourself to the stellar aspect of your choice. You become attuned to photon or graviton. You can also manifest any of your solar manifestations if they're currently dormant and if you have the free hands to use them.\nSpecial In addition to the above usage, you can also Attune as a free action when you roll initiative.\n\nEffect: Solar Weapon"
+    },
+    {
+     "name": "Stellar Rush",
+     "actionType": "action",
+     "actions": 2,
+     "traits": [
+      "attuned",
+      "cycle",
+      "move",
+      "solarian",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You rush forward with a blast of stellar energy, getting into the thick of combat with ease. Stride twice. You gain a +10-foot circumstance bonus to your Speed during these moves.\n\nGraviton-Attuned When you finish your Strides, enemies within 15 feet of you must attempt a @Check[fortitude|against:solarian|options:area-effect,forced-movement] save against your class DC. On a failure, they're pulled directly toward you, ending in an adjacent square if possible. You select the order these enemies are moved.\n\nPhoton-Attuned When you finish your Strides, you create a photon field in a @Template[type:burst|distance:15] centered on you. Until the start of your next turn, creatures outside the photon field are Concealed to creatures inside the field."
+    },
+    {
+     "name": "Competitive Spirit",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "pahtra"
+     ],
+     "trigger": "",
+     "frequency": "1/PT1H",
+     "text": "Frequency once per hour\n\nTrigger An ally attempts a skill check with a skill that you have trained or better proficiency rank in.\nYou push yourself to be the best by competing with the triggering ally. Until the end of your next turn, you can attempt the same skill check to perform the same action or activity that the triggering ally performed. You gain a +2 circumstance bonus to this skill check. If you achieve at least one degree of success higher than the triggering ally, this use of Competitive Spirit doesn't count toward its frequency. If you roll a critical failure on this skill check, you take a –1 circumstance penalty to all skill checks attempted with that skill for the next hour as you try new techniques to improve your future attempts."
+    },
+    {
+     "name": "Shattering Impact",
+     "actionType": "action",
+     "actions": 2,
+     "traits": [
+      "attuned",
+      "disharmony",
+      "flourish",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You pour all your effort into making a single attack with your solar weapon that's so powerful it shatters the weapon. Strike with your solar weapon. The Strike deals one additional weapon damage die. Your solar weapon shatters and must be manifested to continue using it.\n\nGraviton-Attuned On a hit, the target takes a –10-foot status penalty to Speed until the start of your next turn.\n\nEffect: Shattering Impact\n\nPhoton-Attuned On a hit, you additionally deal persistent fire damage equal to half your level, rounded up."
+    },
+    {
+     "name": "Nimbus Ward",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "attuned",
+      "manifestation",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You would be damage by an attack, spell, or other effect.\n\nRequirements You're aware of the triggering effect and not offguard.\nYou harness your solar nimbus to protect yourself from harm. You gain resistance equal to half your level (rounded up) until the start of your next turn. You choose the type of resistance when you use this action, depending on your current attunement.\n\nYou can use Nimbus Ward as a reaction only when the requirements and trigger are met, but you can use it as a 1-action activity without the requirements or trigger being met.\n\nGraviton-Attuned Your resistance can be one of the following types of damage: bludgeoning, force, piercing, or slashing.\n\nPhoton-Attuned Your resistance can be one of the following types of energy damage: acid, cold, electricity, fire, or sonic."
+    }
+   ],
+   "feats": [
+    "Impressive Performance",
+    "Stellar Rush",
+    "Competitive Spirit",
+    "Shattering Impact",
+    "Fleet",
+    "Cat Fall",
+    "Nimbus Ward",
+    "Battleblessed",
+    "Combat Climber"
+   ],
+   "classFeatures": [
+    "Solar Manifestations",
+    "Stellar Resilience",
+    "Solar Weapon Expertise",
+    "Stellar Attunement"
+   ],
+   "items": [
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Comm Unit",
+    "Commercial Hardlight Series",
+    "Medpatch (Commercial)",
+    "Credstick",
+    "Datapad",
+    "Magboots",
+    "Portable Amp",
+    "Sunshades (Commercial)",
+    "+1 Weapon Potency Crystal (Solar Flare)",
+    "+1 Weapon Potency Crystal (Solar Weapon)"
+   ]
+  },
+  {
+   "key": "dae",
+   "name": "Dae",
+   "level": 7,
+   "ancestry": "Pahtra",
+   "heritage": "Meyel's Chosen Pahtra",
+   "background": "Icon",
+   "className": "Solarian",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "pahtra"
+   ],
+   "attributes": {
+    "str": 4,
+    "dex": 3,
+    "con": 2,
+    "int": 0,
+    "wis": 0,
+    "cha": 3
+   },
+   "armorClass": 25,
+   "shieldBonus": 0,
+   "fortitude": 13,
+   "reflex": 14,
+   "will": 11,
+   "perception": 13,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 92,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "common",
+    "pahtra",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 14
+    },
+    {
+     "name": "Arcana",
+     "modifier": 0
+    },
+    {
+     "name": "Athletics",
+     "modifier": 13
+    },
+    {
+     "name": "Crafting",
+     "modifier": 0
+    },
+    {
+     "name": "Deception",
+     "modifier": 3
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 12
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 3
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 0
+    },
+    {
+     "name": "Occultism",
+     "modifier": 0
+    },
+    {
+     "name": "Performance",
+     "modifier": 14
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 9
+    },
+    {
+     "name": "Stealth",
+     "modifier": 11
+    },
+    {
+     "name": "Survival",
+     "modifier": 0
+    },
+    {
+     "name": "Thievery",
+     "modifier": 3
+    },
+    {
+     "name": "Computers",
+     "modifier": 0
+    },
+    {
+     "name": "Piloting",
+     "modifier": 3
+    }
+   ],
+   "lores": [
+    {
+     "name": "Media Lore",
+     "modifier": 9
+    }
+   ],
+   "classDC": 23,
+   "strikes": [
+    {
+     "name": "Solar Flare",
+     "attack": 15,
+     "damage": "2d8 + 6 bludgeoning",
+     "traits": [
+      "Attuned",
+      "Solarian"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Unarmed Attack",
+     "attack": 15,
+     "damage": "1d4 + 6 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 14,
+     "damage": "1d6 + 2 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Nimbus Surge",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "attuned",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature within your reach uses a manipulate action or a move action, makes a ranged attack, or leaves a square during a move action it's using.\nYour nimbus surges with energy, forcing an opening in your foe's defenses. Make a melee Strike against the triggering creature. This Strike doesn't count toward your multiple attack penalty, and your multiple attack penalty doesn't apply to this Strike.\n\nGraviton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Enfeebled 1 until the end of its turn.\n\nPhoton-Attuned If the Strike is a critical success, the target must succeed at a @Check[fortitude|against:solarian] save against your class DC or become Clumsy 1 until the start of its turn."
+    },
+    {
+     "name": "Attune",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "1/round",
+     "text": "Frequency once per round\nYou steady your body and mind and attune yourself to the stellar aspect of your choice. You become attuned to photon or graviton. You can also manifest any of your solar manifestations if they're currently dormant and if you have the free hands to use them.\nSpecial In addition to the above usage, you can also Attune as a free action when you roll initiative.\n\nEffect: Solar Weapon"
+    },
+    {
+     "name": "Stellar Rush",
+     "actionType": "action",
+     "actions": 2,
+     "traits": [
+      "attuned",
+      "cycle",
+      "move",
+      "solarian",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You rush forward with a blast of stellar energy, getting into the thick of combat with ease. Stride twice. You gain a +10-foot circumstance bonus to your Speed during these moves.\n\nGraviton-Attuned When you finish your Strides, enemies within 15 feet of you must attempt a @Check[fortitude|against:solarian|options:area-effect,forced-movement] save against your class DC. On a failure, they're pulled directly toward you, ending in an adjacent square if possible. You select the order these enemies are moved.\n\nPhoton-Attuned When you finish your Strides, you create a photon field in a @Template[type:burst|distance:15] centered on you. Until the start of your next turn, creatures outside the photon field are Concealed to creatures inside the field."
+    },
+    {
+     "name": "Competitive Spirit",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "pahtra"
+     ],
+     "trigger": "",
+     "frequency": "1/PT1H",
+     "text": "Frequency once per hour\n\nTrigger An ally attempts a skill check with a skill that you have trained or better proficiency rank in.\nYou push yourself to be the best by competing with the triggering ally. Until the end of your next turn, you can attempt the same skill check to perform the same action or activity that the triggering ally performed. You gain a +2 circumstance bonus to this skill check. If you achieve at least one degree of success higher than the triggering ally, this use of Competitive Spirit doesn't count toward its frequency. If you roll a critical failure on this skill check, you take a –1 circumstance penalty to all skill checks attempted with that skill for the next hour as you try new techniques to improve your future attempts."
+    },
+    {
+     "name": "Shattering Impact",
+     "actionType": "action",
+     "actions": 2,
+     "traits": [
+      "attuned",
+      "disharmony",
+      "flourish",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You pour all your effort into making a single attack with your solar weapon that's so powerful it shatters the weapon. Strike with your solar weapon. The Strike deals one additional weapon damage die. Your solar weapon shatters and must be manifested to continue using it.\n\nGraviton-Attuned On a hit, the target takes a –10-foot status penalty to Speed until the start of your next turn.\n\nEffect: Shattering Impact\n\nPhoton-Attuned On a hit, you additionally deal persistent fire damage equal to half your level, rounded up."
+    },
+    {
+     "name": "Nimbus Ward",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "attuned",
+      "manifestation",
+      "solarian"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You would be damage by an attack, spell, or other effect.\n\nRequirements You're aware of the triggering effect and not offguard.\nYou harness your solar nimbus to protect yourself from harm. You gain resistance equal to half your level (rounded up) until the start of your next turn. You choose the type of resistance when you use this action, depending on your current attunement.\n\nYou can use Nimbus Ward as a reaction only when the requirements and trigger are met, but you can use it as a 1-action activity without the requirements or trigger being met.\n\nGraviton-Attuned Your resistance can be one of the following types of damage: bludgeoning, force, piercing, or slashing.\n\nPhoton-Attuned Your resistance can be one of the following types of energy damage: acid, cold, electricity, fire, or sonic."
+    },
+    {
+     "name": "Kip Up",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You stand up. This movement doesn't trigger reactions."
+    }
+   ],
+   "feats": [
+    "Impressive Performance",
+    "Stellar Rush",
+    "Competitive Spirit",
+    "Shattering Impact",
+    "Fleet",
+    "Cat Fall",
+    "Nimbus Ward",
+    "Battleblessed",
+    "Combat Climber",
+    "Solar Barrage",
+    "Quick Jump",
+    "Kip Up"
+   ],
+   "classFeatures": [
+    "Solar Manifestations",
+    "Stellar Resilience",
+    "Solar Weapon Expertise",
+    "Stellar Senses",
+    "Weapon Specialization",
+    "Stellar Attunement"
+   ],
+   "items": [
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Comm Unit",
+    "Tactical Hardlight Series",
+    "Medpatch (Commercial)",
+    "Credstick",
+    "Datapad",
+    "Magboots",
+    "Portable Amp",
+    "Sunshades (Commercial)",
+    "+1 Weapon Potency Crystal (Solar Flare)",
+    "+1 Weapon Potency Crystal (Solar Weapon)",
+    "Striking Crystal (Commercial) (Solar Flare)",
+    "Striking Crystal (Commercial) (Solar Weapon)"
+   ]
+  },
+  {
+   "key": "iseph",
+   "name": "Iseph",
+   "level": 1,
+   "ancestry": "Android",
+   "heritage": "Mod Fanatic Android",
+   "background": "Hacker",
+   "className": "Operative",
+   "size": "med",
+   "traits": [],
+   "attributes": {
+    "str": 1,
+    "dex": 4,
+    "con": 2,
+    "int": 1,
+    "wis": 2,
+    "cha": -1
+   },
+   "armorClass": 18,
+   "shieldBonus": 0,
+   "fortitude": 5,
+   "reflex": 9,
+   "will": 7,
+   "perception": 7,
+   "senses": [
+    "Low-Light Vision"
+   ],
+   "hitPoints": 18,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "trinary",
+    "vercite",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 7
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 4
+    },
+    {
+     "name": "Crafting",
+     "modifier": 1
+    },
+    {
+     "name": "Deception",
+     "modifier": -1
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 2
+    },
+    {
+     "name": "Nature",
+     "modifier": 2
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 2
+    },
+    {
+     "name": "Society",
+     "modifier": 1
+    },
+    {
+     "name": "Stealth",
+     "modifier": 7
+    },
+    {
+     "name": "Survival",
+     "modifier": 2
+    },
+    {
+     "name": "Thievery",
+     "modifier": 7
+    },
+    {
+     "name": "Computers",
+     "modifier": 4
+    },
+    {
+     "name": "Piloting",
+     "modifier": 7
+    }
+   ],
+   "lores": [
+    {
+     "name": "Infosphere Lore",
+     "modifier": 4
+    }
+   ],
+   "classDC": 17,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 7,
+     "damage": "1d4 + 1 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 9,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Zero Knife",
+     "attack": 7,
+     "damage": "1d4 + 1 cold",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Powered",
+      "Tech",
+      "Versatile P"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're wielding a ranged weapon that doesn't have the area trait.\nYou take careful aim at a single creature that you're aware of, designating it as your mark until your next turn. Your ranged Strikes against your mark using the required ranged weapon deal an additional 1d4 precision damage and reduce the circumstance bonus to AC your mark gains from cover by 1. These benefits only apply if your mark is within your weapon's first range increment. You can only have one mark at a time.\n\nAs your operative level increases, so does your ability to Aim. Increase the number of dice for the precision damage by one at 5th, 11th, and 17th levels. At 11th level, you reduce the circumstance bonus to AC your mark gains from cover by 2 rather than 1. At 17th level, you reduce the circumstance bonus to AC your mark gains from cover by 4 rather than 2."
+    },
+    {
+     "name": "Mobile Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "operative",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You're rarely still, and you've learned to reliably hit your targets even while moving. You Stride and then Aim with a gun you're wielding."
+    }
+   ],
+   "feats": [
+    "Constructed",
+    "Phreaker",
+    "Steady Balance",
+    "Quickened Processor",
+    "Mobile Aim"
+   ],
+   "classFeatures": [
+    "Sharpshooter",
+    "Operative's Specialization",
+    "Skirmisher"
+   ],
+   "items": [
+    "Comm Unit",
+    "Force Field (Commercial)",
+    "Incendiary Grenade (Commercial)",
+    "Medpatch (Commercial)",
+    "Commercial Second Skin",
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Commercial Zero Knife",
+    "Infiltrator's Toolkit (Commercial)",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "iseph",
+   "name": "Iseph",
+   "level": 3,
+   "ancestry": "Android",
+   "heritage": "Mod Fanatic Android",
+   "background": "Hacker",
+   "className": "Operative",
+   "size": "med",
+   "traits": [],
+   "attributes": {
+    "str": 1,
+    "dex": 4,
+    "con": 2,
+    "int": 1,
+    "wis": 2,
+    "cha": -1
+   },
+   "armorClass": 20,
+   "shieldBonus": 0,
+   "fortitude": 7,
+   "reflex": 11,
+   "will": 9,
+   "perception": 9,
+   "senses": [
+    "Low-Light Vision",
+    "Darkvision"
+   ],
+   "hitPoints": 38,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "trinary",
+    "vercite",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 9
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 6
+    },
+    {
+     "name": "Crafting",
+     "modifier": 1
+    },
+    {
+     "name": "Deception",
+     "modifier": -1
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 2
+    },
+    {
+     "name": "Nature",
+     "modifier": 2
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 2
+    },
+    {
+     "name": "Society",
+     "modifier": 1
+    },
+    {
+     "name": "Stealth",
+     "modifier": 9
+    },
+    {
+     "name": "Survival",
+     "modifier": 2
+    },
+    {
+     "name": "Thievery",
+     "modifier": 9
+    },
+    {
+     "name": "Computers",
+     "modifier": 6
+    },
+    {
+     "name": "Piloting",
+     "modifier": 9
+    }
+   ],
+   "lores": [
+    {
+     "name": "Infosphere Lore",
+     "modifier": 6
+    }
+   ],
+   "classDC": 19,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 9,
+     "damage": "1d4 + 1 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 11,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Zero Knife",
+     "attack": 9,
+     "damage": "1d4 + 1 cold",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Powered",
+      "Tech",
+      "Versatile P"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're wielding a ranged weapon that doesn't have the area trait.\nYou take careful aim at a single creature that you're aware of, designating it as your mark until your next turn. Your ranged Strikes against your mark using the required ranged weapon deal an additional 1d4 precision damage and reduce the circumstance bonus to AC your mark gains from cover by 1. These benefits only apply if your mark is within your weapon's first range increment. You can only have one mark at a time.\n\nAs your operative level increases, so does your ability to Aim. Increase the number of dice for the precision damage by one at 5th, 11th, and 17th levels. At 11th level, you reduce the circumstance bonus to AC your mark gains from cover by 2 rather than 1. At 17th level, you reduce the circumstance bonus to AC your mark gains from cover by 4 rather than 2."
+    },
+    {
+     "name": "Mobile Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "operative",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You're rarely still, and you've learned to reliably hit your targets even while moving. You Stride and then Aim with a gun you're wielding."
+    },
+    {
+     "name": "Kill Steal",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An ally ends their turn after hitting a creature two or more times or critically hitting a creature.\n\nRequirements You're wielding a gun.\nYou fire a quick shot at a foe your ally is focusing their attacks on. You Aim at the creature your triggering ally hit and then make a ranged Strike against that creature."
+    }
+   ],
+   "feats": [
+    "Constructed",
+    "Phreaker",
+    "Steady Balance",
+    "Quickened Processor",
+    "Mobile Aim",
+    "Kill Steal",
+    "Ancestral Paragon",
+    "Nightvision Adaptation",
+    "Cat Fall",
+    "Hologram Skeptic"
+   ],
+   "classFeatures": [
+    "Sharpshooter",
+    "Focused",
+    "Specialized Skill Set",
+    "Operative's Specialization",
+    "Skirmisher"
+   ],
+   "items": [
+    "Comm Unit",
+    "Force Field (Commercial)",
+    "Incendiary Grenade (Commercial)",
+    "Medpatch (Commercial)",
+    "Commercial Second Skin",
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Commercial Zero Knife",
+    "Infiltrator's Toolkit (Commercial)",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "iseph",
+   "name": "Iseph",
+   "level": 5,
+   "ancestry": "Android",
+   "heritage": "Mod Fanatic Android",
+   "background": "Hacker",
+   "className": "Operative",
+   "size": "med",
+   "traits": [],
+   "attributes": {
+    "str": 2,
+    "dex": 4,
+    "con": 3,
+    "int": 2,
+    "wis": 2,
+    "cha": -1
+   },
+   "armorClass": 22,
+   "shieldBonus": 0,
+   "fortitude": 10,
+   "reflex": 13,
+   "will": 11,
+   "perception": 11,
+   "senses": [
+    "Low-Light Vision",
+    "Darkvision"
+   ],
+   "hitPoints": 63,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "trinary",
+    "vercite",
+    "diasporan",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 13
+    },
+    {
+     "name": "Arcana",
+     "modifier": 2
+    },
+    {
+     "name": "Athletics",
+     "modifier": 9
+    },
+    {
+     "name": "Crafting",
+     "modifier": 2
+    },
+    {
+     "name": "Deception",
+     "modifier": -1
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 2
+    },
+    {
+     "name": "Nature",
+     "modifier": 2
+    },
+    {
+     "name": "Occultism",
+     "modifier": 2
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 2
+    },
+    {
+     "name": "Society",
+     "modifier": 2
+    },
+    {
+     "name": "Stealth",
+     "modifier": 11
+    },
+    {
+     "name": "Survival",
+     "modifier": 2
+    },
+    {
+     "name": "Thievery",
+     "modifier": 11
+    },
+    {
+     "name": "Computers",
+     "modifier": 9
+    },
+    {
+     "name": "Piloting",
+     "modifier": 13
+    }
+   ],
+   "lores": [
+    {
+     "name": "Infosphere Lore",
+     "modifier": 9
+    }
+   ],
+   "classDC": 21,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 11,
+     "damage": "1d4 + 2 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Semi-Auto Pistol",
+     "attack": 16,
+     "damage": "2d6 piercing",
+     "traits": [
+      "Analog",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Zero Knife",
+     "attack": 11,
+     "damage": "1d4 + 2 cold",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Powered",
+      "Tech",
+      "Versatile P"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're wielding a ranged weapon that doesn't have the area trait.\nYou take careful aim at a single creature that you're aware of, designating it as your mark until your next turn. Your ranged Strikes against your mark using the required ranged weapon deal an additional 1d4 precision damage and reduce the circumstance bonus to AC your mark gains from cover by 1. These benefits only apply if your mark is within your weapon's first range increment. You can only have one mark at a time.\n\nAs your operative level increases, so does your ability to Aim. Increase the number of dice for the precision damage by one at 5th, 11th, and 17th levels. At 11th level, you reduce the circumstance bonus to AC your mark gains from cover by 2 rather than 1. At 17th level, you reduce the circumstance bonus to AC your mark gains from cover by 4 rather than 2."
+    },
+    {
+     "name": "Mobile Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "operative",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You're rarely still, and you've learned to reliably hit your targets even while moving. You Stride and then Aim with a gun you're wielding."
+    },
+    {
+     "name": "Kill Steal",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An ally ends their turn after hitting a creature two or more times or critically hitting a creature.\n\nRequirements You're wielding a gun.\nYou fire a quick shot at a foe your ally is focusing their attacks on. You Aim at the creature your triggering ally hit and then make a ranged Strike against that creature."
+    },
+    {
+     "name": "Switch Target",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger The creature you've currently Aimed at gains the Dying or Unconscious condition.\n\nRequirements You're wielding a gun.\nAs your target falls, you immediately home in on the next. You Aim at a different creature."
+    }
+   ],
+   "feats": [
+    "Constructed",
+    "Phreaker",
+    "Steady Balance",
+    "Quickened Processor",
+    "Mobile Aim",
+    "Kill Steal",
+    "Ancestral Paragon",
+    "Nightvision Adaptation",
+    "Cat Fall",
+    "Hologram Skeptic",
+    "Advanced Targeting System",
+    "Switch Target",
+    "Phishing Expertise"
+   ],
+   "classFeatures": [
+    "Sharpshooter",
+    "Focused",
+    "Specialized Skill Set",
+    "Master Gunner",
+    "Urban Operator",
+    "Operative's Specialization",
+    "Skirmisher"
+   ],
+   "items": [
+    "Comm Unit",
+    "Force Field (Commercial)",
+    "Incendiary Grenade (Commercial)",
+    "Medpatch (Commercial)",
+    "Commercial Second Skin",
+    "Advanced Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Commercial Zero Knife",
+    "Infiltrator's Toolkit (Commercial)",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "iseph",
+   "name": "Iseph",
+   "level": 7,
+   "ancestry": "Android",
+   "heritage": "Mod Fanatic Android",
+   "background": "Hacker",
+   "className": "Operative",
+   "size": "med",
+   "traits": [],
+   "attributes": {
+    "str": 2,
+    "dex": 4,
+    "con": 3,
+    "int": 2,
+    "wis": 2,
+    "cha": -1
+   },
+   "armorClass": 25,
+   "shieldBonus": 0,
+   "fortitude": 12,
+   "reflex": 17,
+   "will": 13,
+   "perception": 15,
+   "senses": [
+    "Low-Light Vision",
+    "Darkvision"
+   ],
+   "hitPoints": 85,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "trinary",
+    "vercite",
+    "diasporan",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 15
+    },
+    {
+     "name": "Arcana",
+     "modifier": 2
+    },
+    {
+     "name": "Athletics",
+     "modifier": 11
+    },
+    {
+     "name": "Crafting",
+     "modifier": 2
+    },
+    {
+     "name": "Deception",
+     "modifier": -1
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": -1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": -1
+    },
+    {
+     "name": "Medicine",
+     "modifier": 2
+    },
+    {
+     "name": "Nature",
+     "modifier": 2
+    },
+    {
+     "name": "Occultism",
+     "modifier": 2
+    },
+    {
+     "name": "Performance",
+     "modifier": -1
+    },
+    {
+     "name": "Religion",
+     "modifier": 2
+    },
+    {
+     "name": "Society",
+     "modifier": 2
+    },
+    {
+     "name": "Stealth",
+     "modifier": 13
+    },
+    {
+     "name": "Survival",
+     "modifier": 2
+    },
+    {
+     "name": "Thievery",
+     "modifier": 13
+    },
+    {
+     "name": "Computers",
+     "modifier": 11
+    },
+    {
+     "name": "Piloting",
+     "modifier": 17
+    }
+   ],
+   "lores": [
+    {
+     "name": "Infosphere Lore",
+     "modifier": 11
+    }
+   ],
+   "classDC": 23,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 13,
+     "damage": "1d4 + 2 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Semi-Auto Pistol",
+     "attack": 18,
+     "damage": "2d6 + 3 piercing",
+     "traits": [
+      "Analog",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Zero Knife",
+     "attack": 13,
+     "damage": "1d4 + 2 cold",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Powered",
+      "Tech",
+      "Versatile P"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're wielding a ranged weapon that doesn't have the area trait.\nYou take careful aim at a single creature that you're aware of, designating it as your mark until your next turn. Your ranged Strikes against your mark using the required ranged weapon deal an additional 1d4 precision damage and reduce the circumstance bonus to AC your mark gains from cover by 1. These benefits only apply if your mark is within your weapon's first range increment. You can only have one mark at a time.\n\nAs your operative level increases, so does your ability to Aim. Increase the number of dice for the precision damage by one at 5th, 11th, and 17th levels. At 11th level, you reduce the circumstance bonus to AC your mark gains from cover by 2 rather than 1. At 17th level, you reduce the circumstance bonus to AC your mark gains from cover by 4 rather than 2."
+    },
+    {
+     "name": "Mobile Aim",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "operative",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You're rarely still, and you've learned to reliably hit your targets even while moving. You Stride and then Aim with a gun you're wielding."
+    },
+    {
+     "name": "Kill Steal",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An ally ends their turn after hitting a creature two or more times or critically hitting a creature.\n\nRequirements You're wielding a gun.\nYou fire a quick shot at a foe your ally is focusing their attacks on. You Aim at the creature your triggering ally hit and then make a ranged Strike against that creature."
+    },
+    {
+     "name": "Switch Target",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger The creature you've currently Aimed at gains the Dying or Unconscious condition.\n\nRequirements You're wielding a gun.\nAs your target falls, you immediately home in on the next. You Aim at a different creature."
+    },
+    {
+     "name": "Hair Trigger",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "operative"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger The last creature you Aimed at since the start of your last turn uses a manipulate action or a move action, makes a ranged attack, or leaves a square during a move action.\n\nRequirements You're wielding a gun.\nYou attempt a ranged Strike against the triggering creature. This Strike doesn't count toward your multiple attack penalty, and your multiple attack penalty doesn't apply to this Strike."
+    },
+    {
+     "name": "Dive for Cover",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "When threatened, you can quickly take a dive and find somewhere to hunker down. You Leap, land Prone, and immediately Take Cover, which allows you to hunker down and gain greater cover against ranged attacks."
+    },
+    {
+     "name": "Take the Wheel",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You Board and Take Control of an adjacent vehicle."
+    }
+   ],
+   "feats": [
+    "Constructed",
+    "Phreaker",
+    "Steady Balance",
+    "Quickened Processor",
+    "Mobile Aim",
+    "Kill Steal",
+    "Ancestral Paragon",
+    "Nightvision Adaptation",
+    "Cat Fall",
+    "Hologram Skeptic",
+    "Advanced Targeting System",
+    "Switch Target",
+    "Phishing Expertise",
+    "Hair Trigger",
+    "Dive for Cover",
+    "Take the Wheel"
+   ],
+   "classFeatures": [
+    "Sharpshooter",
+    "Focused",
+    "Specialized Skill Set",
+    "Master Gunner",
+    "Urban Operator",
+    "Reflex Mastery",
+    "Operative's Edge",
+    "Weapon Specialization",
+    "Operative's Specialization",
+    "Skirmisher"
+   ],
+   "items": [
+    "Comm Unit",
+    "Incendiary Grenade (Commercial)",
+    "Tactical Second Skin",
+    "Advanced Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Commercial Zero Knife",
+    "Infiltrator's Toolkit (Commercial)",
+    "Credstick",
+    "Force Field (Tactical)",
+    "Medpatch (Tactical)"
+   ]
+  },
+  {
+   "key": "navasi",
+   "name": "Navasi",
+   "level": 1,
+   "ancestry": "Human",
+   "heritage": "Skilled Human (Diplomacy)",
+   "background": "Outlaw",
+   "className": "Envoy",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 2,
+    "con": 0,
+    "int": 2,
+    "wis": 1,
+    "cha": 4
+   },
+   "armorClass": 16,
+   "shieldBonus": 0,
+   "fortitude": 3,
+   "reflex": 7,
+   "will": 6,
+   "perception": 4,
+   "senses": [],
+   "hitPoints": 16,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "kasatha",
+    "vercite",
+    "vesk",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 5
+    },
+    {
+     "name": "Arcana",
+     "modifier": 2
+    },
+    {
+     "name": "Athletics",
+     "modifier": 0
+    },
+    {
+     "name": "Crafting",
+     "modifier": 2
+    },
+    {
+     "name": "Deception",
+     "modifier": 7
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 7
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 7
+    },
+    {
+     "name": "Medicine",
+     "modifier": 4
+    },
+    {
+     "name": "Nature",
+     "modifier": 1
+    },
+    {
+     "name": "Occultism",
+     "modifier": 2
+    },
+    {
+     "name": "Performance",
+     "modifier": 4
+    },
+    {
+     "name": "Religion",
+     "modifier": 1
+    },
+    {
+     "name": "Society",
+     "modifier": 2
+    },
+    {
+     "name": "Stealth",
+     "modifier": 5
+    },
+    {
+     "name": "Survival",
+     "modifier": 1
+    },
+    {
+     "name": "Thievery",
+     "modifier": 5
+    },
+    {
+     "name": "Computers",
+     "modifier": 5
+    },
+    {
+     "name": "Piloting",
+     "modifier": 5
+    }
+   ],
+   "lores": [
+    {
+     "name": "Absalom Lore",
+     "modifier": 5
+    },
+    {
+     "name": "Underworld Lore",
+     "modifier": 5
+    }
+   ],
+   "classDC": 17,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 5,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Knife",
+     "attack": 5,
+     "damage": "1d4 piercing",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Finesse",
+      "Thrown 10 ft.",
+      "Versatile S"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 5,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Get 'Em!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You single out an enemy for you and your allies to focus your attacks on. Select an enemy within 60 feet that you can see. You and your allies gain a +1 status bonus to attacks against that target until the beginning of your next turn.\n\nLead by Example If you used two actions, Strike the target. You gain a status bonus to the damage roll equal to your Charisma modifier. Regardless of whether the Strike hits, you and your allies gain a +1 status bonus to damage on subsequent Strikes made against the enemy until the start of your next turn. Increase the damage by 1 at 5th, 10th, 15th, and 20th levels.\n\nEffect: Get 'Em!"
+    },
+    {
+     "name": "Ready Arms!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "With quick commands, you get your allies to ready their equipment. You and all allies within 30 feet can Interact to draw, Switch Hands, or swap weapons as a free action.\n\nLead by Example If you used two actions, you can Strike, Area Fire, or Auto-Fire with a weapon you drew or swapped to (including by changing active set of hands). If your Strike hits or if a target failed its save against your Area Fire or Auto-Fire, one ally can make a Strike against the same target as a reaction."
+    },
+    {
+     "name": "Intimidating Shot",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You attempt to Demoralize a foe with your ranged weapon by firing it into the air, using ammo equal to the weapon's expend and the weapon's maximum range rather than the usual range of 30 feet. This check doesn't take a –4 circumstance penalty if the target doesn't share a language with you."
+    },
+    {
+     "name": "Watch Out",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "concentrate",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature targets an ally within 60 feet with an attack, and you can see both the attacker and your ally.\nYou signal a warning to your ally, granting them a +2 circumstance bonus to AC against the triggering attack.\n\nEffect: Watch Out"
+    }
+   ],
+   "feats": [
+    "Intimidating Shot",
+    "Incredible Initiative",
+    "Natural Ambition",
+    "Watch Out",
+    "Size Up"
+   ],
+   "classFeatures": [
+    "Envoy Directives",
+    "Leadership Style",
+    "Guns Blazing"
+   ],
+   "items": [
+    "Comm Unit",
+    "Commercial Knife",
+    "Medkit (Commercial)",
+    "Commercial Second Skin",
+    "Commercial Semi-Auto Pistol",
+    "Hacking Toolkit (Commercial)",
+    "Infiltrator's Toolkit (Commercial)",
+    "Projectile Ammo",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "navasi",
+   "name": "Navasi",
+   "level": 3,
+   "ancestry": "Human",
+   "heritage": "Skilled Human (Diplomacy)",
+   "background": "Outlaw",
+   "className": "Envoy",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 2,
+    "con": 0,
+    "int": 2,
+    "wis": 1,
+    "cha": 4
+   },
+   "armorClass": 18,
+   "shieldBonus": 0,
+   "fortitude": 5,
+   "reflex": 9,
+   "will": 8,
+   "perception": 6,
+   "senses": [],
+   "hitPoints": 32,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "kasatha",
+    "vercite",
+    "vesk",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 7
+    },
+    {
+     "name": "Arcana",
+     "modifier": 2
+    },
+    {
+     "name": "Athletics",
+     "modifier": 0
+    },
+    {
+     "name": "Crafting",
+     "modifier": 2
+    },
+    {
+     "name": "Deception",
+     "modifier": 11
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 9
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 9
+    },
+    {
+     "name": "Medicine",
+     "modifier": 6
+    },
+    {
+     "name": "Nature",
+     "modifier": 1
+    },
+    {
+     "name": "Occultism",
+     "modifier": 2
+    },
+    {
+     "name": "Performance",
+     "modifier": 4
+    },
+    {
+     "name": "Religion",
+     "modifier": 1
+    },
+    {
+     "name": "Society",
+     "modifier": 2
+    },
+    {
+     "name": "Stealth",
+     "modifier": 7
+    },
+    {
+     "name": "Survival",
+     "modifier": 1
+    },
+    {
+     "name": "Thievery",
+     "modifier": 7
+    },
+    {
+     "name": "Computers",
+     "modifier": 7
+    },
+    {
+     "name": "Piloting",
+     "modifier": 9
+    }
+   ],
+   "lores": [
+    {
+     "name": "Absalom Lore",
+     "modifier": 7
+    },
+    {
+     "name": "Underworld Lore",
+     "modifier": 7
+    }
+   ],
+   "classDC": 19,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 7,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Knife",
+     "attack": 7,
+     "damage": "1d4 piercing",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Finesse",
+      "Thrown 10 ft.",
+      "Versatile S"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Laser Pistol",
+     "attack": 7,
+     "damage": "1d6 fire",
+     "traits": [
+      "Tech"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 7,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Get 'Em!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You single out an enemy for you and your allies to focus your attacks on. Select an enemy within 60 feet that you can see. You and your allies gain a +1 status bonus to attacks against that target until the beginning of your next turn.\n\nLead by Example If you used two actions, Strike the target. You gain a status bonus to the damage roll equal to your Charisma modifier. Regardless of whether the Strike hits, you and your allies gain a +1 status bonus to damage on subsequent Strikes made against the enemy until the start of your next turn. Increase the damage by 1 at 5th, 10th, 15th, and 20th levels.\n\nEffect: Get 'Em!"
+    },
+    {
+     "name": "Ready Arms!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "With quick commands, you get your allies to ready their equipment. You and all allies within 30 feet can Interact to draw, Switch Hands, or swap weapons as a free action.\n\nLead by Example If you used two actions, you can Strike, Area Fire, or Auto-Fire with a weapon you drew or swapped to (including by changing active set of hands). If your Strike hits or if a target failed its save against your Area Fire or Auto-Fire, one ally can make a Strike against the same target as a reaction."
+    },
+    {
+     "name": "Intimidating Shot",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You attempt to Demoralize a foe with your ranged weapon by firing it into the air, using ammo equal to the weapon's expend and the weapon's maximum range rather than the usual range of 30 feet. This check doesn't take a –4 circumstance penalty if the target doesn't share a language with you."
+    },
+    {
+     "name": "Watch Out",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "concentrate",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature targets an ally within 60 feet with an attack, and you can see both the attacker and your ally.\nYou signal a warning to your ally, granting them a +2 circumstance bonus to AC against the triggering attack.\n\nEffect: Watch Out"
+    },
+    {
+     "name": "Get in There!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You urge your allies to hustle into the fight or to get out of the way. Until the beginning of your next turn, you and your allies within 100 feet who can sense you gain a +5-foot status bonus to Speed. As your envoy level increases, increase the bonus by an additional 5 feet at 7th level, 12th level, and 17th level.\n\nEffect: Get in There!\n\nLead by Example If you used two actions, Step or Stride. Each of your allies within 100 feet who can sense you can immediately Step or Stride up to half their Speed (rounded down to the nearest 5 feet) as a reaction."
+    },
+    {
+     "name": "Battle Medicine",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "healing",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're holding or wearing a medkit.\nYou can patch up wounds, even in combat. Attempt a Medicine check with the same DC as for Treat Wounds and restore the corresponding amount of HP; this doesn't remove the wounded condition. As with Treat Wounds, you can attempt checks against higher DCs if you have the minimum proficiency rank. The target is then immune to your Battle Medicine for 1 day. This does not make them immune to, or otherwise count as, Treat Wounds."
+    }
+   ],
+   "feats": [
+    "Intimidating Shot",
+    "Incredible Initiative",
+    "Natural Ambition",
+    "Watch Out",
+    "Size Up",
+    "Get in There!",
+    "Battle Medicine",
+    "Fleet",
+    "Lie to Me"
+   ],
+   "classFeatures": [
+    "Envoy Directives",
+    "Adaptive Talent",
+    "Wise to the Game",
+    "Leadership Style",
+    "Guns Blazing"
+   ],
+   "items": [
+    "Comm Unit",
+    "Commercial Knife",
+    "Medkit (Commercial)",
+    "Commercial Second Skin",
+    "Commercial Semi-Auto Pistol",
+    "Hacking Toolkit (Commercial)",
+    "Infiltrator's Toolkit (Commercial)",
+    "Projectile Ammo",
+    "Commercial Laser Pistol",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "navasi",
+   "name": "Navasi",
+   "level": 5,
+   "ancestry": "Human",
+   "heritage": "Skilled Human (Diplomacy)",
+   "background": "Outlaw",
+   "className": "Envoy",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 3,
+    "con": 0,
+    "int": 3,
+    "wis": 2,
+    "cha": 4
+   },
+   "armorClass": 21,
+   "shieldBonus": 0,
+   "fortitude": 7,
+   "reflex": 12,
+   "will": 11,
+   "perception": 11,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 48,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "kasatha",
+    "vercite",
+    "vesk",
+    "draconic",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 10
+    },
+    {
+     "name": "Arcana",
+     "modifier": 3
+    },
+    {
+     "name": "Athletics",
+     "modifier": 7
+    },
+    {
+     "name": "Crafting",
+     "modifier": 3
+    },
+    {
+     "name": "Deception",
+     "modifier": 13
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 13
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 11
+    },
+    {
+     "name": "Medicine",
+     "modifier": 9
+    },
+    {
+     "name": "Nature",
+     "modifier": 2
+    },
+    {
+     "name": "Occultism",
+     "modifier": 3
+    },
+    {
+     "name": "Performance",
+     "modifier": 4
+    },
+    {
+     "name": "Religion",
+     "modifier": 2
+    },
+    {
+     "name": "Society",
+     "modifier": 3
+    },
+    {
+     "name": "Stealth",
+     "modifier": 10
+    },
+    {
+     "name": "Survival",
+     "modifier": 2
+    },
+    {
+     "name": "Thievery",
+     "modifier": 10
+    },
+    {
+     "name": "Computers",
+     "modifier": 10
+    },
+    {
+     "name": "Piloting",
+     "modifier": 12
+    }
+   ],
+   "lores": [
+    {
+     "name": "Absalom Lore",
+     "modifier": 10
+    },
+    {
+     "name": "Underworld Lore",
+     "modifier": 10
+    }
+   ],
+   "classDC": 21,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 12,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Laser Pistol",
+     "attack": 13,
+     "damage": "2d6 fire",
+     "traits": [
+      "Tech",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Advanced Semi-Auto Pistol",
+     "attack": 13,
+     "damage": "2d6 piercing",
+     "traits": [
+      "Analog",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Knife",
+     "attack": 12,
+     "damage": "1d4 piercing",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Finesse",
+      "Thrown 10 ft.",
+      "Versatile S"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Get 'Em!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You single out an enemy for you and your allies to focus your attacks on. Select an enemy within 60 feet that you can see. You and your allies gain a +1 status bonus to attacks against that target until the beginning of your next turn.\n\nLead by Example If you used two actions, Strike the target. You gain a status bonus to the damage roll equal to your Charisma modifier. Regardless of whether the Strike hits, you and your allies gain a +1 status bonus to damage on subsequent Strikes made against the enemy until the start of your next turn. Increase the damage by 1 at 5th, 10th, 15th, and 20th levels.\n\nEffect: Get 'Em!"
+    },
+    {
+     "name": "Ready Arms!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "With quick commands, you get your allies to ready their equipment. You and all allies within 30 feet can Interact to draw, Switch Hands, or swap weapons as a free action.\n\nLead by Example If you used two actions, you can Strike, Area Fire, or Auto-Fire with a weapon you drew or swapped to (including by changing active set of hands). If your Strike hits or if a target failed its save against your Area Fire or Auto-Fire, one ally can make a Strike against the same target as a reaction."
+    },
+    {
+     "name": "Improvised Mastery",
+     "actionType": "free",
+     "actions": null,
+     "traits": [],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\n\nTrigger You're about to attempt a skill check using a skill that you don't have master proficiency in, and you haven't rolled yet.\nYou trust your instincts to see you through. You gain master proficiency with the triggering skill for the skill check."
+    },
+    {
+     "name": "Intimidating Shot",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You attempt to Demoralize a foe with your ranged weapon by firing it into the air, using ammo equal to the weapon's expend and the weapon's maximum range rather than the usual range of 30 feet. This check doesn't take a –4 circumstance penalty if the target doesn't share a language with you."
+    },
+    {
+     "name": "Watch Out",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "concentrate",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature targets an ally within 60 feet with an attack, and you can see both the attacker and your ally.\nYou signal a warning to your ally, granting them a +2 circumstance bonus to AC against the triggering attack.\n\nEffect: Watch Out"
+    },
+    {
+     "name": "Get in There!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You urge your allies to hustle into the fight or to get out of the way. Until the beginning of your next turn, you and your allies within 100 feet who can sense you gain a +5-foot status bonus to Speed. As your envoy level increases, increase the bonus by an additional 5 feet at 7th level, 12th level, and 17th level.\n\nEffect: Get in There!\n\nLead by Example If you used two actions, Step or Stride. Each of your allies within 100 feet who can sense you can immediately Step or Stride up to half their Speed (rounded down to the nearest 5 feet) as a reaction."
+    },
+    {
+     "name": "Battle Medicine",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "healing",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're holding or wearing a medkit.\nYou can patch up wounds, even in combat. Attempt a Medicine check with the same DC as for Treat Wounds and restore the corresponding amount of HP; this doesn't remove the wounded condition. As with Treat Wounds, you can attempt checks against higher DCs if you have the minimum proficiency rank. The target is then immune to your Battle Medicine for 1 day. This does not make them immune to, or otherwise count as, Treat Wounds."
+    }
+   ],
+   "feats": [
+    "Intimidating Shot",
+    "Incredible Initiative",
+    "Natural Ambition",
+    "Watch Out",
+    "Size Up",
+    "Get in There!",
+    "Battle Medicine",
+    "Fleet",
+    "Lie to Me"
+   ],
+   "classFeatures": [
+    "Envoy Directives",
+    "Adaptive Talent",
+    "Wise to the Game",
+    "Improvised Mastery",
+    "Perception Expertise",
+    "Weapon Expertise",
+    "Leadership Style",
+    "Guns Blazing"
+   ],
+   "items": [
+    "Comm Unit",
+    "Commercial Knife",
+    "Medkit (Commercial)",
+    "Commercial Second Skin",
+    "Advanced Semi-Auto Pistol",
+    "Hacking Toolkit (Commercial)",
+    "Infiltrator's Toolkit (Commercial)",
+    "Projectile Ammo",
+    "Advanced Laser Pistol",
+    "Medpatch (Tactical)",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "navasi",
+   "name": "Navasi",
+   "level": 7,
+   "ancestry": "Human",
+   "heritage": "Skilled Human (Diplomacy)",
+   "background": "Outlaw",
+   "className": "Envoy",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 3,
+    "con": 0,
+    "int": 3,
+    "wis": 2,
+    "cha": 4
+   },
+   "armorClass": 24,
+   "shieldBonus": 0,
+   "fortitude": 11,
+   "reflex": 14,
+   "will": 13,
+   "perception": 13,
+   "senses": [
+    "Darkvision"
+   ],
+   "hitPoints": 64,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "kasatha",
+    "vercite",
+    "vesk",
+    "draconic",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 12
+    },
+    {
+     "name": "Arcana",
+     "modifier": 3
+    },
+    {
+     "name": "Athletics",
+     "modifier": 9
+    },
+    {
+     "name": "Crafting",
+     "modifier": 3
+    },
+    {
+     "name": "Deception",
+     "modifier": 17
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 15
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 15
+    },
+    {
+     "name": "Medicine",
+     "modifier": 11
+    },
+    {
+     "name": "Nature",
+     "modifier": 2
+    },
+    {
+     "name": "Occultism",
+     "modifier": 3
+    },
+    {
+     "name": "Performance",
+     "modifier": 4
+    },
+    {
+     "name": "Religion",
+     "modifier": 2
+    },
+    {
+     "name": "Society",
+     "modifier": 3
+    },
+    {
+     "name": "Stealth",
+     "modifier": 14
+    },
+    {
+     "name": "Survival",
+     "modifier": 2
+    },
+    {
+     "name": "Thievery",
+     "modifier": 12
+    },
+    {
+     "name": "Computers",
+     "modifier": 12
+    },
+    {
+     "name": "Piloting",
+     "modifier": 14
+    }
+   ],
+   "lores": [
+    {
+     "name": "Absalom Lore",
+     "modifier": 12
+    },
+    {
+     "name": "Underworld Lore",
+     "modifier": 12
+    }
+   ],
+   "classDC": 23,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 14,
+     "damage": "1d4 + 2 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Laser Pistol",
+     "attack": 15,
+     "damage": "2d6 + 2 fire",
+     "traits": [
+      "Tech",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Advanced Semi-Auto Pistol",
+     "attack": 15,
+     "damage": "2d6 + 2 piercing",
+     "traits": [
+      "Analog",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Knife",
+     "attack": 14,
+     "damage": "1d4 + 2 piercing",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Finesse",
+      "Thrown 10 ft.",
+      "Versatile S"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Get 'Em!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You single out an enemy for you and your allies to focus your attacks on. Select an enemy within 60 feet that you can see. You and your allies gain a +1 status bonus to attacks against that target until the beginning of your next turn.\n\nLead by Example If you used two actions, Strike the target. You gain a status bonus to the damage roll equal to your Charisma modifier. Regardless of whether the Strike hits, you and your allies gain a +1 status bonus to damage on subsequent Strikes made against the enemy until the start of your next turn. Increase the damage by 1 at 5th, 10th, 15th, and 20th levels.\n\nEffect: Get 'Em!"
+    },
+    {
+     "name": "Ready Arms!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "With quick commands, you get your allies to ready their equipment. You and all allies within 30 feet can Interact to draw, Switch Hands, or swap weapons as a free action.\n\nLead by Example If you used two actions, you can Strike, Area Fire, or Auto-Fire with a weapon you drew or swapped to (including by changing active set of hands). If your Strike hits or if a target failed its save against your Area Fire or Auto-Fire, one ally can make a Strike against the same target as a reaction."
+    },
+    {
+     "name": "Improvised Mastery",
+     "actionType": "free",
+     "actions": null,
+     "traits": [],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\n\nTrigger You're about to attempt a skill check using a skill that you don't have master proficiency in, and you haven't rolled yet.\nYou trust your instincts to see you through. You gain master proficiency with the triggering skill for the skill check."
+    },
+    {
+     "name": "Steel Yourselves!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy",
+      "healing"
+     ],
+     "trigger": "",
+     "frequency": "1/PT1H",
+     "text": "Frequency once per hour\nYou encourage your allies to brace for impact or otherwise prepare for incoming damage. Allies within 60 feet who can sense you can spend 1 action on their turn to Brace For Impact. This action has the concentrate trait. Creatures that Brace for Impact gain temporary Hit Points equal to your Charisma modifier + your half your level for 1 minute.\n\nLead by Example If you spends two actions, you Brace For Impact. You and any ally who Braces for Impact before the start of your next turn also gain a +1 status bonus to saving throws against effects that deal damage for 1 minute.\n\nEffect: Steel Yourselves!"
+    },
+    {
+     "name": "Intimidating Shot",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You attempt to Demoralize a foe with your ranged weapon by firing it into the air, using ammo equal to the weapon's expend and the weapon's maximum range rather than the usual range of 30 feet. This check doesn't take a –4 circumstance penalty if the target doesn't share a language with you."
+    },
+    {
+     "name": "Watch Out",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "concentrate",
+      "envoy"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger A creature targets an ally within 60 feet with an attack, and you can see both the attacker and your ally.\nYou signal a warning to your ally, granting them a +2 circumstance bonus to AC against the triggering attack.\n\nEffect: Watch Out"
+    },
+    {
+     "name": "Get in There!",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "directive",
+      "envoy",
+      "traversal"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You urge your allies to hustle into the fight or to get out of the way. Until the beginning of your next turn, you and your allies within 100 feet who can sense you gain a +5-foot status bonus to Speed. As your envoy level increases, increase the bonus by an additional 5 feet at 7th level, 12th level, and 17th level.\n\nEffect: Get in There!\n\nLead by Example If you used two actions, Step or Stride. Each of your allies within 100 feet who can sense you can immediately Step or Stride up to half their Speed (rounded down to the nearest 5 feet) as a reaction."
+    },
+    {
+     "name": "Battle Medicine",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "healing",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're holding or wearing a medkit.\nYou can patch up wounds, even in combat. Attempt a Medicine check with the same DC as for Treat Wounds and restore the corresponding amount of HP; this doesn't remove the wounded condition. As with Treat Wounds, you can attempt checks against higher DCs if you have the minimum proficiency rank. The target is then immune to your Battle Medicine for 1 day. This does not make them immune to, or otherwise count as, Treat Wounds."
+    },
+    {
+     "name": "Confident Actualization",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "fortune",
+      "human"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\n\nTrigger You're about to attempt a saving throw or skill check.\nYour utter confidence in your own abilities helps you push yourself to reach your desired goals. Roll the triggering check or save twice and use the better result."
+    },
+    {
+     "name": "Hang in There",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "envoy",
+      "healing"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You encourage yourself or an ally, psyching them up for a coming challenge and granting them temporary Hit Points. Choose yourself or an ally within 30 feet, then attempt a @Check[diplomacy|dc:20|showDC:all] check. If you have master proficiency in Diplomacy, you can instead attempt a @Check[diplomacy|dc:30|showDC:all] check to increase the temporary Hit Points gained on a successful check by 5. If you have legendary proficiency, you can instead attempt a @Check[diplomacy|dc:40|showDC:all] check to increase the temporary Hit Points gained on a successful check by 10. These temporary Hit Points last for 1 minute. The target is then temporarily immune to your Hang in There for 1 day.\nCritical Success The target gains temporary Hit Points equal to double their level plus your Charisma modifier.\n\nSuccess The target gains temporary Hit Points equal to their level plus your Charisma modifier.\n\nFailure The target is unaffected, and you can't use Hang in There again for 1 minute.\n\nCritical Failure The target is unaffected, and you can't use Hang in There again for 1 hour."
+    },
+    {
+     "name": "Kiss it Better",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You have a hand free and are adjacent to an ally who isn't at full Hit Points.\nYou perform a token medical effort to convince an ally they've recovered from an injury. Attempt a Deception check with the same DC as for Treat Wounds. On a success, the target gains temporary Hit Points equal to half the corresponding amount of Hit Points from Treat Wounds. These temporary Hit Points last 1 round. Kiss It Better doesn't remove the wounded condition. The target is temporarily immune to Kiss It Better for 24 hours."
+    },
+    {
+     "name": "Take the Wheel",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You Board and Take Control of an adjacent vehicle."
+    },
+    {
+     "name": "Power Slide",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You throw the vehicle into a barely controlled skid, turning sharply to evade pursuit. You Drive with a –2 penalty to your Piloting check, gaining the effects of the Drive action for the same number of actions you spent to Power Slide. At the end of the movement, if you succeed, you can turn the vehicle up to 90 degrees. If you critically succeed at your Piloting check, you can instead turn the vehicle up to 180 degrees."
+    }
+   ],
+   "feats": [
+    "Intimidating Shot",
+    "Incredible Initiative",
+    "Natural Ambition",
+    "Watch Out",
+    "Size Up",
+    "Get in There!",
+    "Battle Medicine",
+    "Fleet",
+    "Lie to Me",
+    "Confident Actualization",
+    "Diverse Schemes",
+    "Hang in There",
+    "Kiss it Better",
+    "Take the Wheel",
+    "Power Slide"
+   ],
+   "classFeatures": [
+    "Envoy Directives",
+    "Adaptive Talent",
+    "Wise to the Game",
+    "Improvised Mastery",
+    "Perception Expertise",
+    "Weapon Expertise",
+    "Leader's Confidence",
+    "Weapon Specialization",
+    "Fortitude Expertise",
+    "Leadership Style",
+    "Guns Blazing"
+   ],
+   "items": [
+    "Comm Unit",
+    "Commercial Knife",
+    "Medkit (Commercial)",
+    "Tactical Second Skin",
+    "Advanced Semi-Auto Pistol",
+    "Hacking Toolkit (Commercial)",
+    "Infiltrator's Toolkit (Commercial)",
+    "Projectile Ammo",
+    "Advanced Laser Pistol",
+    "Medpatch (Tactical)",
+    "Credstick",
+    "Holoskin (Commercial)",
+    "Invisibility Spell Amp",
+    "Null Space Chamber (Commercial)"
+   ]
+  },
+  {
+   "key": "obozaya",
+   "name": "Obozaya",
+   "level": 1,
+   "ancestry": "Vesk",
+   "heritage": "Briskwander Vesk",
+   "background": "Trooper",
+   "className": "Soldier",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "vesk"
+   ],
+   "attributes": {
+    "str": 2,
+    "dex": 2,
+    "con": 4,
+    "int": 1,
+    "wis": 0,
+    "cha": 0
+   },
+   "armorClass": 18,
+   "shieldBonus": 0,
+   "fortitude": 9,
+   "reflex": 5,
+   "will": 5,
+   "perception": 3,
+   "senses": [
+    "Low-Light Vision"
+   ],
+   "hitPoints": 24,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "pahtra",
+    "akitonian",
+    "common",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 5
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 5
+    },
+    {
+     "name": "Crafting",
+     "modifier": 1
+    },
+    {
+     "name": "Deception",
+     "modifier": 0
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 0
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 3
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 3
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": 0
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 4
+    },
+    {
+     "name": "Stealth",
+     "modifier": 5
+    },
+    {
+     "name": "Survival",
+     "modifier": 3
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Warfare Lore",
+     "modifier": 4
+    }
+   ],
+   "classDC": 17,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 5,
+     "damage": "1d4 + 2 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Doshko",
+     "attack": 5,
+     "damage": "1d12 + 2 piercing",
+     "traits": [
+      "Analog",
+      "Parry",
+      "Vesk"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Machine Gun",
+     "attack": 5,
+     "damage": "1d8 piercing",
+     "traits": [
+      "Analog",
+      "Automatic"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Barricade",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "manipulate"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You hastily create a barricade using nearby items, junk, or debris. The barricade provides lesser cover for you and one other ally, though you can Take Cover to increase this benefit to standard cover. The barricade is flimsy and falls apart at the end of your next turn."
+    },
+    {
+     "name": "Quick Swap",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You're wielding a two-handed weapon, and an enemy creature moves adjacent to you.\nYou can switch weapons in stressful situations so that you quickly set yourself up to punish incoming foes. You stow your current weapon and draw another two-handed weapon. If you have multiple sets of arms, you can instead Switch Hands."
+    }
+   ],
+   "feats": [
+    "Barricade",
+    "Fearless",
+    "Quick Swap"
+   ],
+   "classFeatures": [
+    "Walking Armory",
+    "Suppressing Fire",
+    "Primary Target",
+    "Soldier Fighting Style",
+    "Bombard"
+   ],
+   "items": [
+    "Comm Unit",
+    "Commercial Doshko",
+    "Commercial Machine Gun",
+    "Projectile Ammo",
+    "Commercial Shotalashu Armor",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "obozaya",
+   "name": "Obozaya",
+   "level": 3,
+   "ancestry": "Vesk",
+   "heritage": "Briskwander Vesk",
+   "background": "Trooper",
+   "className": "Soldier",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "vesk"
+   ],
+   "attributes": {
+    "str": 2,
+    "dex": 2,
+    "con": 4,
+    "int": 1,
+    "wis": 0,
+    "cha": 0
+   },
+   "armorClass": 21,
+   "shieldBonus": 0,
+   "fortitude": 11,
+   "reflex": 9,
+   "will": 7,
+   "perception": 5,
+   "senses": [
+    "Low-Light Vision"
+   ],
+   "hitPoints": 55,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 20
+    }
+   ],
+   "languages": [
+    "pahtra",
+    "akitonian",
+    "common",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 7
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 7
+    },
+    {
+     "name": "Crafting",
+     "modifier": 1
+    },
+    {
+     "name": "Deception",
+     "modifier": 0
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 0
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 5
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 5
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": 0
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 6
+    },
+    {
+     "name": "Stealth",
+     "modifier": 7
+    },
+    {
+     "name": "Survival",
+     "modifier": 5
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Warfare Lore",
+     "modifier": 6
+    }
+   ],
+   "classDC": 19,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 7,
+     "damage": "1d4 + 2 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Doshko",
+     "attack": 7,
+     "damage": "1d12 + 2 piercing",
+     "traits": [
+      "Analog",
+      "Parry",
+      "Vesk"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Tactical Machine Gun",
+     "attack": 8,
+     "damage": "1d8 piercing",
+     "traits": [
+      "Analog",
+      "Automatic",
+      "Tracking +1"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Barricade",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "manipulate"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You hastily create a barricade using nearby items, junk, or debris. The barricade provides lesser cover for you and one other ally, though you can Take Cover to increase this benefit to standard cover. The barricade is flimsy and falls apart at the end of your next turn."
+    },
+    {
+     "name": "Quick Swap",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You're wielding a two-handed weapon, and an enemy creature moves adjacent to you.\nYou can switch weapons in stressful situations so that you quickly set yourself up to punish incoming foes. You stow your current weapon and draw another two-handed weapon. If you have multiple sets of arms, you can instead Switch Hands."
+    },
+    {
+     "name": "Menacing Laughter",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "auditory",
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Your laughter (or other vocalization) remains audible over the din of your weapons fire. Attempt an Intimidation check to Demoralize each creature within 30 feet who's Suppressed."
+    },
+    {
+     "name": "Deadlift",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You aren't Fatigued.\nFor 1 minute, you can carry 4 more Bulk than normal before becoming encumbered. The amount you can carry increases to 6 at expert, 8 at master, and 10 at legendary. When the benefits of this feat end, you become Fatigued for 10 minutes."
+    }
+   ],
+   "feats": [
+    "Barricade",
+    "Fearless",
+    "Quick Swap",
+    "Menacing Laughter",
+    "Deadlift",
+    "Toughness"
+   ],
+   "classFeatures": [
+    "Walking Armory",
+    "Fearsome Bulwark",
+    "Reflex Expertise",
+    "Suppressing Fire",
+    "Primary Target",
+    "Soldier Fighting Style",
+    "Bombard"
+   ],
+   "items": [
+    "Comm Unit",
+    "Commercial Doshko",
+    "Tactical Machine Gun",
+    "Projectile Ammo",
+    "Credstick",
+    "Commercial Hidden Soldier Armor"
+   ]
+  },
+  {
+   "key": "obozaya",
+   "name": "Obozaya",
+   "level": 5,
+   "ancestry": "Vesk",
+   "heritage": "Briskwander Vesk",
+   "background": "Trooper",
+   "className": "Soldier",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "vesk"
+   ],
+   "attributes": {
+    "str": 3,
+    "dex": 3,
+    "con": 4,
+    "int": 1,
+    "wis": 1,
+    "cha": 1
+   },
+   "armorClass": 23,
+   "shieldBonus": 0,
+   "fortitude": 13,
+   "reflex": 12,
+   "will": 10,
+   "perception": 10,
+   "senses": [
+    "Low-Light Vision"
+   ],
+   "hitPoints": 85,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 20
+    }
+   ],
+   "languages": [
+    "pahtra",
+    "akitonian",
+    "common",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 12
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 10
+    },
+    {
+     "name": "Crafting",
+     "modifier": 1
+    },
+    {
+     "name": "Deception",
+     "modifier": 1
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 8
+    },
+    {
+     "name": "Medicine",
+     "modifier": 1
+    },
+    {
+     "name": "Nature",
+     "modifier": 8
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": 1
+    },
+    {
+     "name": "Religion",
+     "modifier": 1
+    },
+    {
+     "name": "Society",
+     "modifier": 8
+    },
+    {
+     "name": "Stealth",
+     "modifier": 10
+    },
+    {
+     "name": "Survival",
+     "modifier": 8
+    },
+    {
+     "name": "Thievery",
+     "modifier": 3
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 3
+    }
+   ],
+   "lores": [
+    {
+     "name": "Warfare Lore",
+     "modifier": 8
+    }
+   ],
+   "classDC": 21,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 12,
+     "damage": "1d4 + 3 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Doshko",
+     "attack": 12,
+     "damage": "1d12 + 3 piercing",
+     "traits": [
+      "Analog",
+      "Parry",
+      "Vesk"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Grenade Launcher (Commercial)",
+     "attack": 12,
+     "damage": "1d6 + 3 slashing",
+     "traits": [
+      "Tech"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Tactical Machine Gun",
+     "attack": 13,
+     "damage": "1d8 piercing",
+     "traits": [
+      "Analog",
+      "Automatic",
+      "Tracking +1"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Barricade",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "manipulate"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You hastily create a barricade using nearby items, junk, or debris. The barricade provides lesser cover for you and one other ally, though you can Take Cover to increase this benefit to standard cover. The barricade is flimsy and falls apart at the end of your next turn."
+    },
+    {
+     "name": "Quick Swap",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You're wielding a two-handed weapon, and an enemy creature moves adjacent to you.\nYou can switch weapons in stressful situations so that you quickly set yourself up to punish incoming foes. You stow your current weapon and draw another two-handed weapon. If you have multiple sets of arms, you can instead Switch Hands."
+    },
+    {
+     "name": "Menacing Laughter",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "auditory",
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Your laughter (or other vocalization) remains audible over the din of your weapons fire. Attempt an Intimidation check to Demoralize each creature within 30 feet who's Suppressed."
+    },
+    {
+     "name": "Deadlift",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You aren't Fatigued.\nFor 1 minute, you can carry 4 more Bulk than normal before becoming encumbered. The amount you can carry increases to 6 at expert, 8 at master, and 10 at legendary. When the benefits of this feat end, you become Fatigued for 10 minutes."
+    },
+    {
+     "name": "Terrifying Bravado",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "vesk"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You critically succeed on a save against a fear effect whose source was a creature, or a creature fails or critically fails an Intimidation check to Demoralize you.\nYou laugh at your enemy's failed attempts to bully you, turning the tables on your foe with a display of terrifying bravado. You attempt an Intimidation check to Demoralize the triggering creature."
+    },
+    {
+     "name": "Widen Area",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "manipulate",
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're wielding an area or automatic weapon.\nYou set up your area weapon to affect more targets. If the next action you use is to Area Fire or Auto-Fire in a burst, cone, or line, or if you use Whirling Swipe, you increase the area of that attack. Add 5 feet to the radius of a burst that normally has a radius of at least 10 feet (a burst with a smaller radius isn't affected). Add 5 feet to the length of a cone or line that's normally 15 feet or smaller, and add 10 feet to the length of a larger cone or line."
+    }
+   ],
+   "feats": [
+    "Barricade",
+    "Fearless",
+    "Quick Swap",
+    "Toughness",
+    "Menacing Laughter",
+    "Deadlift",
+    "Terrifying Bravado",
+    "Widen Area",
+    "Powerful Leap"
+   ],
+   "classFeatures": [
+    "Walking Armory",
+    "Fearsome Bulwark",
+    "Reflex Expertise",
+    "Soldier Weapon Expert",
+    "Perception Expertise",
+    "Suppressing Fire",
+    "Primary Target",
+    "Soldier Fighting Style",
+    "Bombard"
+   ],
+   "items": [
+    "Comm Unit",
+    "Commercial Doshko",
+    "Tactical Machine Gun",
+    "Projectile Ammo",
+    "Credstick",
+    "Frag Grenade (Commercial)",
+    "Incendiary Grenade (Commercial)",
+    "Grenade Launcher (Commercial)",
+    "Commercial Hidden Soldier Armor"
+   ]
+  },
+  {
+   "key": "obozaya",
+   "name": "Obozaya",
+   "level": 7,
+   "ancestry": "Vesk",
+   "heritage": "Briskwander Vesk",
+   "background": "Trooper",
+   "className": "Soldier",
+   "size": "med",
+   "traits": [
+    "humanoid",
+    "vesk"
+   ],
+   "attributes": {
+    "str": 3,
+    "dex": 3,
+    "con": 4,
+    "int": 1,
+    "wis": 1,
+    "cha": 1
+   },
+   "armorClass": 28,
+   "shieldBonus": 0,
+   "fortitude": 17,
+   "reflex": 14,
+   "will": 12,
+   "perception": 12,
+   "senses": [
+    "Low-Light Vision"
+   ],
+   "hitPoints": 115,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "pahtra",
+    "akitonian",
+    "common",
+    "vesk"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 14
+    },
+    {
+     "name": "Arcana",
+     "modifier": 1
+    },
+    {
+     "name": "Athletics",
+     "modifier": 12
+    },
+    {
+     "name": "Crafting",
+     "modifier": 1
+    },
+    {
+     "name": "Deception",
+     "modifier": 1
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 1
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 10
+    },
+    {
+     "name": "Medicine",
+     "modifier": 1
+    },
+    {
+     "name": "Nature",
+     "modifier": 10
+    },
+    {
+     "name": "Occultism",
+     "modifier": 1
+    },
+    {
+     "name": "Performance",
+     "modifier": 1
+    },
+    {
+     "name": "Religion",
+     "modifier": 1
+    },
+    {
+     "name": "Society",
+     "modifier": 10
+    },
+    {
+     "name": "Stealth",
+     "modifier": 12
+    },
+    {
+     "name": "Survival",
+     "modifier": 10
+    },
+    {
+     "name": "Thievery",
+     "modifier": 3
+    },
+    {
+     "name": "Computers",
+     "modifier": 1
+    },
+    {
+     "name": "Piloting",
+     "modifier": 3
+    }
+   ],
+   "lores": [
+    {
+     "name": "Warfare Lore",
+     "modifier": 10
+    }
+   ],
+   "classDC": 25,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 14,
+     "damage": "1d4 + 5 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Doshko",
+     "attack": 15,
+     "damage": "2d12 + 5 piercing",
+     "traits": [
+      "Analog",
+      "Parry",
+      "Tracking +1",
+      "Vesk"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Machine Gun",
+     "attack": 15,
+     "damage": "2d8 + 2 piercing",
+     "traits": [
+      "Analog",
+      "Automatic",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Grenade Launcher (Commercial)",
+     "attack": 14,
+     "damage": "1d6 + 5 slashing",
+     "traits": [
+      "Tech"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [],
+   "abilities": [
+    {
+     "name": "Barricade",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "manipulate"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You hastily create a barricade using nearby items, junk, or debris. The barricade provides lesser cover for you and one other ally, though you can Take Cover to increase this benefit to standard cover. The barricade is flimsy and falls apart at the end of your next turn."
+    },
+    {
+     "name": "Quick Swap",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You're wielding a two-handed weapon, and an enemy creature moves adjacent to you.\nYou can switch weapons in stressful situations so that you quickly set yourself up to punish incoming foes. You stow your current weapon and draw another two-handed weapon. If you have multiple sets of arms, you can instead Switch Hands."
+    },
+    {
+     "name": "Menacing Laughter",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "auditory",
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Your laughter (or other vocalization) remains audible over the din of your weapons fire. Attempt an Intimidation check to Demoralize each creature within 30 feet who's Suppressed."
+    },
+    {
+     "name": "Deadlift",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You aren't Fatigued.\nFor 1 minute, you can carry 4 more Bulk than normal before becoming encumbered. The amount you can carry increases to 6 at expert, 8 at master, and 10 at legendary. When the benefits of this feat end, you become Fatigued for 10 minutes."
+    },
+    {
+     "name": "Terrifying Bravado",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "vesk"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You critically succeed on a save against a fear effect whose source was a creature, or a creature fails or critically fails an Intimidation check to Demoralize you.\nYou laugh at your enemy's failed attempts to bully you, turning the tables on your foe with a display of terrifying bravado. You attempt an Intimidation check to Demoralize the triggering creature."
+    },
+    {
+     "name": "Widen Area",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "manipulate",
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements You're wielding an area or automatic weapon.\nYou set up your area weapon to affect more targets. If the next action you use is to Area Fire or Auto-Fire in a burst, cone, or line, or if you use Whirling Swipe, you increase the area of that attack. Add 5 feet to the radius of a burst that normally has a radius of at least 10 feet (a burst with a smaller radius isn't affected). Add 5 feet to the length of a cone or line that's normally 15 feet or smaller, and add 10 feet to the length of a larger cone or line."
+    },
+    {
+     "name": "Intimidating Taunt",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "concentrate",
+      "mental",
+      "soldier"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You taunt your enemy mercilessly, forcing them to acknowledge you as an immediate threat. Attempt an @Check[intimidation|against:will] check and compare it to the Will DC of one enemy creature within 60 feet. This action has the auditory trait or visual trait, depending on how you taunt your enemy.\nCritical Success Your taunts sting hard. Until the start of your next turn, any hostile actions that the creature takes must include you as a target or include you in the area; otherwise, the creature takes a –2 circumstance penalty to attack rolls and to its save DC for those hostile actions.\n\nSuccess As critical success, but only the first hostile action that the creature takes is affected.\n\nFailure The creature is unaffected.\n\nEffect: Intimidating Taunt"
+    }
+   ],
+   "feats": [
+    "Barricade",
+    "Fearless",
+    "Quick Swap",
+    "Toughness",
+    "Menacing Laughter",
+    "Deadlift",
+    "Terrifying Bravado",
+    "Widen Area",
+    "Powerful Leap",
+    "Intimidating Taunt",
+    "Intimidating Prowess",
+    "Fleet"
+   ],
+   "classFeatures": [
+    "Walking Armory",
+    "Fearsome Bulwark",
+    "Reflex Expertise",
+    "Soldier Weapon Expert",
+    "Perception Expertise",
+    "Tough as Nails",
+    "Weapon Specialization",
+    "Armor Expertise",
+    "Soldier Expertise",
+    "Suppressing Fire",
+    "Primary Target",
+    "Soldier Fighting Style",
+    "Bombard"
+   ],
+   "items": [
+    "Comm Unit",
+    "Advanced Doshko",
+    "Advanced Machine Gun",
+    "Projectile Ammo",
+    "Credstick",
+    "Frag Grenade (Commercial)",
+    "Grenade Launcher (Commercial)",
+    "Incendiary Grenade (Commercial)",
+    "Tactical Hidden Soldier Armor"
+   ]
+  },
+  {
+   "key": "zemir",
+   "name": "Zemir",
+   "level": 1,
+   "ancestry": "Human",
+   "heritage": "Versatile Human",
+   "background": "Grifter",
+   "className": "Witchwarper",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 2,
+    "con": 1,
+    "int": 4,
+    "wis": 0,
+    "cha": 2
+   },
+   "armorClass": 16,
+   "shieldBonus": 0,
+   "fortitude": 4,
+   "reflex": 5,
+   "will": 5,
+   "perception": 3,
+   "senses": [],
+   "hitPoints": 17,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 25
+    }
+   ],
+   "languages": [
+    "akitonian",
+    "brethedan",
+    "castrovelian",
+    "pahtra",
+    "trinary",
+    "vesk",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 5
+    },
+    {
+     "name": "Arcana",
+     "modifier": 7
+    },
+    {
+     "name": "Athletics",
+     "modifier": 0
+    },
+    {
+     "name": "Crafting",
+     "modifier": 4
+    },
+    {
+     "name": "Deception",
+     "modifier": 5
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 5
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 5
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 3
+    },
+    {
+     "name": "Occultism",
+     "modifier": 7
+    },
+    {
+     "name": "Performance",
+     "modifier": 2
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 7
+    },
+    {
+     "name": "Stealth",
+     "modifier": 5
+    },
+    {
+     "name": "Survival",
+     "modifier": 0
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 4
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Physical Science Lore",
+     "modifier": 7
+    }
+   ],
+   "classDC": 17,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 5,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Battleglove",
+     "attack": 3,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Free-Hand"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 5,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Arcane Spontaneous Spells",
+     "tradition": "arcane",
+     "category": "spontaneous",
+     "dc": 17,
+     "attack": 7,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Injury Echo",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Light",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Stumble",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Force Barrage",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Shifting Surge",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Thunderstrike",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Arcane Focus Spells",
+     "tradition": "arcane",
+     "category": "focus",
+     "dc": 17,
+     "attack": 7,
+     "spells": [
+      {
+       "name": "Warp Terrain",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Warp Reality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "arcane",
+      "concentrate",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field isn't active.\nYour quantum field activates and lasts as long as you Sustain it (up to 10 minutes) or until the end of your next turn. Your quantum field is a @Template[type:burst|distance:20] centered on a point you choose within 100 feet. While your quantum field is active, you can use actions that have the anchoring trait. Your quantum field's other specific effects are determined by your paradox. Choose whether any given creature in the area is affected by your quantum field when you Warp Reality, each time you Sustain it, and when a creature enters your quantum field. Each time you Sustain a quantum field with the Sustain action (instead of an anchoring action), you can move it to a new position within 100 feet.\n\nYour quantum field automatically deactivates if you're knocked out, if you Dismiss it, or if you move more than 100 feet away from it."
+    },
+    {
+     "name": "Quantum Pulse",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You roll initiative.\nYou're always ready to let loose with your paradoxical abilities, and when imperiled, you instinctively release a pulse of quantum energy. As combat begins, you Warp Reality."
+    },
+    {
+     "name": "Anchoring Strike",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "flourish",
+      "fortune",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field is active.\nBattle can be disorienting, but for you, the intense mental effort of striking your targets lends you additional clarity and focus. Make a Strike. The Strike gains the following success and critical success effects.\nCritical Success The Strike gains the anchoring trait. You can reroll the damage dice rolled for this strike, but you must use the second result, even if it's worse.\n\nSuccess The Strike gains the anchoring trait."
+    }
+   ],
+   "feats": [
+    "Feather Step",
+    "Charming Liar",
+    "Natural Ambition",
+    "Anchoring Strike"
+   ],
+   "classFeatures": [
+    "Paradox",
+    "Quantum Field",
+    "Spell Repertoire",
+    "Anchor",
+    "Witchwarper Spellcasting",
+    "Anomaly",
+    "Tangible Object"
+   ],
+   "items": [
+    "Commercial Battleglove",
+    "Comm Unit",
+    "Hypopen (Commercial)",
+    "Medpatch (Commercial)",
+    "Container (Ordinary)",
+    "Commercial Second Skin",
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "zemir",
+   "name": "Zemir",
+   "level": 3,
+   "ancestry": "Human",
+   "heritage": "Versatile Human",
+   "background": "Grifter",
+   "className": "Witchwarper",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 2,
+    "con": 1,
+    "int": 4,
+    "wis": 0,
+    "cha": 2
+   },
+   "armorClass": 18,
+   "shieldBonus": 0,
+   "fortitude": 6,
+   "reflex": 7,
+   "will": 7,
+   "perception": 5,
+   "senses": [],
+   "hitPoints": 35,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "akitonian",
+    "brethedan",
+    "castrovelian",
+    "pahtra",
+    "trinary",
+    "vesk",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 7
+    },
+    {
+     "name": "Arcana",
+     "modifier": 11
+    },
+    {
+     "name": "Athletics",
+     "modifier": 0
+    },
+    {
+     "name": "Crafting",
+     "modifier": 4
+    },
+    {
+     "name": "Deception",
+     "modifier": 7
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 7
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 7
+    },
+    {
+     "name": "Medicine",
+     "modifier": 0
+    },
+    {
+     "name": "Nature",
+     "modifier": 5
+    },
+    {
+     "name": "Occultism",
+     "modifier": 9
+    },
+    {
+     "name": "Performance",
+     "modifier": 2
+    },
+    {
+     "name": "Religion",
+     "modifier": 0
+    },
+    {
+     "name": "Society",
+     "modifier": 9
+    },
+    {
+     "name": "Stealth",
+     "modifier": 7
+    },
+    {
+     "name": "Survival",
+     "modifier": 0
+    },
+    {
+     "name": "Thievery",
+     "modifier": 2
+    },
+    {
+     "name": "Computers",
+     "modifier": 4
+    },
+    {
+     "name": "Piloting",
+     "modifier": 2
+    }
+   ],
+   "lores": [
+    {
+     "name": "Physical Science Lore",
+     "modifier": 9
+    }
+   ],
+   "classDC": 19,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 7,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Battleglove",
+     "attack": 5,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Free-Hand"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Commercial Semi-Auto Pistol",
+     "attack": 7,
+     "damage": "1d6 piercing",
+     "traits": [
+      "Analog"
+     ],
+     "ranged": true
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Arcane Spontaneous Spells",
+     "tradition": "arcane",
+     "category": "spontaneous",
+     "dc": 19,
+     "attack": 9,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Injury Echo",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Light",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Stumble",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Force Barrage",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Shifting Surge",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Thunderstrike",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Jump",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Caustic Conversion",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Dispel Magic",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Resist Energy",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Arcane Focus Spells",
+     "tradition": "arcane",
+     "category": "focus",
+     "dc": 19,
+     "attack": 9,
+     "spells": [
+      {
+       "name": "Warp Terrain",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Warp Reality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "arcane",
+      "concentrate",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field isn't active.\nYour quantum field activates and lasts as long as you Sustain it (up to 10 minutes) or until the end of your next turn. Your quantum field is a @Template[type:burst|distance:20] centered on a point you choose within 100 feet. While your quantum field is active, you can use actions that have the anchoring trait. Your quantum field's other specific effects are determined by your paradox. Choose whether any given creature in the area is affected by your quantum field when you Warp Reality, each time you Sustain it, and when a creature enters your quantum field. Each time you Sustain a quantum field with the Sustain action (instead of an anchoring action), you can move it to a new position within 100 feet.\n\nYour quantum field automatically deactivates if you're knocked out, if you Dismiss it, or if you move more than 100 feet away from it."
+    },
+    {
+     "name": "Quantum Pulse",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You roll initiative.\nYou're always ready to let loose with your paradoxical abilities, and when imperiled, you instinctively release a pulse of quantum energy. As combat begins, you Warp Reality."
+    },
+    {
+     "name": "Isolated Spell Matrix",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "anchoring",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "If the next action you use is to Cast a Spell that has a range, increase the spell's range to 100 feet. That spell only affects targets inside your quantum field, and the area of the spell doesn't extend beyond your quantum field."
+    },
+    {
+     "name": "Anchoring Strike",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "flourish",
+      "fortune",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field is active.\nBattle can be disorienting, but for you, the intense mental effort of striking your targets lends you additional clarity and focus. Make a Strike. The Strike gains the following success and critical success effects.\nCritical Success The Strike gains the anchoring trait. You can reroll the damage dice rolled for this strike, but you must use the second result, even if it's worse.\n\nSuccess The Strike gains the anchoring trait."
+    },
+    {
+     "name": "Warp Wounds",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An enemy damages you.\n\nRequirements An enemy or willing ally is in your quantum field.\nYour reality shifts to partly overlap with another in which someone else was injured in your stead. You gain resistance to all damage against the triggering attack equal to half your level, and one enemy or willing ally in your quantum field takes damage of the same type equal to the amount of damage prevented this way, with a @Check[fortitude|against:witchwarper|basic] save against your class DC."
+    }
+   ],
+   "feats": [
+    "Feather Step",
+    "Charming Liar",
+    "Natural Ambition",
+    "Anchoring Strike",
+    "Warp Wounds",
+    "Assurance (Arcana)",
+    "Fleet"
+   ],
+   "classFeatures": [
+    "Paradox",
+    "Isolated Spell Matrix",
+    "Signature Spells",
+    "Quantum Field",
+    "Spell Repertoire",
+    "Anchor",
+    "Witchwarper Spellcasting",
+    "Anomaly",
+    "Tangible Object"
+   ],
+   "items": [
+    "Commercial Battleglove",
+    "Comm Unit",
+    "Hypopen (Commercial)",
+    "Medpatch (Commercial)",
+    "Container (Ordinary)",
+    "Commercial Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Commercial Tempweave",
+    "Credstick"
+   ]
+  },
+  {
+   "key": "zemir",
+   "name": "Zemir",
+   "level": 5,
+   "ancestry": "Human",
+   "heritage": "Versatile Human",
+   "background": "Grifter",
+   "className": "Witchwarper",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 3,
+    "con": 1,
+    "int": 4,
+    "wis": 1,
+    "cha": 3
+   },
+   "armorClass": 21,
+   "shieldBonus": 0,
+   "fortitude": 8,
+   "reflex": 12,
+   "will": 10,
+   "perception": 8,
+   "senses": [],
+   "hitPoints": 53,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "akitonian",
+    "brethedan",
+    "castrovelian",
+    "pahtra",
+    "trinary",
+    "vesk",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 10
+    },
+    {
+     "name": "Arcana",
+     "modifier": 13
+    },
+    {
+     "name": "Athletics",
+     "modifier": 4
+    },
+    {
+     "name": "Crafting",
+     "modifier": 8
+    },
+    {
+     "name": "Deception",
+     "modifier": 10
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 10
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 10
+    },
+    {
+     "name": "Medicine",
+     "modifier": 5
+    },
+    {
+     "name": "Nature",
+     "modifier": 8
+    },
+    {
+     "name": "Occultism",
+     "modifier": 13
+    },
+    {
+     "name": "Performance",
+     "modifier": 7
+    },
+    {
+     "name": "Religion",
+     "modifier": 5
+    },
+    {
+     "name": "Society",
+     "modifier": 11
+    },
+    {
+     "name": "Stealth",
+     "modifier": 10
+    },
+    {
+     "name": "Survival",
+     "modifier": 5
+    },
+    {
+     "name": "Thievery",
+     "modifier": 7
+    },
+    {
+     "name": "Computers",
+     "modifier": 8
+    },
+    {
+     "name": "Piloting",
+     "modifier": 7
+    }
+   ],
+   "lores": [
+    {
+     "name": "Physical Science Lore",
+     "modifier": 11
+    }
+   ],
+   "classDC": 21,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 10,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Semi-Auto Pistol",
+     "attack": 11,
+     "damage": "2d6 piercing",
+     "traits": [
+      "Analog",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Battleglove",
+     "attack": 7,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Free-Hand"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Arcane Spontaneous Spells",
+     "tradition": "arcane",
+     "category": "spontaneous",
+     "dc": 21,
+     "attack": 11,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Injury Echo",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Light",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Stumble",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Force Barrage",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Shifting Surge",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Thunderstrike",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Jump",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Caustic Conversion",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Dispel Magic",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Resist Energy",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Cozy Crashpad",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Haste",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Lightning Bolt",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Arcane Focus Spells",
+     "tradition": "arcane",
+     "category": "focus",
+     "dc": 21,
+     "attack": 11,
+     "spells": [
+      {
+       "name": "Warp Terrain",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Warp Reality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "arcane",
+      "concentrate",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field isn't active.\nYour quantum field activates and lasts as long as you Sustain it (up to 10 minutes) or until the end of your next turn. Your quantum field is a @Template[type:burst|distance:20] centered on a point you choose within 100 feet. While your quantum field is active, you can use actions that have the anchoring trait. Your quantum field's other specific effects are determined by your paradox. Choose whether any given creature in the area is affected by your quantum field when you Warp Reality, each time you Sustain it, and when a creature enters your quantum field. Each time you Sustain a quantum field with the Sustain action (instead of an anchoring action), you can move it to a new position within 100 feet.\n\nYour quantum field automatically deactivates if you're knocked out, if you Dismiss it, or if you move more than 100 feet away from it."
+    },
+    {
+     "name": "Quantum Pulse",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You roll initiative.\nYou're always ready to let loose with your paradoxical abilities, and when imperiled, you instinctively release a pulse of quantum energy. As combat begins, you Warp Reality."
+    },
+    {
+     "name": "Isolated Spell Matrix",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "anchoring",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "If the next action you use is to Cast a Spell that has a range, increase the spell's range to 100 feet. That spell only affects targets inside your quantum field, and the area of the spell doesn't extend beyond your quantum field."
+    },
+    {
+     "name": "Anchoring Strike",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "flourish",
+      "fortune",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field is active.\nBattle can be disorienting, but for you, the intense mental effort of striking your targets lends you additional clarity and focus. Make a Strike. The Strike gains the following success and critical success effects.\nCritical Success The Strike gains the anchoring trait. You can reroll the damage dice rolled for this strike, but you must use the second result, even if it's worse.\n\nSuccess The Strike gains the anchoring trait."
+    },
+    {
+     "name": "Warp Wounds",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An enemy damages you.\n\nRequirements An enemy or willing ally is in your quantum field.\nYour reality shifts to partly overlap with another in which someone else was injured in your stead. You gain resistance to all damage against the triggering attack equal to half your level, and one enemy or willing ally in your quantum field takes damage of the same type equal to the amount of damage prevented this way, with a @Check[fortitude|against:witchwarper|basic] save against your class DC."
+    },
+    {
+     "name": "Quantum Recycle",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\n\nTrigger You cast a 2nd-rank or higher spell, and the spell targets a creature or area within your quantum field.\nYou expertly manipulate the effects of your quantum field to ensure that some of the energy from your spell is preserved and can be harnessed again. You regain an expended spell slot one spell rank lower than the triggering spell."
+    }
+   ],
+   "feats": [
+    "Feather Step",
+    "Charming Liar",
+    "Natural Ambition",
+    "Anchoring Strike",
+    "Warp Wounds",
+    "Assurance (Arcana)",
+    "Fleet",
+    "Clever Improviser",
+    "Untrained Improvisation",
+    "Quantum Recycle",
+    "Favored Disguise"
+   ],
+   "classFeatures": [
+    "Paradox",
+    "Isolated Spell Matrix",
+    "Signature Spells",
+    "Reflex Expertise",
+    "Quantum Field",
+    "Spell Repertoire",
+    "Anchor",
+    "Witchwarper Spellcasting",
+    "Anomaly",
+    "Tangible Object"
+   ],
+   "items": [
+    "Commercial Battleglove",
+    "Comm Unit",
+    "Container (Ordinary)",
+    "Advanced Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Commercial Tempweave",
+    "Credstick",
+    "Hypopen (Tactical)",
+    "Medpatch (Tactical)",
+    "Spell Gem of Invisibility (Rank 2)",
+    "Spell Gem of Personal Gravity (Rank 3)",
+    "Spell Gem of Translate (Rank 3)"
+   ]
+  },
+  {
+   "key": "zemir",
+   "name": "Zemir",
+   "level": 7,
+   "ancestry": "Human",
+   "heritage": "Versatile Human",
+   "background": "Grifter",
+   "className": "Witchwarper",
+   "size": "med",
+   "traits": [
+    "human",
+    "humanoid"
+   ],
+   "attributes": {
+    "str": 0,
+    "dex": 3,
+    "con": 1,
+    "int": 4,
+    "wis": 1,
+    "cha": 3
+   },
+   "armorClass": 24,
+   "shieldBonus": 0,
+   "fortitude": 10,
+   "reflex": 14,
+   "will": 12,
+   "perception": 10,
+   "senses": [],
+   "hitPoints": 71,
+   "speeds": [
+    {
+     "type": "land",
+     "feet": 30
+    }
+   ],
+   "languages": [
+    "akitonian",
+    "brethedan",
+    "castrovelian",
+    "pahtra",
+    "trinary",
+    "vesk",
+    "common"
+   ],
+   "skills": [
+    {
+     "name": "Acrobatics",
+     "modifier": 12
+    },
+    {
+     "name": "Arcana",
+     "modifier": 15
+    },
+    {
+     "name": "Athletics",
+     "modifier": 7
+    },
+    {
+     "name": "Crafting",
+     "modifier": 11
+    },
+    {
+     "name": "Deception",
+     "modifier": 12
+    },
+    {
+     "name": "Diplomacy",
+     "modifier": 12
+    },
+    {
+     "name": "Intimidation",
+     "modifier": 12
+    },
+    {
+     "name": "Medicine",
+     "modifier": 8
+    },
+    {
+     "name": "Nature",
+     "modifier": 10
+    },
+    {
+     "name": "Occultism",
+     "modifier": 15
+    },
+    {
+     "name": "Performance",
+     "modifier": 10
+    },
+    {
+     "name": "Religion",
+     "modifier": 8
+    },
+    {
+     "name": "Society",
+     "modifier": 13
+    },
+    {
+     "name": "Stealth",
+     "modifier": 12
+    },
+    {
+     "name": "Survival",
+     "modifier": 8
+    },
+    {
+     "name": "Thievery",
+     "modifier": 10
+    },
+    {
+     "name": "Computers",
+     "modifier": 11
+    },
+    {
+     "name": "Piloting",
+     "modifier": 10
+    }
+   ],
+   "lores": [
+    {
+     "name": "Physical Science Lore",
+     "modifier": 13
+    },
+    {
+     "name": "First Ones Lore",
+     "modifier": 13
+    }
+   ],
+   "classDC": 25,
+   "strikes": [
+    {
+     "name": "Unarmed Attack",
+     "attack": 12,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Finesse",
+      "Nonlethal",
+      "Unarmed"
+     ],
+     "ranged": false
+    },
+    {
+     "name": "Advanced Semi-Auto Pistol",
+     "attack": 13,
+     "damage": "2d6 piercing",
+     "traits": [
+      "Analog",
+      "Tracking +1"
+     ],
+     "ranged": true
+    },
+    {
+     "name": "Commercial Battleglove",
+     "attack": 9,
+     "damage": "1d4 bludgeoning",
+     "traits": [
+      "Agile",
+      "Analog",
+      "Free-Hand"
+     ],
+     "ranged": false
+    }
+   ],
+   "spellcasting": [
+    {
+     "name": "Arcane Spontaneous Spells",
+     "tradition": "arcane",
+     "category": "spontaneous",
+     "dc": 25,
+     "attack": 15,
+     "spells": [
+      {
+       "name": "Detect Magic",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Figment",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Injury Echo",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Light",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Stumble",
+       "rank": 0,
+       "isCantrip": true,
+       "isFocus": false
+      },
+      {
+       "name": "Force Barrage",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Shifting Surge",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Thunderstrike",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Jump",
+       "rank": 1,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Caustic Conversion",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Dispel Magic",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Resist Energy",
+       "rank": 2,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Cozy Crashpad",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Haste",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Lightning Bolt",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Void Whispers",
+       "rank": 3,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Fly",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Translocate",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": false
+      },
+      {
+       "name": "Unfettered Movement",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": false
+      }
+     ]
+    },
+    {
+     "name": "Arcane Focus Spells",
+     "tradition": "arcane",
+     "category": "focus",
+     "dc": 25,
+     "attack": 15,
+     "spells": [
+      {
+       "name": "Warp Terrain",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": true
+      },
+      {
+       "name": "Warp Probability",
+       "rank": 4,
+       "isCantrip": false,
+       "isFocus": true
+      }
+     ]
+    }
+   ],
+   "abilities": [
+    {
+     "name": "Warp Reality",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "arcane",
+      "concentrate",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field isn't active.\nYour quantum field activates and lasts as long as you Sustain it (up to 10 minutes) or until the end of your next turn. Your quantum field is a @Template[type:burst|distance:20] centered on a point you choose within 100 feet. While your quantum field is active, you can use actions that have the anchoring trait. Your quantum field's other specific effects are determined by your paradox. Choose whether any given creature in the area is affected by your quantum field when you Warp Reality, each time you Sustain it, and when a creature enters your quantum field. Each time you Sustain a quantum field with the Sustain action (instead of an anchoring action), you can move it to a new position within 100 feet.\n\nYour quantum field automatically deactivates if you're knocked out, if you Dismiss it, or if you move more than 100 feet away from it."
+    },
+    {
+     "name": "Quantum Pulse",
+     "actionType": "free",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger You roll initiative.\nYou're always ready to let loose with your paradoxical abilities, and when imperiled, you instinctively release a pulse of quantum energy. As combat begins, you Warp Reality."
+    },
+    {
+     "name": "Isolated Spell Matrix",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "anchoring",
+      "spellshape"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "If the next action you use is to Cast a Spell that has a range, increase the spell's range to 100 feet. That spell only affects targets inside your quantum field, and the area of the spell doesn't extend beyond your quantum field."
+    },
+    {
+     "name": "Anchoring Strike",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "flourish",
+      "fortune",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Requirements Your quantum field is active.\nBattle can be disorienting, but for you, the intense mental effort of striking your targets lends you additional clarity and focus. Make a Strike. The Strike gains the following success and critical success effects.\nCritical Success The Strike gains the anchoring trait. You can reroll the damage dice rolled for this strike, but you must use the second result, even if it's worse.\n\nSuccess The Strike gains the anchoring trait."
+    },
+    {
+     "name": "Warp Wounds",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Trigger An enemy damages you.\n\nRequirements An enemy or willing ally is in your quantum field.\nYour reality shifts to partly overlap with another in which someone else was injured in your stead. You gain resistance to all damage against the triggering attack equal to half your level, and one enemy or willing ally in your quantum field takes damage of the same type equal to the amount of damage prevented this way, with a @Check[fortitude|against:witchwarper|basic] save against your class DC."
+    },
+    {
+     "name": "Quantum Recycle",
+     "actionType": "reaction",
+     "actions": null,
+     "traits": [
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "1/day",
+     "text": "Frequency once per day\n\nTrigger You cast a 2nd-rank or higher spell, and the spell targets a creature or area within your quantum field.\nYou expertly manipulate the effects of your quantum field to ensure that some of the energy from your spell is preserved and can be harnessed again. You regain an expended spell slot one spell rank lower than the triggering spell."
+    },
+    {
+     "name": "Enlarge Quantum Field",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "anchoring",
+      "concentrate",
+      "witchwarper"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "Your quantum field slowly encroaches on reality. Increase your quantum field's radius by 10 feet. Until your quantum field deactivates, once per turn when you Sustain the quantum field, increase its radius by an additional 5 feet (to a maximum of 50 additional feet)."
+    },
+    {
+     "name": "Trick Magic Item",
+     "actionType": "action",
+     "actions": 1,
+     "traits": [
+      "general",
+      "manipulate",
+      "skill"
+     ],
+     "trigger": "",
+     "frequency": "",
+     "text": "You examine a magic item you normally couldn't use in an effort to fool it and activate it temporarily. For example, this might allow a soldier to cast a spell from a spell gem or spellchip or allow a mystic to cast a spell that's not on their connection's tradition list using a spell gem. You must know what activating the item does, or you can't attempt to trick it.\n\nAttempt a check using the skill matching the item's magic tradition, or matching a tradition that has the spell on its list, if you're trying to cast a spell from the item. The relevant skills are Arcana for arcane, Nature for primal, Occultism for occult, Religion for divine, or any of the four for an item that has the magical trait and not a tradition trait. The GM determines the DC based on the item's level (possibly adjusted depending on the item or situation).\n\nIf you activate a magic item that requires a spell attack modifier or spell DC and you don't have proficiency in the relevant statistic, use your level as your proficiency bonus and the highest of your Intelligence, Wisdom, or Charisma modifiers. If you're a master in the appropriate skill for the item's tradition, you instead use the trained proficiency bonus; if you're legendary, you instead use the expert proficiency bonus.\nSuccess For the rest of the current turn, you can spend actions to activate the item as if you could normally use it.\n\nFailure You can't use the item or try to trick it again this turn, but you can try again on subsequent turns.\n\nCritical Failure You can't use the item, and you can't try to trick it again until your next daily preparations."
+    }
+   ],
+   "feats": [
+    "Feather Step",
+    "Charming Liar",
+    "Natural Ambition",
+    "Anchoring Strike",
+    "Warp Wounds",
+    "Assurance (Arcana)",
+    "Fleet",
+    "Clever Improviser",
+    "Untrained Improvisation",
+    "Quantum Recycle",
+    "Favored Disguise",
+    "Enlarge Quantum Field",
+    "Additional Lore",
+    "Trick Magic Item"
+   ],
+   "classFeatures": [
+    "Paradox",
+    "Isolated Spell Matrix",
+    "Signature Spells",
+    "Reflex Expertise",
+    "Expert Spellcaster",
+    "Quantum Field",
+    "Spell Repertoire",
+    "Anchor",
+    "Witchwarper Spellcasting",
+    "Anomaly",
+    "Tangible Object"
+   ],
+   "items": [
+    "Commercial Battleglove",
+    "Comm Unit",
+    "Container (Ordinary)",
+    "Advanced Semi-Auto Pistol",
+    "Projectile Ammo",
+    "Tactical Tempweave",
+    "Credstick",
+    "Hypopen (Tactical)",
+    "Medpatch (Tactical)",
+    "Spell Gem of Invisibility (Rank 2)",
+    "Spell Gem of Personal Gravity (Rank 3)",
+    "Spell Gem of Translate (Rank 3)"
+   ]
+  }
+ ]
+}

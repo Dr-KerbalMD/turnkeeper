@@ -59,6 +59,14 @@ cp "$PF2E_REPO/static/licenses/OpenGameLicense.md" "Generated/Licenses/Open Game
 cp "$PF2E_REPO/static/licenses/ORCLicense.md" "Generated/Licenses/ORC License.md"
 cp Resources/ConditionIcons/CREDITS.md "Generated/Licenses/Condition Icons.md"
 
+echo "Copying the Table Buddies' pregens..."
+# Exported from Foundry by scripts/foundry/export-pregens.js, since only a running world works out their numbers.
+rm -rf Generated/Pregens
+mkdir -p Generated/Pregens
+cp Resources/Pregens/*-pregens.json Generated/Pregens/
+# Their portraits, from Paizo's Community Use Package (scripts/extract-pregen-art.sh).
+cp -R Resources/Pregens/Art Generated/Pregens/Art
+
 echo "Importing the bestiary from $PF2E_REPO..."
 swift build -c release --product BestiaryImport
 "$(swift build -c release --show-bin-path)/BestiaryImport" --pf2e "$PF2E_REPO" --out Generated --config .

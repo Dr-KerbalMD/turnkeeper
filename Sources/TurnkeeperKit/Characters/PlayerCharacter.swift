@@ -5,6 +5,8 @@ import Foundation
 public struct CharacterLink: Codable, Sendable, Hashable {
     public enum Source: String, Codable, Sendable {
         case demiplane
+        /// An iconic pregen (a Table Buddy); the character ID is its key, such as `ezren`.
+        case pregen
     }
 
     public var source: Source

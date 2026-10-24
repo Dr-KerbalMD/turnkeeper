@@ -137,16 +137,28 @@ private struct ScenarioGrid: View {
 struct ChallengePointsLine: View {
     let scenario: Scenario?
     let party: Party?
+    @Environment(AppModel.self) private var model
 
     var body: some View {
         if let scenario, let party, let scheme = scenario.pointScheme {
-            if let pick = scenario.difficulty(for: party) {
+            let counted = model.countingTableBuddies(party, in: scenario)
+            if let pick = scenario.difficulty(for: counted) {
                 LabeledContent(scheme == .challengePoints ? "Challenge points" : "Party points",
-                               value: pick.pointsText + (pick.label.map { " → \($0)" } ?? ""))
+                               value: pick.pointsText + buddies(counted) + (pick.label.map { " → \($0)" } ?? ""))
+                if !party.presentTableBuddies.isEmpty && counted.presentTableBuddies.isEmpty {
+                    Text("The Guide adds no pregens to adventures for level 7 and up, so Table Buddies aren't counted.")
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
             } else {
                 Text("Set the scenario's levels (such as 3–6) to work out challenge points.")
                     .font(.footnote).foregroundStyle(.secondary)
             }
         }
+    }
+
+    /// " (Ezren at level 3)" when Table Buddies count.
+    private func buddies(_ party: Party) -> String {
+        let names = party.presentTableBuddies.map { "\($0.name) at level \($0.level ?? party.level)" }
+        return names.isEmpty ? "" : " (\(names.joined(separator: ", ")))"
     }
 }

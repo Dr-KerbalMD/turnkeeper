@@ -10,7 +10,7 @@ A SwiftPM package with a thin iPad Xcode project, following the Scrollkeeper pat
 | `Sources/Turnkeeper` | Mac app entry point. |
 | `Sources/FoundryImport` | Library that parses Foundry documents, converts rules text and matches art. |
 | `Sources/BestiaryImport` | CLI around FoundryImport that writes `Generated/`. |
-| `Sources/CharacterImport` | Demiplane character import: links and QR codes, the sheet PDF reader and the client. |
+| `Sources/CharacterImport` | Demiplane character import (links and QR codes, the sheet PDF reader, the client) and the Table Buddies' pregen catalog. |
 | `ios/Turnkeeper.xcodeproj` | iPad app. It references the package as `..` and bundles `Generated/` as a folder reference. |
 | `scripts/extract_pdf_art.py`, `scripts/pdfart/` | PyMuPDF extractor for token, pawn and card art from the Paizo PDFs, run in the project `.venv`. |
 | `Generated/` | Import output, gitignored and bundled into both apps. |
@@ -231,6 +231,15 @@ Ported from the pf2e system, with tests.
   same sheet as before) or `updated` with the changes a GM cares about (level, AC, saves, Perception, class DC,
   then skills, Strikes, spells, feats and items). The status message reports it. The party row shows progress
   while its refresh runs.
+- **Table Buddies.** `scripts/foundry/export-pregens.js` is a Foundry macro. Run in a pf2e and an sf2e world,
+  it exports each iconic at each level with the numbers Foundry works out (the compendium stores only how
+  they're built) to `Resources/Pregens/<system>-pregens.json`. `scripts/extract-pregen-art.sh` takes their
+  portraits from Paizo's Community Use pregen PDFs into `Resources/Pregens/Art`. `make bestiary` copies both
+  into `Generated/Pregens`. `PregenCatalog` (CharacterImport) reads them, leaving out companions (`minion`),
+  and `PregenSheetReader` turns a sheet into a character `Creature`. A Table Buddy is a member whose link
+  source is `.pregen`, with the pregen's key as the character ID. `PregenLevel` and
+  `Party.settlingTableBuddies` (TurnkeeperKit) apply the Guide's table. The challenge points line counts a
+  settled copy of the party, and `startNewCombat` saves the settled party so the cards match the fight.
 - **Glossary links.** `CharacterGlossaryLinker` fills the sheet's `LinkTable` by name through
   `BestiaryStore.glossaryID`, falling back to Pathfinder names for Starfinder characters (Starfinder 2e
   shares the Player Core ancestries and feats); action text is replaced by the linked entry's rules text when there is one.
