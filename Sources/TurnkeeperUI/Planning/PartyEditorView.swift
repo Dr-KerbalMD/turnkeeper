@@ -25,12 +25,14 @@ struct PartyEditorView: View {
                                 .nameEntry()
                                 .font(.title3.bold())
                                 .foregroundStyle(member.isAway ? .secondary : .primary)
+                            // Named, not just an icon, so it reads as the way to bench a player.
                             Toggle(isOn: awayBinding(member.id)) {
-                                Label("Away", systemImage: member.isAway ? "moon.zzz.fill" : "person.fill.checkmark")
+                                Label(member.isAway ? "Away" : "At Table",
+                                      systemImage: member.isAway ? "moon.zzz.fill" : "person.fill.checkmark")
                             }
                             .toggleStyle(.button)
                             .buttonStyle(.borderless)
-                            .labelStyle(.iconOnly)
+                            .labelStyle(.titleAndIcon)
                             .fixedSize()
                             .help(member.isAway ? "Away: not in budgets; waits on the bench in fights"
                                                 : "At the table")
