@@ -122,6 +122,11 @@ ladder, and the right half is the notes side, which shows the battle card of the
   recognized, never names, on the device where it can (else Apple's recognizer). While listening, the
   creature's modifiers are shown large. After Begin combat, nothing listens and strips are dragged to
   reorder.
+- R4.3a The initiative pad has Roll and Set for the tapped strip, and Roll All and Set All when more than
+  one creature of the same type is on the ladder. All means the same creature on the same side, whatever
+  its template; the bench and player characters are never included. Roll All uses one die and the tapped
+  creature's modifier, so the group shares the total. All four work in Setup and during a fight, where the
+  ladder re-sorts without changing whose turn it is.
 - R4.4 Tiles show the name, initiative, HP and conditions, and a creature's or hazard's AC with its template
   and conditions applied (in yellow when they change it). Tiles are colored like magnets: red for
   enemies, blue for PCs, green for NPCs, gray for hazards.

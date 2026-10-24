@@ -82,7 +82,8 @@ struct HitPointsPad: View {
     }
 }
 
-/// Sets a combatant's initiative, with a half for breaking ties.
+/// Sets a combatant's initiative, with a half for breaking ties. When other strips share its creature type,
+/// the All buttons give the whole group one total: Set All from the keypad, Roll All from a single die.
 struct InitiativePad: View {
     let controller: BoardController
     let id: UUID
@@ -90,35 +91,87 @@ struct InitiativePad: View {
     @State private var digits = ""
     @State private var addHalf = false
 
+    private var combatant: Combatant? { controller.state[id] }
+    /// The strips the All buttons act on, this one included.
+    private var group: [Combatant] { controller.initiativeGroup(of: id) }
+    private var isGroup: Bool { group.count > 1 }
+    private var canRoll: Bool { combatant?.kind != .playerCharacter }
+    private var value: Double { Double(Int(digits) ?? 0) + (addHalf ? 0.5 : 0) }
+
     var body: some View {
         VStack(spacing: 14) {
-            Text(controller.state[id]?.name ?? "").font(.title2.bold())
-            if let combatant = controller.state[id] {
+            Text(combatant?.name ?? "").font(.title2.bold())
+            if let combatant {
                 InitiativeSkillsView(skills: controller.initiativeSkills(for: combatant))
             }
             NumberPad(digits: $digits)
             Toggle("Add ½ to go after a tie", isOn: $addHalf)
-            HStack {
-                if controller.state[id]?.kind != .playerCharacter {
-                    Button("Roll") { set(controller.rollInitiative(for: controller.state[id])) }
-                        .frame(maxWidth: .infinity)
-                }
-                Button("Set") { set(Double(Int(digits) ?? 0) + (addHalf ? 0.5 : 0)) }
+            buttons
+            if isGroup {
+                Text("\(group.count) × \(typeName)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(24)
+        .frame(minWidth: 420)
+    }
+
+    /// Roll and Set for this strip, and Roll All and Set All when the creature type has more than one.
+    /// All four are filled, since a bordered button reads as plain text on the pad's light sheet.
+    private var buttons: some View {
+        HStack(spacing: 8) {
+            if canRoll {
+                Button("Roll") { set(controller.rollInitiative(for: combatant)) }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.gray)
+                    .frame(maxWidth: .infinity)
+            }
+            if canRoll && isGroup {
+                // One die for the group, so every creature of the type shares the total.
+                Button("Roll All") { setGroup(controller.rollInitiative(for: combatant)) }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.gray)
+                    .frame(maxWidth: .infinity)
+            }
+            Button("Set") { set(value) }
+                .buttonStyle(.borderedProminent)
+                .frame(maxWidth: .infinity)
+                .disabled(digits.isEmpty)
+            if isGroup {
+                Button("Set All") { setGroup(value) }
                     .buttonStyle(.borderedProminent)
                     .frame(maxWidth: .infinity)
                     .disabled(digits.isEmpty)
             }
         }
-        .padding(24)
-        .frame(minWidth: 340)
+        .controlSize(.large)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
     }
 
-    private func set(_ value: Double) {
+    /// The creature's name as the group shares it, without the strip's number.
+    private var typeName: String {
+        guard let combatant else { return "" }
+        if let name = controller.creature(for: combatant)?.name, !name.isEmpty { return name }
+        return combatant.name.replacingOccurrences(of: #" \d+$"#, with: "", options: .regularExpression)
+    }
+
+    private func set(_ value: Double) { apply { $0.setInitiative(value, for: id) } }
+
+    private func setGroup(_ value: Double) { apply { $0.setInitiative(value, forGroupOf: id) } }
+
+    /// Applies an initiative change, bringing a benched strip in first, and keeps the turn in a fight.
+    private func apply(_ edit: (inout CombatState) -> Void) {
         controller.change { state in
             if state[id]?.place == .bench { state.bringIn(id) }
-            state.setInitiative(value, for: id)
+            edit(&state)
             if state.phase == .active { state.sortByInitiativeKeepingCurrent() }
         }
+        finish()
+    }
+
+    private func finish() {
         controller.highlightsMissingInitiative = !controller.state.combatantsWithoutInitiative.isEmpty
             && controller.highlightsMissingInitiative
         dismiss()

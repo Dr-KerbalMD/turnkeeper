@@ -103,6 +103,27 @@ public struct CombatState: Codable, Sendable, Hashable {
         if phase == .setup { sortByInitiative() }
     }
 
+    /// The combatants that can share `id`'s initiative: the same creature on the same side, on the ladder.
+    /// Templates and conditions may differ, so the group is by creature rather than by stat block. Players
+    /// have a key of their own, and the bench joins the fight with its own number, so neither is included.
+    public func initiativeGroup(of id: UUID) -> [Combatant] {
+        guard let reference = self[id], reference.place == .ladder,
+              reference.kind != .playerCharacter, !reference.creatureKey.isEmpty else { return [] }
+        return ladder.filter {
+            $0.kind != .playerCharacter && $0.side == reference.side
+                && $0.creatureKey == reference.creatureKey
+        }
+    }
+
+    /// Sets one rolled total for every creature of the same type, as when the GM groups them. Setup sorts
+    /// once; in a fight the board keeps whose turn it is.
+    public mutating func setInitiative(_ value: Double, forGroupOf id: UUID) {
+        for member in initiativeGroup(of: id) {
+            self[member.id]?.initiative = value
+        }
+        if phase == .setup { sortByInitiative() }
+    }
+
     /// Highest initiative first. On a tie enemies act before the party, as the rules say; otherwise
     /// the existing order is kept.
     public mutating func sortByInitiative() {

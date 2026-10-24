@@ -48,6 +48,50 @@ final class InitiativeUITests: XCTestCase {
         XCTAssertTrue(waitUntil { status.label == "Next: \(second)" })
     }
 
+    /// Set All and Roll All give the whole creature type one total: the keypad's, and one die's.
+    func testGroupButtonsGiveEveryGoblinOneInitiative() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--demo", "setup"]
+        app.launch()
+        let tile = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label CONTAINS 'Goblin Warrior 1'")).firstMatch
+        XCTAssertTrue(tile.waitForExistence(timeout: 10))
+        tile.press(forDuration: 1)
+        let initiative = app.buttons["Initiative…"]
+        XCTAssertTrue(initiative.waitForExistence(timeout: 5))
+        initiative.tap()
+
+        XCTAssertTrue(app.staticTexts["3 × Goblin Warrior"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Roll All"].exists)
+        app.buttons["1"].tap()
+        app.buttons["8"].tap()
+        app.buttons["Set All"].tap()
+
+        let set = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label BEGINSWITH '18' AND label CONTAINS 'Goblin Warrior'"))
+        XCTAssertTrue(waitUntil { set.count == 3 }, "\(set.count) goblins show 18")
+
+        // Roll All rolls one die and copies it, so the group still shares a single total.
+        XCTAssertTrue(waitUntil { !app.buttons["Set All"].exists })
+        tile.press(forDuration: 1)
+        XCTAssertTrue(initiative.waitForExistence(timeout: 5))
+        initiative.tap()
+        XCTAssertTrue(app.buttons["Roll All"].waitForExistence(timeout: 5))
+        app.buttons["Roll All"].tap()
+        XCTAssertTrue(waitUntil { !app.buttons["Roll All"].exists })
+
+        let rolled = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label MATCHES %@", "^[0-9].*Goblin Warrior.*"))
+        XCTAssertTrue(waitUntil { rolled.count == 3 }, "\(rolled.count) goblins on the ladder")
+        let totals = (0..<rolled.count).map { leadingInitiative(rolled.element(boundBy: $0).label) }
+        XCTAssertEqual(Set(totals).count, 1, "goblins rolled \(totals)")
+    }
+
+    /// The initiative at the front of a tile's combined accessibility label.
+    private func leadingInitiative(_ label: String) -> String {
+        String(label.prefix { $0.isNumber })
+    }
+
     private func hold(_ element: XCUIElement, app: XCUIApplication) {
         let target = element.exists ? element : app.descendants(matching: .any)["Hold to Say Initiative"].firstMatch
         XCTAssertTrue(target.waitForExistence(timeout: 5))

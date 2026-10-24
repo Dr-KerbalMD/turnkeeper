@@ -197,6 +197,9 @@ final class BoardController {
         return CombatSetup.rollInitiative(modifier: modifier, using: &generator)
     }
 
+    /// The strips that share a creature type with `id`, for the initiative pad's Roll All and Set All.
+    func initiativeGroup(of id: UUID) -> [Combatant] { state.initiativeGroup(of: id) }
+
     /// Brings a benched combatant onto the ladder without an initiative, for the GM to enter one.
     func bringInFromBench(_ id: UUID) {
         change { $0.bringIn(id) }
