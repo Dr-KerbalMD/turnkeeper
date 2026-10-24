@@ -122,6 +122,19 @@ struct DemiplaneSheetReaderTests {
         }
     }
 
+    @Test("A sheet Demiplane exported without its numbers is refused; one with any modifier is read")
+    func missingNumbers() throws {
+        let blank = SheetFields(values: ["character_name": "Mandor Arbol", "armor_class": "10", "strength": "+0",
+                                         "perception": "+0", "acrobatics": "+0", "class": "Witchwarper"])
+        #expect {
+            try DemiplaneSheetReader.checkNumbers(blank)
+        } throws: { error in
+            (error as? CharacterImportError)?.errorDescription?.contains("Mandor Arbol's sheet without") == true
+        }
+        try DemiplaneSheetReader.checkNumbers(SheetFields(values: ["perception": "+4"]))
+        try DemiplaneSheetReader.checkNumbers(SheetFields(values: ["charisma": "-1"]))
+    }
+
     @Test("Trait words become Foundry-style slugs, without repeats or covered bare traits")
     func traitSlugs() {
         #expect(TraitSlugs.slugs(["Deadly d8", "disarm", "deadly", "versatile P", "versatile", "disarm"])

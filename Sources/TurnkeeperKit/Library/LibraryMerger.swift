@@ -17,13 +17,14 @@ public struct MergeSummary: Sendable, Equatable {
 ///
 /// - When only one side changed a record since they last shared it, that change wins.
 /// - When both sides changed it, the newer change wins. For scenarios and encounters the other version
-///   is kept as a "conflict copy", so no planning is lost silently.
+///   is kept as a "conflict copy", so no planning is lost silently. For parties, each member keeps the
+///   sheet fetched last, so a refresh on one device survives an edit on the other.
 /// - Deletions are tombstones, so they carry across like any other change.
 public enum LibraryMerger {
     public static func merge(_ incoming: Library, into local: inout Library) -> MergeSummary {
         var summary = MergeSummary()
         merge(incoming.campaigns, into: &local.campaigns, summary: &summary)
-        merge(incoming.parties, into: &local.parties, summary: &summary)
+        merge(incoming.parties, into: &local.parties, summary: &summary, combine: combinedParty)
         merge(incoming.scenarios, into: &local.scenarios, summary: &summary, copy: conflictCopy)
         merge(incoming.encounters, into: &local.encounters, summary: &summary, copy: conflictCopy)
         merge(incoming.sessions, into: &local.sessions, summary: &summary)
@@ -36,7 +37,7 @@ public enum LibraryMerger {
 
     private static func merge<Record: LibraryRecord>(
         _ incoming: [Record], into local: inout [Record], summary: inout MergeSummary,
-        copy: ((Record) -> Record)? = nil
+        copy: ((Record) -> Record)? = nil, combine: ((_ newer: Record, _ older: Record) -> Record)? = nil
     ) {
         for theirs in incoming {
             guard let index = local.firstIndex(where: { $0.id == theirs.id }) else {
@@ -49,7 +50,13 @@ public enum LibraryMerger {
             let oursUnchanged = theirs.sharedVersion == ours.modifiedAt
             let theirsUnchanged = ours.sharedVersion == theirs.modifiedAt
             let theirsWins = oursUnchanged || (!theirsUnchanged && theirs.modifiedAt > ours.modifiedAt)
-            if !oursUnchanged && !theirsUnchanged, let copy, !theirs.isDeleted, !ours.isDeleted {
+            let bothChanged = !oursUnchanged && !theirsUnchanged && !theirs.isDeleted && !ours.isDeleted
+            if bothChanged, let combine {
+                local[index] = shared(theirsWins ? combine(theirs, ours) : combine(ours, theirs))
+                summary.updated += 1
+                continue
+            }
+            if bothChanged, let copy {
                 local.append(copy(theirsWins ? ours : theirs))
                 summary.conflicts += 1
             }
@@ -64,6 +71,13 @@ public enum LibraryMerger {
         var received = record
         received.sharedVersion = record.modifiedAt
         return received
+    }
+
+    /// The newer party, with each member's sheet from whichever side fetched it last.
+    private static func combinedParty(_ newer: Party, _ older: Party) -> Party {
+        var party = newer
+        party.keepNewerSheets(from: older)
+        return party
     }
 
     private static func conflictCopy(_ scenario: Scenario) -> Scenario {
