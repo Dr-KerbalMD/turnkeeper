@@ -18,7 +18,7 @@ extension AppModel {
     /// Re-imports a linked member's sheet, keeping its name and the GM's max HP, and says what changed.
     func refreshFromDemiplane(memberID: UUID, partyID: UUID) async {
         guard let member = party(partyID)?.members.first(where: { $0.id == memberID }) else { return }
-        guard let link = member.link else {
+        guard let link = member.link, link.source == .demiplane else {
             statusMessage = "\(member.name) isn't linked to Demiplane."
             return
         }

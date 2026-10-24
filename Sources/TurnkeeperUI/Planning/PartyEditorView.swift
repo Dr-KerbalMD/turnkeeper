@@ -7,6 +7,7 @@ struct PartyEditorView: View {
     let party: Party
     @Environment(AppModel.self) private var model
     @State private var demiplaneTarget: DemiplaneTarget?
+    @State private var isPickingTableBuddy = false
 
     var body: some View {
         Form {
@@ -37,7 +38,13 @@ struct PartyEditorView: View {
                             .help(member.isAway ? "Away: not in budgets; waits on the bench in fights"
                                                 : "At the table")
                         }
-                        Stepper("Level \(member.level ?? party.level)", value: levelBinding(member.id), in: 1...20)
+                        if member.isTableBuddy {
+                            LabeledContent("Level \(member.level ?? party.level)",
+                                           value: "set by the scenario's challenge points")
+                        } else {
+                            Stepper("Level \(member.level ?? party.level)", value: levelBinding(member.id),
+                                    in: 1...20)
+                        }
                         MemberPlayerRow(playerName: memberBinding(member.id, \.playerName),
                                         notes: memberBinding(member.id, \.notes))
                         MemberLinkRow(member: member, partyID: party.id) {
@@ -54,6 +61,10 @@ struct PartyEditorView: View {
                 Button("Add from Demiplane…", systemImage: "person.crop.rectangle.badge.plus") {
                     demiplaneTarget = DemiplaneTarget(memberID: nil)
                 }
+                if !model.tableBuddyChoices.isEmpty {
+                    Button("Add Table Buddy…", systemImage: "person.2.badge.plus") { isPickingTableBuddy = true }
+                        .help("Add an iconic pregen to fill out a small table")
+                }
             }
             Section {
                 Text("\(party.presentMembers.count) of \(party.members.count) at the table: budgets are worked out "
@@ -63,6 +74,7 @@ struct PartyEditorView: View {
         }
         .formStyle(.grouped)
         .navigationTitle(party.name)
+        .sheet(isPresented: $isPickingTableBuddy) { TableBuddyPicker(partyID: party.id) }
         .sheet(item: $demiplaneTarget) { target in
             DemiplaneImportSheet(partyID: party.id, memberID: target.memberID)
         }
