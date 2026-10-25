@@ -3,13 +3,17 @@ import Foundation
 
 /// A record that can be shared between devices: it has a stable ID, the time it last changed, and a
 /// tombstone instead of being removed, so a deletion on one device reaches the other.
-public protocol LibraryRecord: Codable, Sendable, Identifiable where ID == UUID {
+public protocol LibraryRecord: Codable, Sendable, Identifiable, Equatable where ID == UUID {
     var id: UUID { get }
     var modifiedAt: Date { get set }
     var deletedAt: Date? { get set }
-    /// The `modifiedAt` of the version last shared with another device, so a merge can tell an update
-    /// made on one side from edits made on both.
+    /// The `modifiedAt` of the version last received from another device. Kept for libraries and devices
+    /// from before `sharedVersions`.
     var sharedVersion: Date? { get set }
+    /// The `modifiedAt` of each recent version this record has sent to or received from another device, so a
+    /// merge can tell an older version of the same record from an edit made on the other side. Nil in
+    /// libraries saved before it was kept.
+    var sharedVersions: [Date]? { get set }
 }
 
 public extension LibraryRecord {
@@ -24,6 +28,7 @@ public struct Campaign: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(name: String, game: Game) {
         self.name = name
@@ -44,6 +49,7 @@ public struct Party: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(campaignID: UUID, name: String, level: Int, members: [PartyMember] = []) {
         self.campaignID = campaignID
@@ -53,7 +59,7 @@ public struct Party: LibraryRecord, Hashable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, campaignID, name, level, members, removedMembers, modifiedAt, deletedAt, sharedVersion
+        case id, campaignID, name, level, members, removedMembers, modifiedAt, deletedAt, sharedVersion, sharedVersions
     }
 
     /// Libraries saved before removals were recorded have none.
@@ -68,6 +74,7 @@ public struct Party: LibraryRecord, Hashable {
         modifiedAt = try container.decode(Date.self, forKey: .modifiedAt)
         deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
         sharedVersion = try container.decodeIfPresent(Date.self, forKey: .sharedVersion)
+        sharedVersions = try container.decodeIfPresent([Date].self, forKey: .sharedVersions)
     }
 
     /// The players at the table this session, which is what encounter budgets are worked out for.
@@ -132,12 +139,14 @@ public struct Scenario: LibraryRecord, Hashable {
     public var levelRange = ""
     /// Difficulty labels, such as "10–12 CP" and "16–18 CP", or "Easier", "Base" and "Harder".
     public var variantLabels: [String]
-    /// The variant last run, offered first next time.
+    /// The variant last run, as saved by older versions. The last fight's session says it now, so starting a
+    /// fight doesn't edit the scenario (see `Library.lastRunVariantLabel(in:)`).
     public var lastVariantLabel = ""
     public var sortIndex = 0
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(campaignID: UUID, name: String, variantLabels: [String] = VariantScheme.single.labels) {
         self.campaignID = campaignID
@@ -146,12 +155,12 @@ public struct Scenario: LibraryRecord, Hashable {
     }
 
     /// The difficulty an encounter opens at, when the party's challenge points pick none: Base for a new
-    /// encounter (nothing planned yet), else the one last run, else Base, else the first.
-    public func startingVariantLabel(for encounter: Encounter) -> String {
+    /// encounter (nothing planned yet), else `lastRun`, else Base, else the first.
+    public func startingVariantLabel(for encounter: Encounter, lastRun: String) -> String {
         let base = variantLabels.contains(VariantScheme.baseLabel) ? VariantScheme.baseLabel : variantLabels[0]
         let isNew = encounter.variants.allSatisfy { $0.slots.isEmpty && $0.events.isEmpty }
-        guard !isNew, variantLabels.contains(lastVariantLabel) else { return base }
-        return lastVariantLabel
+        guard !isNew, variantLabels.contains(lastRun) else { return base }
+        return lastRun
     }
 }
 

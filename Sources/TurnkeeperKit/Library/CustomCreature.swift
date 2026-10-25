@@ -14,6 +14,7 @@ public struct CustomCreature: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public static let keyPrefix = "custom."
 

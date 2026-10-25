@@ -81,19 +81,17 @@ struct ChallengePointsTests {
 
     @Test("A new encounter opens at Base; one with a plan opens at the difficulty last run")
     func startingVariant() {
-        var scenario = Scenario(campaignID: UUID(), name: "#7-01",
+        let scenario = Scenario(campaignID: UUID(), name: "#7-01",
                                 variantLabels: VariantScheme.easierBaseHarder.labels)
-        scenario.lastVariantLabel = "Harder"
         var encounter = Encounter(scenarioID: scenario.id, name: "Docks")
-        #expect(scenario.startingVariantLabel(for: encounter) == "Base")
+        #expect(scenario.startingVariantLabel(for: encounter, lastRun: "Harder") == "Base")
         var easier = encounter.variant("Easier")
         easier.slots = [EncounterSlot(creatureKey: "goblin")]
         encounter.setVariant(easier)
-        #expect(scenario.startingVariantLabel(for: encounter) == "Harder")
-        scenario.lastVariantLabel = ""
-        #expect(scenario.startingVariantLabel(for: encounter) == "Base")
+        #expect(scenario.startingVariantLabel(for: encounter, lastRun: "Harder") == "Harder")
+        #expect(scenario.startingVariantLabel(for: encounter, lastRun: "") == "Base")
         let tiers = Scenario(campaignID: UUID(), name: "#6-01",
                              variantLabels: VariantScheme.challengePointsLowTier.labels)
-        #expect(tiers.startingVariantLabel(for: encounter) == "10–11 CP")
+        #expect(tiers.startingVariantLabel(for: encounter, lastRun: "") == "10–11 CP")
     }
 }

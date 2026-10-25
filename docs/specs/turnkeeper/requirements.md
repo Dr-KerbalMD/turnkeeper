@@ -10,7 +10,9 @@ ladder, and the right half is the notes side, which shows the battle card of the
   Files or Finder.
 - R1.3 "Sync with nearby device" merges the libraries of two devices over the local network.
 - R1.4 Merging never loses edits silently. When both sides changed the same record, the newer one wins
-  and the other is kept as a conflict copy.
+  and the other is kept as a conflict copy, once. A record changed on only one device, however many times and
+  across however many syncs, never makes a conflict copy. Opening, viewing or running something doesn't count
+  as a change.
 - R1.4a Players are synced one at a time. When both devices changed a party, each player keeps its latest
   edit, players added or removed on either device carry across, and a Demiplane sheet fetched later is
   kept even when the other device edited the same player.

@@ -103,7 +103,10 @@ Ported from the pf2e system, with tests.
 - **Change stamps.** `ChangeClock.now()` never repeats or goes back within a run, so two quick edits never
   share a `modifiedAt` and the merger always sees that both sides changed.
 - **Records.** Every record has `id`, `modifiedAt`, `deletedAt` (a tombstone; records are never removed)
-  and `sharedVersion`, the `modifiedAt` of the version last shared with the other device.
+  and `sharedVersions`: the `modifiedAt` of each recent version it has sent to or received from another
+  device, capped at 32. `Library.sending()` adds each record's current version whenever a package is built,
+  for nearby sync or a file. `sharedVersion`, the version last received, is still read from older libraries and
+  devices. A save that changes nothing returns early, so it doesn't stamp `modifiedAt` and look like an edit.
 - **Custom creatures.** `CustomCreature` records hold a full `Creature` under the key `custom.<id>`;
   `AppModel.entry`/`creature` look them up before the bestiary. `CreatureDraft` is the editor's text form
   of a creature, and `StatBlockText` reads and writes the printed forms (skills, speeds, resistances,
@@ -133,9 +136,15 @@ Ported from the pf2e system, with tests.
   unreadable records don't stop the rest from loading. Record fields added later decode with defaults.
 - **Variants.** An encounter keeps one `EncounterVariant` (slots and events) per scenario variant label.
   `CombatSetup` turns a variant and a party into the opening `CombatState`.
-- **Merging.** `LibraryMerger` compares each record with the other device's copy. If one side is unchanged
-  since the shared version, the other side's change wins. If both changed, the newer one wins, and for
-  scenarios and encounters the other is kept as a "(conflict copy)". Deletions merge like any change.
+- **Merging.** `LibraryMerger` compares each record with the other device's copy. If one side's version is
+  among the other's shared versions, only the other side changed it, and that change wins. If both changed,
+  the newer one wins, and for scenarios and encounters the other is kept as a "(conflict copy)". The copy's ID
+  is derived from the record and the losing version (`conflictCopyID(of:)`), so both devices make the same
+  copy. The merged record keeps both sides' shared versions, plus the losing version, which it replaces.
+  Deletions merge like any change.
+- **The difficulty last run** is read from the scenario's most recently changed fight
+  (`Library.lastRunVariantLabel(in:)`), so starting a fight doesn't edit the scenario. `Scenario.lastVariantLabel`
+  is only a fallback for libraries from before.
 - **Party members.** `Library.save(_: Party)` stamps `PartyMember.modifiedAt` on each member that changed
   and records removed members in `Party.removedMembers`. When both sides changed a party,
   `Party.merging(newer:older:)` keeps the newer party's name, level and order, takes each member's later
