@@ -5,13 +5,22 @@ import Foundation
 extension AppModel {
     /// The campaign as a `.turnkeeper` package.
     func exportCampaign(_ id: UUID) throws -> Data {
-        try withImages(LibraryPackage.campaign(id, from: library, bestiaryRevision: bestiary.index.sourceRevision))
-            .encoded()
+        markSent()
+        return try withImages(LibraryPackage.campaign(id, from: library,
+                                                      bestiaryRevision: bestiary.index.sourceRevision)).encoded()
     }
 
     /// The whole library for nearby sync, with its pasted images.
     func fullPackage() -> LibraryPackage {
-        withImages(LibraryPackage(library: library, bestiaryRevision: bestiary.index.sourceRevision))
+        markSent()
+        return withImages(LibraryPackage(library: library, bestiaryRevision: bestiary.index.sourceRevision))
+    }
+
+    /// Records that every record's current version has left this device, so when the other device sends it
+    /// back unchanged, the merge knows it's this device's own earlier version and not an edit made there.
+    private func markSent() {
+        let sent = library.sending()
+        if sent != library { library = sent }
     }
 
     private func withImages(_ package: LibraryPackage) -> LibraryPackage {

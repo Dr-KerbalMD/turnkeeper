@@ -85,7 +85,7 @@ extension AppModel {
     }
 
     private func startNewCombat(encounter: Encounter, variantLabel: String, party: Party?) {
-        guard var scenario = scenario(encounter.scenarioID) else { return }
+        guard let scenario = scenario(encounter.scenarioID) else { return }
         let party = party.map { settleTableBuddies($0, in: scenario) }
         let state = CombatSetup.state(for: encounter.variant(variantLabel), party: party) { entry($0) }
         var context = SessionContext(campaignID: scenario.campaignID, encounterID: encounter.id,
@@ -93,8 +93,6 @@ extension AppModel {
         context.partyID = party?.id
         let session = CombatSession(context: context, state: state)
         library.save(session)
-        scenario.lastVariantLabel = variantLabel
-        library.save(scenario)
         activeSessionID = session.id
     }
 }
