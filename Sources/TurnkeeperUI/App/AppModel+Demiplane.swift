@@ -9,7 +9,7 @@ extension AppModel {
     /// `errorMessage` set.
     @discardableResult
     func importFromDemiplane(_ reference: DemiplaneReference, partyID: UUID, memberID: UUID? = nil) async -> Bool {
-        await runDemiplane("Importing from Demiplane…") { importer in
+        await runDemiplane("Importing from Demiplane…", reference: reference) { importer in
             let imported = try await importer.importCharacter(id: reference.id, game: reference.game ?? self.game)
             await self.add(imported, to: partyID, memberID: memberID)
         }
@@ -18,7 +18,7 @@ extension AppModel {
     /// Re-imports a linked member's sheet, keeping its name and the GM's max HP, and says what changed.
     func refreshFromDemiplane(memberID: UUID, partyID: UUID) async {
         guard let member = party(partyID)?.members.first(where: { $0.id == memberID }) else { return }
-        guard let link = member.link else {
+        guard let link = member.link, link.source == .demiplane else {
             statusMessage = "\(member.name) isn't linked to Demiplane."
             return
         }
@@ -61,15 +61,21 @@ extension AppModel {
         }
     }
 
-    private func runDemiplane(_ progress: String, _ work: (DemiplaneImporter) async throws -> Void) async -> Bool {
+    private func runDemiplane(
+        _ progress: String, reference: DemiplaneReference, _ work: (DemiplaneImporter) async throws -> Void
+    ) async -> Bool {
         demiplaneProgress = progress
         defer { demiplaneProgress = nil }
+        errorSheetURL = nil
         do {
             let importer = DemiplaneImporter(client: DemiplaneClient(transport: URLSession.shared), glossary: bestiary)
             try await work(importer)
             return true
         } catch {
             errorMessage = error.localizedDescription
+            if (error as? CharacterImportError)?.isFixedByOpeningSheet == true {
+                errorSheetURL = reference.sheetURL(defaultGame: game)
+            }
             return false
         }
     }

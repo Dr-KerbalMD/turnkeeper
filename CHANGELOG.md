@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-10-25
+
+### Fixed
+- Stop conflict copies of records only one device edited
+
+[1.4.1]: https://github.com/scooper4711/turnkeeper/releases/tag/v1.4.1
+
+## [1.4.0] - 2026-10-25
+
+### Added
+- Add Table Buddies (iconic pregens) to parties
+
+[1.4.0]: https://github.com/scooper4711/turnkeeper/releases/tag/v1.4.0
+
+## [1.3.0] - 2026-10-24
+
+### Added
+- Sync party members one at a time
+- Offer to open a blank Demiplane sheet on Demiplane
+- Show that a nearby sync is in progress
+
+### Fixed
+- Name the At Table / Away toggle on party members
+- Keep Demiplane sheets when an export is blank or a sync conflicts
+- Stamp the iPad build with the release version
+
+[1.3.0]: https://github.com/scooper4711/turnkeeper/releases/tag/v1.3.0
+
 ## [1.2.4] - 2026-10-23
 
 ### Fixed

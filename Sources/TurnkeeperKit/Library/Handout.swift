@@ -12,6 +12,7 @@ public struct Handout: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(scenarioID: UUID, name: String) {
         self.scenarioID = scenarioID

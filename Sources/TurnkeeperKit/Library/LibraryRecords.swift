@@ -3,13 +3,17 @@ import Foundation
 
 /// A record that can be shared between devices: it has a stable ID, the time it last changed, and a
 /// tombstone instead of being removed, so a deletion on one device reaches the other.
-public protocol LibraryRecord: Codable, Sendable, Identifiable where ID == UUID {
+public protocol LibraryRecord: Codable, Sendable, Identifiable, Equatable where ID == UUID {
     var id: UUID { get }
     var modifiedAt: Date { get set }
     var deletedAt: Date? { get set }
-    /// The `modifiedAt` of the version last shared with another device, so a merge can tell an update
-    /// made on one side from edits made on both.
+    /// The `modifiedAt` of the version last received from another device. Kept for libraries and devices
+    /// from before `sharedVersions`.
     var sharedVersion: Date? { get set }
+    /// The `modifiedAt` of each recent version this record has sent to or received from another device, so a
+    /// merge can tell an older version of the same record from an edit made on the other side. Nil in
+    /// libraries saved before it was kept.
+    var sharedVersions: [Date]? { get set }
 }
 
 public extension LibraryRecord {
@@ -24,6 +28,7 @@ public struct Campaign: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(name: String, game: Game) {
         self.name = name
@@ -39,15 +44,37 @@ public struct Party: LibraryRecord, Hashable {
     public var name: String
     public var level: Int
     public var members: [PartyMember]
+    /// Members taken out, so the removal carries across a sync.
+    public var removedMembers: [RemovedMember] = []
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(campaignID: UUID, name: String, level: Int, members: [PartyMember] = []) {
         self.campaignID = campaignID
         self.name = name
         self.level = level
         self.members = members
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, campaignID, name, level, members, removedMembers, modifiedAt, deletedAt, sharedVersion, sharedVersions
+    }
+
+    /// Libraries saved before removals were recorded have none.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        campaignID = try container.decode(UUID.self, forKey: .campaignID)
+        name = try container.decode(String.self, forKey: .name)
+        level = try container.decode(Int.self, forKey: .level)
+        members = try container.decode([PartyMember].self, forKey: .members)
+        removedMembers = try container.decodeIfPresent([RemovedMember].self, forKey: .removedMembers) ?? []
+        modifiedAt = try container.decode(Date.self, forKey: .modifiedAt)
+        deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
+        sharedVersion = try container.decodeIfPresent(Date.self, forKey: .sharedVersion)
+        sharedVersions = try container.decodeIfPresent([Date].self, forKey: .sharedVersions)
     }
 
     /// The players at the table this session, which is what encounter budgets are worked out for.
@@ -74,17 +101,20 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
     public var playerName = ""
     /// The GM's notes about the player, such as their Discord handle.
     public var notes = ""
+    /// When this member last changed, so a sync keeps each member's latest edit. Stamped by `Library.save`.
+    public var modifiedAt = Date.distantPast
 
     public init(name: String) {
         self.name = name
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, isAway, level, sheet, link, maxHitPoints, playerName, notes
+        case id, name, isAway, level, sheet, link, maxHitPoints, playerName, notes, modifiedAt
     }
 
     /// Libraries saved before players could be away have no `isAway`, and read as present; ones saved before
-    /// player names and notes have neither, and read as blank.
+    /// player names and notes have neither, and read as blank; ones saved before members were stamped read as
+    /// never changed.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -96,6 +126,7 @@ public struct PartyMember: Codable, Sendable, Hashable, Identifiable {
         maxHitPoints = try container.decodeIfPresent(Int.self, forKey: .maxHitPoints)
         playerName = try container.decodeIfPresent(String.self, forKey: .playerName) ?? ""
         notes = try container.decodeIfPresent(String.self, forKey: .notes) ?? ""
+        modifiedAt = try container.decodeIfPresent(Date.self, forKey: .modifiedAt) ?? .distantPast
     }
 }
 
@@ -108,12 +139,14 @@ public struct Scenario: LibraryRecord, Hashable {
     public var levelRange = ""
     /// Difficulty labels, such as "10–12 CP" and "16–18 CP", or "Easier", "Base" and "Harder".
     public var variantLabels: [String]
-    /// The variant last run, offered first next time.
+    /// The variant last run, as saved by older versions. The last fight's session says it now, so starting a
+    /// fight doesn't edit the scenario (see `Library.lastRunVariantLabel(in:)`).
     public var lastVariantLabel = ""
     public var sortIndex = 0
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(campaignID: UUID, name: String, variantLabels: [String] = VariantScheme.single.labels) {
         self.campaignID = campaignID
@@ -122,12 +155,12 @@ public struct Scenario: LibraryRecord, Hashable {
     }
 
     /// The difficulty an encounter opens at, when the party's challenge points pick none: Base for a new
-    /// encounter (nothing planned yet), else the one last run, else Base, else the first.
-    public func startingVariantLabel(for encounter: Encounter) -> String {
+    /// encounter (nothing planned yet), else `lastRun`, else Base, else the first.
+    public func startingVariantLabel(for encounter: Encounter, lastRun: String) -> String {
         let base = variantLabels.contains(VariantScheme.baseLabel) ? VariantScheme.baseLabel : variantLabels[0]
         let isNew = encounter.variants.allSatisfy { $0.slots.isEmpty && $0.events.isEmpty }
-        guard !isNew, variantLabels.contains(lastVariantLabel) else { return base }
-        return lastVariantLabel
+        guard !isNew, variantLabels.contains(lastRun) else { return base }
+        return lastRun
     }
 }
 

@@ -113,8 +113,11 @@ struct EncounterEditorView: View {
     /// Picks the difficulty: the one the party's points call for, else the last one run.
     private func setUp(_ scenario: Scenario?) {
         partyID = partyID ?? model.defaultParty(for: scenario?.campaignID)?.id
-        label = pickedLabel(scenario)
-            ?? scenario?.startingVariantLabel(for: encounter) ?? VariantScheme.single.labels[0]
+        label = pickedLabel(scenario) ?? scenario.map(startingLabel) ?? VariantScheme.single.labels[0]
+    }
+
+    private func startingLabel(_ scenario: Scenario) -> String {
+        scenario.startingVariantLabel(for: encounter, lastRun: model.library.lastRunVariantLabel(in: scenario))
     }
 
     private func pickedLabel(_ scenario: Scenario?) -> String? {

@@ -13,6 +13,7 @@ public struct CustomArt: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     /// Art paths starting with this are pasted art in the `ArtStore`, not bundled art.
     public static let pathPrefix = "Pasted/"

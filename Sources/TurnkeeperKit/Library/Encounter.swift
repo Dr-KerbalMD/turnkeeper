@@ -14,6 +14,7 @@ public struct Encounter: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(scenarioID: UUID, name: String) {
         self.scenarioID = scenarioID
@@ -116,6 +117,7 @@ public struct CombatSession: LibraryRecord, Hashable {
     public var modifiedAt = Date()
     public var deletedAt: Date?
     public var sharedVersion: Date?
+    public var sharedVersions: [Date]?
 
     public init(context: SessionContext, state: CombatState) {
         campaignID = context.campaignID

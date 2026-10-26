@@ -1,3 +1,4 @@
+import CharacterImport
 import Bestiary
 import TurnkeeperKit
 import CreatureArt
@@ -29,6 +30,8 @@ final class AppModel {
     /// The fight on screen; the planner shows when nil.
     var activeSessionID: UUID?
     var errorMessage: String?
+    /// A Demiplane sheet the error says to open, offered as a button beside it.
+    var errorSheetURL: URL?
     /// A passing message, such as the result of an import.
     var statusMessage: String?
     /// A planning edit that would reset a fight in progress, waiting for the GM to confirm.
@@ -50,6 +53,9 @@ final class AppModel {
     /// What reading PDFs of art is doing, while it runs.
     var artProgress: String?
     @ObservationIgnored private let file: LibraryFile?
+    /// The iconic pregens a GM can add as Table Buddies, read when first needed.
+    @ObservationIgnored lazy var pregens: PregenCatalog = BestiaryStore.locateGeneratedDirectory()
+        .map { PregenCatalog(folder: $0.appendingPathComponent("Pregens")) } ?? PregenCatalog()
     @ObservationIgnored private var saveTask: Task<Void, Never>?
 
     init(library: Library = Library(), bestiary: BestiaryStore = BestiaryStore(), file: LibraryFile? = nil,

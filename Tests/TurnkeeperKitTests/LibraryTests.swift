@@ -1,3 +1,4 @@
+import Bestiary
 import Foundation
 import Testing
 @testable import TurnkeeperKit
@@ -77,6 +78,38 @@ struct LibraryTests {
         let names = mac.encounters(in: encounter.scenarioID).map(\.name)
         #expect(names.sorted() == ["A: Docks", "A: Docks (conflict copy)"])
         #expect(mac.encounters.first { $0.id == encounter.id }?.notes == "iPad notes")
+    }
+
+    @Test("A sheet refreshed on one device survives the party being edited on the other, in both directions")
+    func refreshedSheetSurvivesPartyEdit() throws {
+        var mac = Library()
+        var party = Party(campaignID: UUID(), name: "Gargul", level: 2)
+        var varielle = PartyMember(name: "Varielle")
+        varielle.link = CharacterLink(source: .demiplane, characterID: "varielle", game: .starfinder,
+                                      fetchedAt: Date(timeIntervalSinceNow: -3600))
+        varielle.sheet = Creature(key: "", name: "Varielle", game: .starfinder)
+        party.members = [varielle, PartyMember(name: "Eagan")]
+        mac.save(party)
+        var ipad = try transferred(mac)
+        var refreshed = ipad.parties[0]
+        var sheet = Creature(key: "", name: "Varielle", game: .starfinder)
+        sheet.defenses.armorClass = 17
+        _ = refreshed.apply(sheet, link: CharacterLink(source: .demiplane, characterID: "varielle", game: .starfinder),
+                            to: varielle.id)
+        ipad.save(refreshed)
+        var edited = mac.parties[0]
+        edited.members[1].isAway = true
+        edited.modifiedAt = Date(timeIntervalSinceNow: 60)  // The Mac's edit is the newer one.
+        mac.parties[0] = edited
+        let (macBefore, ipadBefore) = (mac, ipad)  // Each device sends the other its library as it was.
+        #expect(LibraryMerger.merge(ipadBefore, into: &mac).conflicts == 0)
+        _ = LibraryMerger.merge(macBefore, into: &ipad)
+        for library in [mac, ipad] {
+            #expect(library.parties[0].members[0].sheet?.defenses.armorClass == 17)
+            #expect(library.parties[0].members[1].isAway)
+            #expect(library.parties[0].modifiedAt == edited.modifiedAt)
+        }
+        #expect(mac.parties == ipad.parties)
     }
 
     @Test("Deletions carry across")

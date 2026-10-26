@@ -32,7 +32,9 @@ struct MemberLinkRow: View {
                     .help("Shown on the PC's card only; players track their own HP")
                 Button("Battle Card", systemImage: "person.text.rectangle") { isShowingCard = true }
                     .help("Show the PC's battle card")
-                if model.refreshingMemberID == member.id {
+                if member.isTableBuddy {
+                    // A Table Buddy's sheet comes with the app; there's nothing to refresh.
+                } else if model.refreshingMemberID == member.id {
                     ProgressView().controlSize(.small)
                 } else {
                     Button("Refresh", systemImage: "arrow.clockwise") {
@@ -40,10 +42,12 @@ struct MemberLinkRow: View {
                     }
                     .disabled(model.demiplaneProgress != nil)
                 }
-                Button("Unlink", systemImage: "xmark.circle", role: .destructive) {
-                    model.unlinkFromDemiplane(memberID: member.id, partyID: partyID)
+                if !member.isTableBuddy {
+                    Button("Unlink", systemImage: "xmark.circle", role: .destructive) {
+                        model.unlinkFromDemiplane(memberID: member.id, partyID: partyID)
+                    }
+                    .help("Unlink from Demiplane")
                 }
-                .help("Unlink from Demiplane")
             }
             .buttonStyle(.borderless)
             .labelStyle(.iconOnly)
@@ -55,12 +59,15 @@ struct MemberLinkRow: View {
         }
     }
 
+    /// "Demiplane · Human Fighter · updated 2 days ago", or "Table Buddy · Human Wizard · level 3".
     private func summary(_ link: CharacterLink) -> String {
         let player = member.sheet?.player
         let description = [player?.ancestry, player?.className].compactMap { $0 }.filter { !$0.isEmpty }
             .joined(separator: " ")
+        let character = description.isEmpty ? "character" : description
+        if member.isTableBuddy { return "Table Buddy · \(character) · level \(member.level ?? 1)" }
         let updated = link.fetchedAt.formatted(.relative(presentation: .named))
-        return "Demiplane · \(description.isEmpty ? "character" : description) · updated \(updated)"
+        return "Demiplane · \(character) · updated \(updated)"
     }
 
     private func linkedNames(_ link: CharacterLink) -> String {

@@ -10,7 +10,12 @@ ladder, and the right half is the notes side, which shows the battle card of the
   Files or Finder.
 - R1.3 "Sync with nearby device" merges the libraries of two devices over the local network.
 - R1.4 Merging never loses edits silently. When both sides changed the same record, the newer one wins
-  and the other is kept as a conflict copy.
+  and the other is kept as a conflict copy, once. A record changed on only one device, however many times and
+  across however many syncs, never makes a conflict copy. Opening, viewing or running something doesn't count
+  as a change.
+- R1.4a Players are synced one at a time. When both devices changed a party, each player keeps its latest
+  edit, players added or removed on either device carry across, and a Demiplane sheet fetched later is
+  kept even when the other device edited the same player.
 - R1.5 Building and running need no paid Apple developer account; only signing and notarizing releases does. There
   is no iCloud or CloudKit.
 - R1.6 Pushing a version tag makes GitHub build the universal Mac app and attach its disk image, signed with the
@@ -229,6 +234,17 @@ ladder, and the right half is the notes side, which shows the battle card of the
 - R6.7 Importing needs no Demiplane account and no sign-in: the app asks Demiplane for a shared character's
   sheet as anyone with its link can, and keeps nothing about Demiplane on the device besides the linked
   characters. Linked PCs and their sheets travel with the party like any other data.
+- R6.8 Add Table Buddy, in the party editor, adds an iconic pregen for the campaign's game (such as Ezren or
+  Dae) with a battle card and its Community Use portrait. A Table Buddy is never linked to Demiplane, but it
+  has a player's name and notes like any member. Its level follows the Society rules:
+  - Pathfinder: the Pathfinder Society Guide's "Adding Pregens" table, under "Calculating Challenge Points".
+    The scenario's Base Level (its lowest allowed level), the number of real PCs (two or three) and their
+    challenge points pick level 1, 3 or 5. Two PCs below 8 CP, or three below 12, get the lower level. The
+    Guide adds no pregens at Base Level 7 and up, so a Table Buddy there doesn't count.
+  - Starfinder: the lower level of the scenario's two-level band.
+  - Until a scenario has levels, the party's level.
+  The challenge points count each Table Buddy at its level and name it ("20 CP (Amiri at level 3)").
+  Starting a fight puts the Table Buddy at that level, with that level's card.
 
 ## R7 About
 - R7.1 An About screen (the app menu's About Turnkeeper on the Mac, the sidebar's About button on the iPad) shows

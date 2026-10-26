@@ -64,6 +64,14 @@ public struct Library: Codable, Sendable, Hashable {
             .max { $0.modifiedAt < $1.modifiedAt }
     }
 
+    /// The difficulty of the scenario's most recent fight, else the one older versions saved on the scenario.
+    public func lastRunVariantLabel(in scenario: Scenario) -> String {
+        let encounterIDs = Set(encounters(in: scenario.id).map(\.id))
+        let latest = sessions.filter { encounterIDs.contains($0.encounterID) && !$0.isDeleted }
+            .max { $0.modifiedAt < $1.modifiedAt }
+        return latest?.variantLabel ?? scenario.lastVariantLabel
+    }
+
     /// The custom creature with a key, if it hasn't been deleted.
     public func customCreature(key: String) -> CustomCreature? {
         customCreatures.first { $0.key == key && !$0.isDeleted }
@@ -99,10 +107,28 @@ public struct Library: Codable, Sendable, Hashable {
         sessions.filter { $0.campaignID == campaignID && !$0.isDeleted }.sorted { $0.modifiedAt > $1.modifiedAt }
     }
 
+    /// This library about to be sent to another device, with every record remembering its version as shared.
+    public func sending() -> Library {
+        var library = self
+        library.campaigns = campaigns.map { $0.sending() }
+        library.parties = parties.map { $0.sending() }
+        library.scenarios = scenarios.map { $0.sending() }
+        library.encounters = encounters.map { $0.sending() }
+        library.sessions = sessions.map { $0.sending() }
+        library.customCreatures = customCreatures.map { $0.sending() }
+        library.customArt = customArt.map { $0.sending() }
+        library.handouts = handouts.map { $0.sending() }
+        library.creatureNotes = creatureNotes.map { $0.sending() }
+        return library
+    }
+
     // MARK: Changes (each stamps modifiedAt)
 
     public mutating func save(_ campaign: Campaign) { upsert(campaign, into: \.campaigns) }
-    public mutating func save(_ party: Party) { upsert(party, into: \.parties) }
+    public mutating func save(_ party: Party) {
+        let stored = parties.first { $0.id == party.id }
+        upsert(party.stampingMembers(against: stored, at: ChangeClock.now()), into: \.parties)
+    }
     public mutating func save(_ scenario: Scenario) { upsert(scenario, into: \.scenarios) }
     public mutating func save(_ encounter: Encounter) { upsert(encounter, into: \.encounters) }
     public mutating func save(_ session: CombatSession) { upsert(session, into: \.sessions) }
@@ -149,16 +175,21 @@ public struct Library: Codable, Sendable, Hashable {
     public mutating func deleteSession(_ id: UUID) { mark(\.sessions, ChangeClock.now()) { $0.id == id } }
     public mutating func deleteCustomCreature(_ id: UUID) { mark(\.customCreatures, ChangeClock.now()) { $0.id == id } }
 
+    /// Saves a record stamped now, unless it's the same as the one stored: a save that changes nothing isn't an
+    /// edit, so it mustn't look like one to the other device.
     private mutating func upsert<Record: LibraryRecord>(
         _ record: Record, into path: WritableKeyPath<Library, [Record]>
     ) {
         var stamped = record
-        stamped.modifiedAt = ChangeClock.now()
-        if let index = self[keyPath: path].firstIndex(where: { $0.id == record.id }) {
-            self[keyPath: path][index] = stamped
-        } else {
+        guard let index = self[keyPath: path].firstIndex(where: { $0.id == record.id }) else {
+            stamped.modifiedAt = ChangeClock.now()
             self[keyPath: path].append(stamped)
+            return
         }
+        stamped.modifiedAt = self[keyPath: path][index].modifiedAt
+        guard stamped != self[keyPath: path][index] else { return }
+        stamped.modifiedAt = ChangeClock.now()
+        self[keyPath: path][index] = stamped
     }
 
     private mutating func mark<Record: LibraryRecord>(
